@@ -1,14 +1,9 @@
-all: mamut registration
+all: trackmate 
 
-mamut:
-	./convert_to_tex.py GettingStartedWithMaMuT.wtex GettingStartedWithMaMuT.tex
-	pdflatex GettingStartedWithMaMuT.tex
-	./convert_to_wiki.py GettingStartedWithMaMuT.wtex GettingStartedWithMaMuT.txt
-
-registration:
-	./convert_to_tex.py RegistrationOfMultiViewImages.wtex RegistrationOfMultiViewImages.tex
-	pdflatex RegistrationOfMultiViewImages.tex
-	./convert_to_wiki.py RegistrationOfMultiViewImages.wtex RegistrationOfMultiViewImages.txt
+trackmate:
+	./convert_to_tex.py TrackMateDocumentation.wtex TrackMateDocumentation.tex
+	pdflatex TrackMateDocumentation.tex
+	./convert_to_wiki.py TrackMateDocumentation.wtex TrackMateDocumentation.txt
 
 clean:
 	rm *.aux *.log *.out *.toc
