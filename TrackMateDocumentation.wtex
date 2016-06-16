@@ -37,8 +37,9 @@
 \newcommand\screenshotA[1]{\centerline{\includegraphics[scale=0.5]{figures/#1}}}
 \newcommand\screenshotB[1]{\centerline{\includegraphics[width=.8\textwidth]{figures/#1}}}
 \newcommand\screenshotC[1]{\centerline{\includegraphics[width=.5\textwidth]{figures/#1}}}
-\newcommand\screenshotLeft[1]{\begin{wrapfigure}{r}{7.5cm}{\includegraphics[width=7cm]{figures/#1}}\end{wrapfigure}}
-\newcommand\screenshotLeftB[1]{\begin{wrapfigure}{r}{6cm}{\includegraphics[width=5.5cm]{figures/#1}}\end{wrapfigure}}
+\newcommand\screenshotLeft[1]{\begin{wrapfigure}{r}{7.5cm}{\centerline{\includegraphics[width=7.3cm]{figures/#1}}}\end{wrapfigure}}
+\newcommand\screenshotLeftB[1]{\begin{wrapfigure}{r}{6cm}{\centerline{\includegraphics[width=5.8cm]{figures/#1}}}\end{wrapfigure}}
+\newcommand\screenshotLeftC[1]{\begin{wrapfigure}{r}{4cm}{\centerline{\includegraphics[width=3.8cm]{figures/#1}}}\end{wrapfigure}}
 \newcommand\screenshotTikz[1]{\centerline{\includetikz{figures/#1}}}
 \newcommand\coloredlink[1]{\textcolor{blue!75!black}{\underline{\smash{#1}}}}
 \newcommand\wikilink[2]{\href{http://imagej.net/#1}{\coloredlink{#2}}}
@@ -761,21 +762,20 @@ Spot names are also used to decide in what order to lay out track branches. For 
 %----------------------------------------
 
 
-The previous TrackMate tutorial - \wikilink{Manual editing of tracks using TrackMate} is dedicated to manually correcting the results of an automated process. This small tutorial here shows how to do a fully manual annotation with \wikilink{TrackMate}.
+The previous TrackMate tutorial - \wikilink{Manual editing of tracks using TrackMate}{Manual editing of tracks using TrackMate} is dedicated to manually correcting the results of an automated process. This small tutorial here shows how to do a fully manual annotation with \wikilink{TrackMate}{TrackMate}.
 
 
 
 \subsection{Setting up.}
 %-----------------------
 
-\screenshotA{TrackMate_ManualTrackingEntryPoint.png}
-
-There is not much to do. We will use the same, simple dataset that for \wikilink{Getting started with TrackMate}. You can find it in \menu{File > Open Samples > Tracks for TrackMate (807K)}. 
+We will use the same, simple dataset that for \wikilink{Getting started with TrackMate}{Getting started with \TrackMate}. You can find it in \menu{File > Open Samples > Tracks for \TrackMate (807K)}. 
 
 As for the TrackMate plugin, you could start it up normally, selecting \menu{Plugins > Tracking > TrackMate} in the menu, and then when offered to select a detector and a tracker, always pick the manual one. That would work well, but we offered another entry point that has a simpler GUI dedicated to manual tracking. Pick the \menu{Plugins > Tracking > Manual tracking with TrackMate} menu item. 
 
-You should should get the layout pictured on the right. Notice that we are already displaying the \texttt{Display options} panel of the classic GUI, and that the \textbf{Previous} button is disabled at the bottom. Notice also that the color scales for both spot and track features display a dummy range.
+You should should get the layout pictured below. Notice that we are already displaying the \texttt{Display options} panel of the classic GUI, and that the \textbf{Previous} button is disabled at the bottom. Notice also that the color scales for both spot and track features display a dummy range.
 
+\screenshotA{TrackMate_ManualTrackingEntryPoint.png}
 
 
 \subsection{Creating spots one by one.}
@@ -787,13 +787,15 @@ The main view (the one that re-uses the HyperStack viewer of ImageJ) can readily
 
 With this tool selected, you can now make the image window active and use the mouse of the keyboard to create spots. Here are the commands for the mouse:
 
+	
+
 \begin{myitemize}
 
 	\item \keys{Double-click} anywhere in the image to create a spot and enter the edit mode. The edited spot is highlighted with a green, dashed circle, as pictured below:
 
 \end{myitemize}
-	
-\screenshotA{TrackMate_SpotEditMode.png.}
+
+\screenshotA{TrackMate_SpotEditMode.png}
 
 \begin{myitemize}
 
@@ -807,8 +809,10 @@ With this tool selected, you can now make the image window active and use the mo
 	
 \end{myitemize}
 
-
 This is how you edit the data with the mouse. You can also use the keyboard:
+
+
+\screenshotA{TrackMate_CreateSpots.png}
 
 \begin{myitemize}
 
@@ -824,124 +828,99 @@ This is how you edit the data with the mouse. You can also use the keyboard:
 	
 And that's it for spot creation. 
 
-\screenshotA{TrackMate-CreateSpots.png}
 
 
 
 
 
 
+\subsection{Create and removing single links.}
+%---------------------------------------------
+
+All we have done so far was to create single spots, that are not part of any tracks. Tracks are created on the fly when you link several spots together. You can do it in \wikilink{TrackScheme}{TrackScheme}, as explained elsewhere. Here is how to do it directly on the image. To go on, create a few spots above the bright blob of the source image. We need at least a couple of them in consecutive frames. 
 
 
+We need to add spots to the selection The selection in TrackMate is a very useful tool for inspection, particularly because it is shared amongst all the possible views of a session, including \eg \wikilink{TrackScheme}{TrackScheme}. When you click in a spot, the selection is made of this spot, and all views are centered on the target spot. 
+
+To create a link, we need exactly two spots to be in the selection. To add or remove a spot from the selection, use \keys{Shift+click}. Selected spots are highlighted with a green, thick circle. To empty the selection, click on an empty (no spot) part of the image.
 
 
-
-TODO!
-
-
-
-
-
-
-== Create and removing single links ==
-
-[[Image:TrackMate CreateSingleLink.png|right|border|]]
-
-All we have done so far was to create single spots, that are not part of any tracks. Tracks are created on the fly when you link several spots together. You can do it in [[TrackScheme]], as explained elsewhere. Here is how to do it directly on the image. To go on, create a few spots above the bright blob of the source image. We need at least a couple of them in consecutive frames. 
-
-We need to add spots to the '''selection'''. The selection in TrackMate is a very useful tool for inspection, particularly because it is shared amongst all the possible views of a session, including ''e.g.'' [[TrackScheme]]. When you click in a spot, the selection is made of this spot, and all views are centered on the target spot. 
-
-To create a link, we need exactly two spots to be in the selection. To add or remove a spot from the selection, use {{key|Shift}}+{{key|click}}. Selected spots are highlighted with a green, thick circle. To empty the selection, click on an empty (no spot) part of the image.
-
-Once you have two spots in the selection, you can create a link between them by simply pressing the {{key|L}} key. It should be immediately displayed, as on the example on the right. 
+Once you have two spots in the selection, you can create a link between them by simply pressing the \keys{L} key. It should be immediately displayed, as on the example below. 
 
 As you can see, there is nothing that prevents you from creating a link over many frames, between any two spots. A spot can have several link arriving or departing from it. The only impossible things is to create a link between two spots that belong to the same frame.
 
-Removing a link is done the same way: Select exactly two spots that are connected by a link, and press the {{key|L}} key. The link will be removed.
+Removing a link is done the same way: Select exactly two spots that are connected by a link, and press the \keys{L} key. The link will be removed.
+
+\screenshotA{TrackMate_CreateSingleLink.png}
 
 
-== The auto-linking mode ==
 
-[[Image:TrackMate ManualTracking 1.png|right|border|]]
+\subsection{The auto-linking mode.}
+%----------------------------------
 
 Creating long tracks this way would be tedious, as you would always have to select a spot before creating a link. There is way to simplify this. 
 
-Press {{key|Shift}}+{{key|L}} to toggle the auto-linking mode on/off. When the mode is on, new spots will be automatically created to the spot in the selection (if there is only one). Then the selection is set to be the newly created spot, which allows you to quickly trace tracks by moving through frames and pressing the {{key|A}} key over the desired location. 
+Press \keys{Shift+L} to toggle the auto-linking mode on/off. When the mode is on, new spots will be automatically created to the spot in the selection (if there is only one). Then the selection is set to be the newly created spot, which allows you to quickly trace tracks by moving through frames and pressing the \keys{A} key over the desired location. 
 
 
-Let's apply this to our data. First create a spot over the bright blob at the top of the first frame, and roughly adjust its radius. Make sure the selection contains this spot, and only it (it must be highlighted in green), and press {{key|Shift}}+{{key|L}} to toggle the auto-linking mode on. Then move the second frame and place the mouse over the new spot location. Press '''A'''; a spot is created AND it is linked to the first spot by a track normally painted in red. Repeat until you reach about the frame 15 (the track branches, at some point, you have to decide what way you want to go). You should get - rather quickly - something like the picture on the right. 
+Let's apply this to our data. First create a spot over the bright blob at the top of the first frame, and roughly adjust its radius. Make sure the selection contains this spot, and only it (it must be highlighted in green), and press \keys{Shift+L} to toggle the auto-linking mode on. Then move the second frame and place the mouse over the new spot location. Press \keys{A}; a spot is created AND it is linked to the first spot by a track normally painted in red. Repeat until you reach about the frame 15 (the track branches, at some point, you have to decide what way you want to go). You should get - rather quickly - something like the picture on the right. 
 
-{{Clear}}
+\screenshotA{TrackMate_ManualTracking_1.png}
 
-[[Image:TrackMate ManualTracking 2.png|right|border|]]
 
 Tracks created this way do not have to be linear. You can create branching segments simply by remembering that in the auto-linking mode, links are created between the last selected spot.
 
-Therefore, to create the branch that goes on the right, go back on the frame 9 (the frame just before the branching happens) and click into the spot that's there to select it. Then move to the next frame and create the spots that belong to the right branch, just like you did before. These spots will be added to the same track, and should get a inverted Y-branch like pictured on the right.
+Therefore, to create the branch that goes on the right, go back on the frame 9 (the frame just before the branching happens) and click into the spot that's there to select it. Then move to the next frame and create the spots that belong to the right branch, just like you did before. These spots will be added to the same track, and should get a inverted Y-branch like pictured below.
 
-{{Clear}}
+\screenshotA{TrackMate_ManualTracking_2.png}
 
 
-== Tracks are updated live ==
-
-[[Image:TrackMate ManualTracking 3.png|right|border|]]
+\subsection{Tracks are updated live.}
+%------------------------------------
 
 Note that you do not have to worry about what track a spot belongs to when creating a link. Tracks are automatically managed on the fly. If you now create a second link between a pair of spots that are not connected with anything, a new track will be created automatically, and the color of the first ones will change. 
 
-The same is valid when you delete a link or a spot. For instance, let's create 3 tracks out of our inverted Y. Go to the frame 9, and delete the spot that is at the crossing. You now have 3 tracks.  
+The same is valid when you delete a link or a spot. For instance, let's create 3 tracks out of our inverted Y. Go to the frame 9, and delete the spot that is at the crossing. You now have three tracks.  
 
-{{Clear}}
-
-
-== Track and spot features are updated live ==
+\screenshotA{TrackMate_ManualTracking_3.png}
 
 
-[[Image:TrackMate GUIManualTracking.png|right|border|200px]]
+
+\subsection{Track and spot features are updated live.}
+%-----------------------------------------------------
+
+\screenshotLeftC{TrackMate_GUIManualTracking.png}
 
 TrackMate uses computes and uses some numerical features for its spots, edges and tracks. You can use these features to color the TrackMate objects. 
 
 For instance this is what happened in the previous section, when you deleted a spot and created 3 tracks out of one. On the GUI panel, the tracks were configured to have their color set by the track index. When you removed the spot, the track index was recalculated and used to give the track a color that ranges from blue to red. 
 
-The track and spot colors are refreshed immediately in the HyperStack displayer. Note, though, that the color range in the GUI has not been updated. It still displays ''-Infinity - Infinity''. This is by construction, to alleviate a bit the load when editing large models. If you want to refresh the color range, you have to click directly on it, and it will be properly repainted. On the right you can see what I get if I pick the feature ''Y'' for spot coloring, and the track index, after refreshing. 
-
-{{Clear}}
+The track and spot colors are refreshed immediately in the HyperStack displayer. Note, though, that the color range in the GUI has not been updated. It still displays \texttt{-Infinity - Infinity}. This is by construction, to alleviate a bit the load when editing large models. If you want to refresh the color range, you have to click directly on it, and it will be properly repainted. On the right you can see what we get if we pick the feature \texttt{Y} for spot coloring, and the track index, after refreshing. 
 
 
-== The semi-automatic tracking tool ==
 
-Since v2.1.0, TrackMate includes a tool that can automatically find spots and automatically link them to build a track. This is extremely handy to annotate images for which the automated detection in bulk yields too much spurious spots. I wish I had come with the idea ''before'' I started doing ''C.elegans'' lineaging. 
+\subsection{The semi-automatic tracking tool.}
+%---------------------------------------------
+
+TrackMate includes a tool that can automatically find spots and automatically link them to build a track. This is extremely handy to annotate images for which the automated detection in bulk yields too much spurious spots. 
 
 This tool is configured in the TrackMate tool option panel. It is not part of the classic GUI; to make it appear, double-click on the TrackMate tool in the ImageJ toolbar. You should see something like this:
 
-[[Image:TrackMate v2.1.0 TrackMateTools.png|center|border]]
+\screenshotA{TrackMate_TrackMateTools.png}
 
-We are interested in the '''Semi-automatic tracking''' panel. The bottom panel has just convenience buttons that allow you to select tracks or parts of tracks from the current selection (great to delete faulty tracks at once), and the right panel is a log. 
+We are interested in the \texttt{Semi-automatic tracking} panel. The bottom panel has just convenience buttons that allow you to select tracks or parts of tracks from the current selection (great to delete faulty tracks at once), and the right panel is a log. 
+
 The semi-automatic tracking tool itself works as follow: It takes the single spot in the selection, and use its radius to build a neighborhood of this spot, but in the next frame. It then searches this neighborhood for a bright blob with a similar radius. If the found spot is close enough and have a quality high enough, it is linked to the first spot. The process is then repeated, until no suitable spot can be found or until there is no time-point to inspect anymore. 
 
-The '''Quality threshold''' and the '''Distance tolerance''' settings allow to tune the tool. A quality threshold of 0.5 means that the spot found must have a quality of at least 50% of the first spot to be accepted. A distance tolerance of 2 means that it must not be further away than twice the radius of the first spot to be accepted. 
+The \texttt{Quality threshold} and the \texttt{Distance tolerance} settings allow to tune the tool. A quality threshold of 0.5 means that the spot found must have a quality of at least 50\% the quality of the first spot to be accepted. A distance tolerance of 2 means that it must not be further away than twice the radius of the previous spot to be accepted. \texttt{Max nFrames} sets a limit to the process. Even if successful each frame, the semi-automatic tracking will stop the specified number of frames have been iterated. When the process stops, the reason is printed in the log window.
 
-Let's put this in practice. Go to the frame 16 (or wherever you stopped annotating in the previous section), and select the last spot of the right track. You can start the semi-automatic tracking by either clicking on the purple button on the tool panel, or by pressing the {{key|Shift}}+{{key|A}} key. The tracking process is updated live. 
-
-How far can it go really depends on the radius you set for the first spot, so results may vary. Here is how it looks on a movie:
-
-{{#widget:YouTube|id=fAOpKTenSaU|width=640}}
-
-Great, no?
+Let's put this in practice. Go to the frame 16 (or wherever you stopped annotating in the previous section), and select the last spot of the right track. You can start the semi-automatic tracking by either clicking on the purple button on the tool panel, or by pressing the \keys{Shift+A} key. The tracking process is updated live. 
+How far can it go really depends on the radius you set for the first spot, so results may vary. 
 
 
-== Wrapping up ==
-
-These are the tools that should allow you to work very quickly. For fun: redo this tutorial with a [[TrackScheme]] window open. You should see that it works very well with manual annotation. 
-
-
-
-
-{{Person|JeanYvesTinevez}} ([[User talk:JeanYvesTinevez|talk]]) 10:54, 5 August 2013 (CDT)
-
-
-
+<wiki>
 [[Category:Tutorials]]
-
+</wiki>
 
 
 
