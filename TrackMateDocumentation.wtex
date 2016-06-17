@@ -910,7 +910,7 @@ For images with many time-points, it might be desirable to generate a quick manu
 
 The time step can be changed in the TrackMate tools window. This is a special window useful for manual annotation, that you access by double-clicking on the TrackMate icon in the ImageJ toolbar. This window has several uses, described below. The step size for time-step browsing is defined with the \texttt{Stepwise time browsing} numeric field.
 
-\screenshotA{TrackMate_TrackMateTools.png}
+\screenshotC{TrackMate_TrackMateTools.pdf}
 
 
 
