@@ -174,9 +174,9 @@ With this image selected, launch TrackMate from the menu \menu{Plugins > Trackin
 
 But first, just a few words about its look. The user interface is a single frame - that can be resized - divided in a main panel, that displays context-dependent dialogs, and a permanent bottom panel containing  the four main buttons depicted on the right. 
 
-The \textbf{Next} button allows to step through the tracking process. It might be disabled depending on the current panel content. For instance, if you do not select a valid image in the first panel, it will be disabled. The \textbf{Previous} button steps back in the process, without executing actions. For instance, if you go back on the segmentation panel, segmentation will not be re-executed. 
+The \smallimg{Icon_arrow_right.png} \textbf{Next} button allows to step through the tracking process. It might be disabled depending on the current panel content. For instance, if you do not select a valid image in the first panel, it will be disabled. The \smallimg{Icon_arrow_left.png} \textbf{Previous} button steps back in the process, without executing actions. For instance, if you go back on the segmentation panel, segmentation will not be re-executed. 
 
-The \textbf{Save} button creates a XML file that contains all of the data you generated at the moment you click it. Since you can save at any time, the resulting file might miss tracks, spots, etc... You can load the saved file using the menu item \menu{Plugins > Tracking > Load a TrackMate file}. It will restore the session just where you saved it.
+The \smallimg{Icon_page_save.png} \textbf{Save} button creates a XML file that contains all of the data you generated at the moment you click it. Since you can save at any time, the resulting file might miss tracks, spots, etc... You can load the saved file using the menu item \menu{Plugins > Tracking > Load a TrackMate file}. It will restore the session just where you saved it.
 
 Now is a good time to speak strategy when it comes to saving/restoring. You can save at anytime in TrackMate. If you save just before the tracking process, you will be taken there with the data you generated so far upon loading. TrackMate saves a \underline{link to the image file} (as an absolute file path) but not the image itself. When loading a TrackMate file, it tries first to retrieve and open this file in ImageJ. So it is a good idea to pre-process, crop, edit metadata and massage the target image first in Fiji, then save it as a \texttt{.tif}, then launch TrackMate. Particularly if you deal with a multi-series file, such as Leica \texttt{.lif} files.
 
@@ -199,7 +199,7 @@ You can also define a sub-region for processing: if you are only interested in f
 
 If you want to define the min and max \textbf{Z} and / or \textbf{T}, you have to edit manually the fields on the panel. 
 
-Defining a smaller area to analyze can be very beneficial to test and inspect for correct parameters, particularly for the segmentation step. In this tutorial, the image is so small and parse that we need not worrying about it. Press the \textbf{Next} button to step forward.
+Defining a smaller area to analyze can be very beneficial to test and inspect for correct parameters, particularly for the segmentation step. In this tutorial, the image is so small and parse that we need not worrying about it. Press the \smallimg{Icon_arrow_right.png} \textbf{Next} button to step forward.
 
 
 
@@ -209,7 +209,6 @@ Defining a smaller area to analyze can be very beneficial to test and inspect fo
 \screenshotC{TrackMate_SegmenterChoice.png}
 
 You are now offered to choose a detection algorithm ("detector") amongst the currently implemented ones. 
-
 The choice is actually quite limited. Apart from the \texttt{Manual annotation}, you will find three detectors, but they are all based on \otherlink{https://en.wikipedia.org/wiki/Blob_detection\#The_Laplacian_of_Gaussian}{LoG (Laplacian of Gaussian) segmentation}. They are described in detail elsewhere, but here is what you need to know. 
 
 \begin{myitemize}
@@ -229,17 +228,16 @@ In our case, let us just use the \texttt{DoG detector}.
 
 The LoG-based detectors fortunately demand very few parameters to tune them. The only really important one is the \texttt{Estimated blob diameter}. Just enter the approximate size of the spots you are looking to tracks. Careful: you are expected to enter it in \underline{physical units}. In our dummy example, there is no calibration (\texttt{1 pixel = 1 pixel}), so it does not appear here. 
 
-There are extra fields that you can configure also. The \texttt{Threshold} numerical value aims at helping dealing with situation where a gigantic number of spots can be found. Every spot with a quality value below this threshold value will not be retained, which can help saving memory. You set this field manually, and check how it fares with the \textbf{Preview button} button.
+There are extra fields that you can configure also. The \texttt{Threshold} numerical value aims at helping dealing with situation where a gigantic number of spots can be found. Every spot with a quality value below this threshold value will not be retained, which can help saving memory. You set this field manually, and check how it fares with the \smallimg{Icon_flag_checked.png} \textbf{Preview} button button.
 
 You can check \textbf{Use median filter}: this will apply a 3x3 median filter prior to any processing. This can help dealing with images that have a marked salt and pepper noise which generates spurious spots. 
 
 We hope that TrackMate will be used in experiments requiring \textbf{Sub-pixel localization}, such as following motor proteins in biophysical experiments, so we added schemes to achieve this. The one currently implemented uses a quadratic fitting scheme (made by Stephan Saalfeld and Stephan Preibisch) based on \otherlink{http://www.cs.ubc.ca/~lowe/keypoints/}{David Lowe SIFT work}<wiki><ref>David G. Lowe, "Distinctive image features from scale-invariant keypoints", International Journal of Computer Vision, 60, 2 (2004), pp. 91-110.</ref></wiki><latex>\footnote{David G. Lowe, "Distinctive image features from scale-invariant keypoints", International Journal of Computer Vision, 60, 2 (2004), pp. 91-110.}</latex>. It is not as accurate as the algorithm typically used in super-localization, byt has the advantage of being very quick, compared to the segmentation time itself.
 
-Finally, there is a \textbf{Preview button} that allows to quickly check your parameters on the current data. After some computations, you can check the results overlaid on the image. Most likely, you will see plenty of spurious spots that you will be tempted to discard by adjusting the \textbf{Threshold} value. This is a very good approach for large problems. Here, we care little for that, just leave the threshold at 0.
+Finally, there is a \smallimg{Icon_flag_checked.png} \textbf{Preview} button that allows to quickly check your parameters on the current data. After some computations, you can check the results overlaid on the image. Most likely, you will see plenty of spurious spots that you will be tempted to discard by adjusting the \textbf{Threshold} value. This is a very good approach for large problems. Here, we care little for that, just leave the threshold at 0.
 
 The two others automated segmenters share more or less the same fields in their own configuration panel. The \texttt{Downsampled LoG segmenter} simply asks for an extra down-sampling integer factor. 
-
-In our case, the spots we want to track are about 5 pixels in diameter, so this is what we enter in the corresponding field. We don't need anything else. The \textbf{Sub-pixel localization} option adds a very little overhead so we can leave it on.
+In our case, the spots we want to track are about 5 pixels in diameter, so this is what we enter in the corresponding field. We don't need anything else. The \textbf{Sub-pixel localization} option adds a very little time penalty so we can leave it on.
 
 
 
@@ -248,13 +246,13 @@ In our case, the spots we want to track are about 5 pixels in diameter, so this 
 
 \screenshotC{TrackMate_Segmenting.png}
 
-Once you are happy with the segmentation parameters, press the \textbf{Next} button and the segmentation will start. The TrackMate GUI displays the \texttt{log panel}, that you will meet several times during the process. It is basically made of a text area that recapitulates your choices and send information on the current process, and of a progress bar on top. You can copy-paste the text if you want to keep track of the process somewhere. You can even add comments as text in it: it is editable, and everything you type there is saved in the XML file, and retrieved upon loading. You can access the log panel anytime, by clicking on the log button at the bottom of the TrackMate window. 
+Once you are happy with the segmentation parameters, press the \smallimg{Icon_arrow_right.png} \textbf{Next} button and the segmentation will start. The TrackMate GUI displays the \texttt{log panel}, that you will meet several times during the process. It is basically made of a text area that recapitulates your choices and send information on the current process, and of a progress bar on top. You can copy-paste the text if you want to keep track of the process somewhere. You can even add comments as text in it: it is editable, and everything you type there is saved in the XML file, and retrieved upon loading. You can access the log panel anytime, by clicking on the log button at the bottom of the TrackMate window. 
 
-Should the process be long enough, you should be able to see that the \textbf{Next} button turned into a \textbf{Cancel} button. If you press it while the detection is running, TrackMate will finish the detection of the current frames, and stop. You could now go on with the spots it found, or go back and restart. 
+Should the process be long enough, you should be able to see that the \smallimg{Icon_arrow_right.png} \textbf{Next} button turned into a \smallimg{Icon_cancel.png} \textbf{Cancel} button. If you press it while the detection is running, TrackMate will finish the detection of the current frames, and stop. You could now go on with the spots it found, or go back and restart. 
 
 TrackMate takes advantage of multi-core computers, which seems to be the standard nowadays. If you the source image has more time-points than CPU cores, it will segment one time-frame per core available. On computers with many cores, the progress bar will seems to move in a bulky way: if you have 16 cores, 16 time-points will be segmented at once, and it is likely that they will be finished approximately on the same time. So don't be worried if the progress bar does not move in the beginning for large images. If you have more cores than time-points, then TrackMate will allocate cores differently and give more cores to each time-point. For instance, if you have 12 CPU cores and only 4 time-points, each time-point will get 3 cores for calculation.
 
-On our dummy image, this is clearly something we need to worry about, and the segmentation should be over in a few seconds. Typically, this is the step that takes the longer. Once the segmentation is done, the \textbf{Next} button is re-enabled.
+On our dummy image, this is clearly something we need to worry about, and the segmentation should be over in a few seconds. Typically, this is the step that takes the longer. Once the segmentation is done, the \smallimg{Icon_arrow_right.png} \textbf{Next} button is re-enabled.
 
 
 
@@ -263,7 +261,7 @@ On our dummy image, this is clearly something we need to worry about, and the se
 
 \screenshotLeft{TrackMate_InitThresholding.png}
 
-Here is a difficult step to explain, particularly because we do not need at all now. If the explanations following in this paragraph seem foggy, please feel free to press the \textbf{Next} button and skip to the next paragraph. This one is all related to performance, memory and disk usage in difficult cases.
+Here is a difficult step to explain, particularly because we do not need at all now. If the explanations following in this paragraph seem foggy, please feel free to press the \smallimg{Icon_arrow_right.png} \textbf{Next} button and skip to the next paragraph. This one is all related to performance, memory and disk usage in difficult cases.
 
 TrackMate uses generic segmentation algorithms for which there is only a little number of parameters to specify. The price to pay then, is that you can get a lot of undesired spots as an outcome. And in some cases, a really large amount of those.
 
@@ -286,7 +284,7 @@ Here, you can choose between the two visualization tools that will be used to di
 
 Honestly, choose the HyperStack displayer. Unless you have a very specific and complicated case that needs to inspect results in 3D immediately, you do not need the 3D viewer. The HyperStack displayer is simpler, lighter, allow to manually edit spots, and you will be able to launch a 3D viewer at the end of the process and still get the benefits. 
 
-When you press the \textbf{Next} button, two process starts: 
+When you press the \smallimg{Icon_arrow_right.png} \textbf{Next} button, two process starts: 
 \begin{myitemize}
 	\item the features of all spots (well, those you left after the initial filtering step) are calculated;
 	\item the displayer selected does everything it needs to prepare displaying them. 
@@ -304,7 +302,7 @@ The moment this panel is shown, the spots should be displayed on the ImageJ stac
 
 Trying to do particle linking on all these spots would be catastrophic, and there would be no hope to make sense of the data as it is now. This is why there is this spot filtering step, where you can use the features we just calculated to select the relevant spots only. 
 
-The spot filtering panel is divided in two. The upper part, which is empty now, contains the filter you define, in the shape of histograms. We will come back to them soon. The bottom part contains the \textbf{+} and \textbf{-} buttons that allow to respectively add or remove a feature filter, and a combo-box to set the display color of the spots.
+The spot filtering panel is divided in two. The upper part, which is empty now, contains the filter you define, in the shape of histograms. We will come back to them soon. The bottom part contains the \smallimg{Icon_add.png} and \smallimg{Icon_delete.png} buttons that allow to respectively add or remove a feature filter, and a combo-box to set the display color of the spots.
 
 Let us try it to play with it to find the best feature to filter out spurious spots. 
 
@@ -312,7 +310,7 @@ By default , when the combo-box is on \texttt{Uniform color}, all spots are mage
 
 \texttt{X} does not seem to be a good feature to select relevant spots. We know that \texttt{Quality} should be, by construction, but let us pick \texttt{Mean intensity}. By scrolling through the time slide you should be able to see that now all the spurious spots have a blue to turquoise color, whether the real one stands forward in red or yellow. 
 
-We will therefore add a filter based on this feature. Click the green \textbf{+} button. A small orange box should appear in the upper part, containing the histogram for a given feature. Click on the orange box combo-box to select \texttt{Mean intensity}. You should have something similar to the image below.
+We will therefore add a filter based on this feature. Click the green \smallimg{Icon_add.png} button. A small orange box should appear in the upper part, containing the histogram for a given feature. Click on the orange box combo-box to select \texttt{Mean intensity}. You should have something similar to the image below.
 
 \screenshotC{TrackMate_FilterSpots_2.png}
 
@@ -333,7 +331,7 @@ You can inspect the data by scrolling on the hyperstack window and check that on
 
 You can stack several filters by simply clicking on the green \textbf{+} button. TrackMate will retain the spots that satisfy to \underline{all} (logical \textit{and}) the criteria set by the filters. 
 
-Press \textbf{Next} when you are ready to build tracks with these spots.
+Press \smallimg{Icon_arrow_right.png} \textbf{Next} when you are ready to build tracks with these spots.
 
 
 
@@ -355,9 +353,9 @@ These LAP algorithm exists in TrackMate in two flavors: a simple one and a not s
 	\item The not simple one allows to detect any kind of event, so if you need to build tracks that are splitting or merging, you must go for this one. If you want to forbid the detection of gap-closing events, you want to use it as well. Also, you can alter the cost calculation to disfavor the linking of spots that have very different feature values.
 \end{myitemize}
 
-There is also a 3rd tracker, the \otherlink{https://en.wikipedia.org/wiki/Nearest_neighbor_search}{\textit{Nearest neighbor search}} tracker. This is the most simple tracker you can build, and it is mostly here for demonstration purposes. Each spot in one frame is linked to another one in the next frame, disregarding any other spot, thus achieving only a very local optimum. You can set a maximal linking distance to prevent the results to be totally pathological, but this is as far as it goes. It may be of use for very large and easy datasets: its memory consumption is very limited (at maximum only two frames need to be in memory) and is quick (the nearest neighbor search is performed using \otherlink{https://en.wikipedia.org/wiki/K-d_tree}{Kd-trees}).
+There is also a 3\textsuperscript{rd} tracker, the \otherlink{https://en.wikipedia.org/wiki/Nearest_neighbor_search}{\texttt{Nearest neighbor search}} tracker. This is the most simple tracker you can build, and it is mostly here for demonstration purposes. Each spot in one frame is linked to another one in the next frame, disregarding any other spot, thus achieving only a very local optimum. You can set a maximal linking distance to prevent the results to be totally pathological, but this is as far as it goes. It may be of use for very large and easy datasets: its memory consumption is very limited (at maximum only two frames need to be in memory) and is quick (the nearest neighbor search is performed using \otherlink{https://en.wikipedia.org/wiki/K-d_tree}{Kd-trees}).
 
-The 4th tracker, \texttt{Linear motion LAP tracker} is well suited for particles that move with a roughly constant velocity, this velocity being different for each particle. Its compared accuracy and relevance for various scenario is discussed later.
+The 4\textsuperscript{th} tracker, \texttt{Linear motion LAP tracker} is well suited for particles that move with a roughly constant velocity, this velocity being different for each particle. Its compared accuracy and relevance for various scenario is discussed later.
 
 Then of course, there is the option to skip the automated tracking using \texttt{Manual tracking}.
 
@@ -380,14 +378,14 @@ As promised, there is only three configuration fields.
 	\item The third field also deal with the detection of gap-closing events, and sets the maximal \textit{frame interval} between two spots to be bridged. Careful, the time is set in frame interval, here we do not want the physical time. In our case, since the only disappearance event we have last one frame, we can simply put this value to 2 frames duration. But actually it does not matter, as you can see by experimenting. 
 \end{myitemize}
 
-Press \textbf{Next} to start the tracking computation.
+Press \smallimg{Icon_arrow_right.png} \textbf{Next} to start the tracking computation.
 
 
 
 \subsection{Our first tracking results.}
 %---------------------------------------
 
-You are now shown the log panel, where the tracking process is logged. Since our dataset is very small, it should complete very quickly. Press \textbf{Next} again to see the results. They should look like this:
+You are now shown the log panel, where the tracking process is logged. Since our dataset is very small, it should complete very quickly. Press \smallimg{Icon_arrow_right.png} \textbf{Next} again to see the results. They should look like this:
 
 \screenshotLeftB{TrackMate_TrackingResults_1.png}
 
@@ -395,7 +393,7 @@ Basically, the tracker held its promises: there is 6 tracks (the two immobile sp
 
 The track colors are yet meaningless; there are just used to facilitate separating different tracks visually.
 
-Now, we would like the shape of these tracks to change. We see that the yellow track is actually branching from the blue one at frame 10. The same goes for the orange track, which branches from the green one at frame 17, and merges to the blue one at frame 27. To deal with that, we need to change of tracker. So go two steps back using the \textbf{Previous} button and go back to the tracker choice panel. There, select the \texttt{LAP tracker} and move to its configuration panel.
+Now, we would like the shape of these tracks to change. We see that the yellow track is actually branching from the blue one at frame 10. The same goes for the orange track, which branches from the green one at frame 17, and merges to the blue one at frame 27. To deal with that, we need to change of tracker. So go two steps back using the \smallimg{Icon_arrow_left.png} \textbf{Previous} button and go back to the tracker choice panel. There, select the \texttt{LAP tracker} and move to its configuration panel.
 
 
 
@@ -456,7 +454,7 @@ We are now close to the end of a typical workflow for a tracking problem. The pa
 
 The \wikilink{TrackScheme}{TrackScheme} button launches a module that allow manually editing tracks, and performing analysis on them. It is the subject of another tutorial. 
 
-If you press \textbf{Next}, you will see that there is still two panels after this one. The first one allows to plot any kind of feature as a function of another one. TrackMate deals with 3 kind of features: spot, link and track feature, depending on where it makes sense to compute them. For instance, instantaneous velocity is computed over a link (between two spots linked in a track), so you will find it on the \texttt{Links} tab. The \textbf{+} and \textbf{-} buttons allow you add several features on the Y-axis, and they will be pooled on the same graph or not, depending on the dimensionality of the features.
+If you press \smallimg{Icon_arrow_right.png} \textbf{Next}, you will see that there is still two panels after this one. The first one allows to plot any kind of feature as a function of another one. TrackMate deals with 3 kind of features: spot, link and track feature, depending on where it makes sense to compute them. For instance, instantaneous velocity is computed over a link (between two spots linked in a track), so you will find it on the \texttt{Links} tab. The \textbf{+} and \textbf{-} buttons allow you add several features on the Y-axis, and they will be pooled on the same graph or not, depending on the dimensionality of the features.
 
 The last panel is the Action chooser panel, that allows you to execute simple actions on your data, such as exporting, copying, re-calculating feature, etc... 
 
@@ -596,7 +594,7 @@ Almost all polar bodies are incorrectly detected, and the localization of cells 
 
 Normally, TrackMate can robustly handles track splitting events, representing ''e.g.'' cell division. Though this happens in this movie, we choose to dismiss this possibility in the automated tracking part.
 
-In the \textit{Tracker choice} panel, select the \texttt{Simple LAP tracker}. Leave the default values for the parameters, and press \textbf{Next}. You should end up in having something similar to the image to the right.
+In the \textit{Tracker choice} panel, select the \texttt{Simple LAP tracker}. Leave the default values for the parameters, and press \smallimg{Icon_arrow_right.png} \textbf{Next}. You should end up in having something similar to the image to the right.
 
 A quick assertion shows that for nuclei, the individual track branches are not so bad. Each of the retained spot could use some fine tuning, but the tracks are not completely pathological, disregarding the fact that splitting events are missed. The polar bodies tracking results are hopeless. 
 
@@ -611,12 +609,12 @@ Move to the \textit{Display options} panel, skipping the track filtering part.
 
 \wikilink{TrackScheme}{TrackScheme} is a TrackMate tool for the visualization and editing of tracks. It displays a kind of "track map", where a track is laid on a pane, arranged vertically over time, as a Parisian subway train map. Tracks are displayed hierarchically, discarding the spatial location of each spot. Each spot is laid out going through time from top to bottom. It is a great tool particularly to study and edit lineages. 
 
-\wikilink{TrackScheme}{TrackScheme} also allows manually editing the tracks. Press the \textbf{TrackScheme} button on the last panel. By default, the tracks are displayed as colored circles joined by lines. Each circle represent a spot, and the lines represent a link connecting two dots. The selection in TrackScheme is share across TrackMate, so if you select one circle, it will be highlighted in the HyperStack viewer as well (circled in green). 
+\wikilink{TrackScheme}{TrackScheme} also allows manually editing the tracks. Press the \smallimg{Icon3a_print_transparency.png} \textbf{TrackScheme} button on the last panel. By default, the tracks are displayed as colored circles joined by lines. Each circle represent a spot, and the lines represent a link connecting two dots. The selection in TrackScheme is share across TrackMate, so if you select one circle, it will be highlighted in the HyperStack viewer as well (circled in green). 
 
 \screenshotC{TrackScheme_Start.png}
 
 
-TrackScheme launches with a simple style: each spot is represented with a circle. You can get more information by changing the style. Next to the \textbf{Style} button in the TrackScheme toolbar, there is combo-box ini which you can select either \texttt{simple} or \texttt{full}. Select \texttt{full}. Each spot is now represented by a rounded rectangle, with the default name printed on the right. Go back in the TrackScheme toolbar. Next to the style combo-box, there is greyed-out button showing 3 pictures. Press it; after some time, each spot in TrackScheme will contain a thumbnail of the spot taken in the raw image. This is very handy to quickly detect detection problems.
+TrackScheme launches with a simple style: each spot is represented with a circle. You can get more information by changing the style. Next to the \smallimg{Icon_theme.png} \textbf{Style} button in the TrackScheme toolbar, there is combo-box in which you can select either \texttt{simple} or \texttt{full}. Select \texttt{full}. Each spot is now represented by a rounded rectangle, with the default name printed on the right. Go back in the TrackScheme toolbar. Next to the style combo-box, there is greyed-out button showing three small images \smallimg{Icon_images.png}. Press it; after some time, each spot in TrackScheme will contain a thumbnail of the spot taken in the raw image. This is very handy to quickly detect detection problems.
 
 \screenshotC{TrackScheme_Full.png}
 
@@ -629,14 +627,14 @@ You can do quite some things using TrackScheme, notably track analysis. This is 
 
 \screenshotB{TrackSchemeToolbarExplanation.pdf}
 
-We will be mainly using the \textbf{Redo layout} button. 
+We will be mainly using the \smallimg{Icon_refresh.png} \textbf{Redo layout} button. 
 
 
 
 \subsection{Getting rid of bad tracks.}
 %--------------------------------------
 
-We will first start by removing all the bad spots and tracks. We decide not to keep the tracks generated by the polar bodies, and only to keep the tracks that follow the 2 nuclei. 
+We will first start by removing all the bad spots and tracks. We decide not to keep the tracks generated by the polar bodies, and only to keep the tracks that follow the two nuclei. 
 
 \begin{myitemize}
 	\item Move to the \texttt{Track\_3} column in TrackScheme. You can see that it is following the static polar body.
@@ -644,7 +642,7 @@ We will first start by removing all the bad spots and tracks. We decide not to k
 	\item We wish to select it at once. There is two way you can do it:
 	\begin{myitemize}
 		\item Draw a selection rectangle around the whole track representation. 
-		\item Select one spot or link in the track. Right-click anywhere on TrackScheme: a menu appears, in which you will find \textbf{Select whole track}.
+		\item Select one spot or link in the track. Right-click anywhere on TrackScheme: a menu appears, in which you will find \smallimg{Icon_arrow_updown.png} \textbf{Select whole track}.
 	\end{myitemize}
 
 	\item Notice in the displayer that the selected track appear with a green and thick line, so as to highlight it. 
@@ -655,7 +653,7 @@ We will first start by removing all the bad spots and tracks. We decide not to k
 
 Do the same for \texttt{Track\_1}, since we do not care for polar bodies.
 
-Press the \textbf{Redo layout} button when you are done. There should be four tracks remaining. Notice that their color changed as you deleted some of them. Their default color-map goes from blue to red and is re-adjusted every time the track number changes.
+Press the \smallimg{Icon_refresh.png} \textbf{Redo layout} button when you are done. There should be four tracks remaining. Notice that their color changed as you deleted some of them. Their default color-map goes from blue to red and is re-adjusted every time the track number changes.
 
 
 
@@ -823,7 +821,7 @@ This is pictured below, where the fore-to-last cell of the track 4 is connected 
 
 \screenshotB{TrackMate_CreateLinksInTrackScheme_annotated.png}
 
-Press the \textbf{Redo layout} button to see the arranged result. The first spot is now incorporated in the right track.
+Press the \smallimg{Icon_refresh.png} \textbf{Redo layout} button to see the arranged result. The first spot is now incorporated in the right track.
 
 
 
@@ -858,7 +856,7 @@ To create a link between the two,
 
 \end{myitemize}
 	
-The newly created link is displayed in magenta. Note that the track arrangement is not changed; you need to press the \textbf{Redo layout} button to rearrange the tracks. After doing so, you should now see a branching track, as picture below. Notice that the track colors are out of sync. The colors are not automatically updated when changing a track layout. You have to click the \textbf{Style} button in the TrackScheme toolbar to do so. Do so.
+The newly created link is displayed in magenta. Note that the track arrangement is not changed; you need to press the \smallimg{Icon_refresh.png} \textbf{Redo layout} button to rearrange the tracks. After doing so, you should now see a branching track, as picture below. Notice that the track colors are out of sync. The colors are not automatically updated when changing a track layout. You have to click the \smallimg{Icon_theme.png} \textbf{Style} button in the TrackScheme toolbar to do so. Do so.
 
 \screenshotC{TrackMate_BranchingTrack.png}
 
@@ -874,7 +872,7 @@ Using \keys{Shift+click}, we can put several cells in the selection, and create 
 \subsection{Editing tracks: deleting links.}
 %-------------------------------------------
 
-We do not have much to say here. The tracks we generated had missing links, but no spurious ones. So we do not need to remove any. But here is how to do it: In TrackScheme, select the target link by clicking on it; it gets highlighted in the displayer as well. Press the \keys{Delete} key to remove it. Removing a link often splits a track in two new tracks. To have them properly re-arranged,  press the \textbf{Redo layout} button.
+We do not have much to say here. The tracks we generated had missing links, but no spurious ones. So we do not need to remove any. But here is how to do it: In TrackScheme, select the target link by clicking on it; it gets highlighted in the displayer as well. Press the \keys{Delete} key to remove it. Removing a link often splits a track in two new tracks. To have them properly re-arranged,  press the \smallimg{Icon_refresh.png} \textbf{Redo layout} button.
 
 
 
@@ -939,7 +937,7 @@ We will use the same, simple dataset that for \wikilink{Getting started with Tra
 
 As for the TrackMate plugin, you could start it up normally, selecting \menu{Plugins > Tracking > TrackMate} in the menu, and then when offered to select a detector and a tracker, always pick the manual one. That would work well, but we offered another entry point that has a simpler GUI dedicated to manual tracking. Pick the \menu{Plugins > Tracking > Manual tracking with TrackMate} menu item. 
 
-You should should get the layout pictured below. Notice that we are already displaying the \texttt{Display options} panel of the classic GUI, and that the \textbf{Previous} button is disabled at the bottom. Notice also that the color scales for both spot and track features display a dummy range.
+You should should get the layout pictured below. Notice that we are already displaying the \texttt{Display options} panel of the classic GUI, and that the \smallimg{Icon_arrow_left.png} \textbf{Previous} button is disabled at the bottom. Notice also that the color scales for both spot and track features display a dummy range.
 
 \screenshotC{TrackMate_ManualTrackingEntryPoint.png}
 
@@ -1211,7 +1209,7 @@ Tracks have a name, and are arranged in columns, separated by a vertical black l
 
 \screenshotB{MaMuT_TrackSchemeDecorationButton.png}
 
-Finally, there is two \textbf{Styles} for the spot schemes. The \texttt{simple} style sonly displays them as round spots. The \texttt{full} style displays them as rounded boxes, with each spot name apparent. In the \texttt{full} style, small thumbnails can be captured and displayed in TrackScheme for all spots. Just next to the menu, there is a thumbnail button. If activated, thumbnails are collected from all spots, using the image source they were created on. Thumbnails are captured around the spot location, using their radius plus a tolerance factor. Interestingly, the \textbf{Spot display radius ratio} is used to define the size of the thumbnail. For instance, with a display factor of 2, you can obtain the layout below. Notice that the spot boxes can be resized manually to better display thumbnails.
+Finally, there is two \smallimg{Icon_theme.png} \textbf{Styles} for the spot display. The \texttt{simple} style sonly displays them as round spots. The \texttt{full} style displays them as rounded boxes, with each spot name apparent. In the \texttt{full} style, small thumbnails can be captured and displayed in TrackScheme for all spots. Just next to the menu, there is a thumbnail button. If activated, thumbnails are collected from all spots, using the image source they were created on. Thumbnails are captured around the spot location, using their radius plus a tolerance factor. Interestingly, the \textbf{Spot display radius ratio} is used to define the size of the thumbnail. For instance, with a display factor of 2, you can obtain the layout below. Notice that the spot boxes can be resized manually to better display thumbnails.
 
 \screenshotC{MaMuT_TrackSchemeThumbnails.pdf}
 
@@ -1272,9 +1270,7 @@ Adding to this, several items in the \keys{Right-click} popup menu help selectin
 
 \end{myitemize}
 
-The same tools exist in the second tab of the main GUI window (\smallimg{Icon_TrackMate.png} \textbf{Annotation}), but we will speak of this tab later.
-
-Selections are very useful for visualization within a crowded annotation. For instance, select one of the two branches in our single track. With the default track display mode, the selection is drawn on the MaMuT viewer as a thick green light that extends fully in time. The eighth track display mode is called \texttt{Show selection only} and just does that. It displays in the MaMuT viewer only the spots and links in the selection, with their proper color settings, and abide to the frame and depth limit settings. 
+Selections are very useful for visualization within a crowded annotation. For instance, select one of the two branches in our single track. With the default track display mode, the selection is drawn on the MaMuT viewer as a thick green light that extends fully in time. The eighth track display mode is called \texttt{Show selection only} and just does that. It displays in the main view only the spots and links in the selection, with their proper color settings, and abide to the frame and depth limit settings. 
 
 For instance, you can use it to only display a series of disjoint parts of a tracks:
 
@@ -1325,7 +1321,7 @@ Here is a way to do it. In TrackScheme using \keys{Mousedrag} select all the spo
 Notice that the TrackScheme display of this new track is somewhat unsatisfactory. The first track may have changed color in the main view, but this change did not happen in TrackScheme. Plus, the new track does not have its own column, and the color of some of its spots might be wrong. The reasons for this are:
 \begin{myitemize}
 
-	\item We changed the annotation and these changes affected the numerical features that color the tracks. For instance, if you picked the \texttt{Track index} numerical feature for track coloring, there is now two tracks instead of one. The feature update is seen immediately in the main view, but for performance reason, TrackScheme as well as the color line on the main GUI window have to be refreshed manually. To do so, click on the  \smallimg{Icon_theme.png} \textbf{Style} button in the TrackScheme toolbar, and directly on the track color line on the main GUI window.
+	\item We changed the annotation and these changes affected the numerical features that color the tracks. For instance, if you picked the \texttt{Track index} numerical feature for track coloring, there is now two tracks instead of one. The feature update is seen immediately in the main view, but for performance reason, TrackScheme as well as the color line on the main GUI window have to be refreshed manually. To do so, click on the \smallimg{Icon_theme.png} \textbf{Style} button in the TrackScheme toolbar, and directly on the track color line on the main GUI window.
 	
 	\item The changes we made affected the track hierarchy, but the re-layout is not triggered automatically by such changes. To do so, press the  \smallimg{Icon_refresh.png} \textbf{Layout} button in TrackScheme toolbar. This will reorganize TrackScheme with a proper layout. Since in TrackScheme, spots can be moved around at will, this is also a good way to reorder things.
 	
@@ -1356,7 +1352,7 @@ The last you link you added may have strongly perturbed our annotation, particul
 \subsubsection{Editing track names and imposing track order.}
 %---------------------------------------------------------
 
-Tracks are ordered from left to right alphanumerically with their name. To change a track name, \keys{Double-click} on it in the column header part. Track names should be made of a single line with a combination of any character. You can change the track order by changing their name. If you call the first one 'B' and the second one 'A', then click the \textbf{Layout} button, they will be permuted.
+Tracks are ordered from left to right alphanumerically with their name. To change a track name, \keys{Double-click} on it in the column header part. Track names should be made of a single line with a combination of any character. You can change the track order by changing their name. If you call the first one 'B' and the second one 'A', then click the \smallimg{Icon_refresh} \textbf{Layout} button, they will be permuted.
 
 
 \subsubsection{Editing spot names and imposing branch order.}
