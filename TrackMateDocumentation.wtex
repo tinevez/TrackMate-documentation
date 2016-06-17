@@ -803,7 +803,7 @@ This tutorial uses the following strategy: we will use an inadequate set of segm
 \subsection{Generating a sub-optimal segmentation.}
 %---------------------------------------------------
 
-\screenshotA{TrackMate_DownsampledLogSegmenter.png}
+\screenshotLeftC{TrackMate_DownsampledLogSegmenter.png}
 
 Launch TrackMate \menu{Plugins > Tracking > TrackMate}) and select the 		\textit{C.elegans} stack as a target. Check on the first panel that all the spatial calibration is OK. The pixel size is about 200 nm in XY, 1 µm in Z, and each frame is separated by 2 minutes.
 
@@ -814,7 +814,7 @@ This comes at a cost: the localization precision. To simulate segmentation defec
 The segmentation should take you no more than a minute, even on a standard machine, a considerable improvement over a standard detector. But at what cost!
 
 
-\screenshotA{TrackMate_DownsampledInitThreshold.png}
+\screenshotLeftC{TrackMate_DownsampledInitThreshold.png}
 
 On the Initial thresholding panel, we see that it is easy to separate spurious spots using the '''Quality''' feature only. There is a big and sharp peak at the left of the histogram. By moving the slider around you can get the remaining number of spot after filtering. If we put the threshold around 70, just above the first sharp peak, we see that we are left with about 115 spots. Now: We have 17 time-points, each of them containing at most 4 cells and two polar bodies (check the raw movie). So 115 remaining spots seems to be correct, therefore the threshold set at 70 seems right. 
 
@@ -827,14 +827,14 @@ Anyway, let's correct it now. Just add a filter on Quality, and take a value of 
 Almost all polar bodies are incorrectly detected, and the localization of cells is bad. These are expected defects given our choice of detection algorithm and the parameters we have used. Here, the results are not so bad, unfortunately for this tutorial. We could fix them right now, before tracking. You can actually edit the results any time after the first panel of TrackMate. But let us exploit these defects for our training purpose, by having them generating additional linking defects. 
 
 
-\screenshotA{TrackMate_DownsampleFilter.png}
+\screenshotC{TrackMate_DownsampleFilter.png}
 
 
 
 \subsection{Generating irrelevant tracks.}
 %------------------------------------------
 
-\screenshotA{Celegans-5pc_17timepoints-Incorrect.png}
+\screenshotLeftC{Celegans-5pc_17timepoints-Incorrect.png}
 
 Normally, TrackMate can robustly handles track splitting events, representing ''e.g.'' cell division. Though this happens in this movie, we choose to dismiss this possibility in the automated tracking part.
 
@@ -860,7 +860,7 @@ Move to the \textit{Display options} panel, skipping the track filtering part.
 
 TrackScheme launches with a simple style: each spot is represented with a circle. You can get more information by changing the style. Next to the \textbf{Style} button in the TrackScheme toolbar, there is combo-box ini which you can select either \texttt{simple} or \texttt{full}. Select \texttt{full}. Each spot is now represented by a rounded rectangle, with the default name printed on the right. Go back in the TrackScheme toolbar. Next to the style combo-box, there is greyed-out button showing 3 pictures. Press it; after some time, each spot in TrackScheme will contain a thumbnail of the spot taken in the raw image. This is very handy to quickly detect detection problems.
 
-\screenshotA{TrackScheme_Full.png}
+\screenshotC{TrackScheme_Full.png}
 
 
 
@@ -950,7 +950,7 @@ The HyperStack displayer let you edit spots in two ways:
 
 	\item Select a spot by single-clicking inside it. It turns green.
 	
-	\item Press the \keys{Delete} key
+	\item Press the \keys{Delete} key.
 
 \end{myitemize}
 
@@ -1084,7 +1084,7 @@ We want to link this cell to the mother cell in \texttt{Track\_0}, frame 8, just
 	
 	\item Hold the \keys{Shift} key.
 	
-	\item Click on the mother cell
+	\item Click on the mother cell.
 
 \end{myitemize}	
 	
@@ -1104,7 +1104,7 @@ The newly created link is displayed in magenta. Note that the track arrangement 
 
 After doing so, you should now see a branching track, as picture below. Notice that the track colors are out of sync. The colors are not automatically updated when changing a track layout. You have to click the \textbf{Style} button in the TrackScheme toolbar to do so. Do so.
 
-\screenshotB{TrackMate_BranchingTrack.png}
+\screenshotC{TrackMate_BranchingTrack.png}
 
 
 
@@ -1131,7 +1131,7 @@ Removing a link often splits a track in 2 new tracks. To have them properly re-a
 
 Plus or minus the localization errors and some incorrect cell radii, you now have the full lineage in 3D of this short movie. This concludes this tutorial on manual editing in TrackMate. Here is a picture of the final results:
 
-\screenshotA{TrackMate_SmallLineage.png}
+\screenshotC{TrackMate_SmallLineage.png}
 
 
 <wiki>
@@ -1176,7 +1176,7 @@ Plus or minus the localization errors and some incorrect cell radii, you now hav
 %----------------------------------------
 
 
-The previous TrackMate tutorial - \wikilink{Manual editing of tracks using TrackMate}{Manual editing of tracks using TrackMate} is dedicated to manually correcting the results of an automated process. This small tutorial here shows how to do a fully manual annotation with \wikilink{TrackMate}{TrackMate}.
+The previous TrackMate tutorial - \wikilink{Manual editing of tracks using TrackMate}{Manual editing of tracks using TrackMate} is dedicated to manually correcting the results of an automated process. This small tutorial here shows how to do a fully manual annotation, from scratch, with \wikilink{TrackMate}{TrackMate}.
 
 
 
@@ -1189,7 +1189,7 @@ As for the TrackMate plugin, you could start it up normally, selecting \menu{Plu
 
 You should should get the layout pictured below. Notice that we are already displaying the \texttt{Display options} panel of the classic GUI, and that the \textbf{Previous} button is disabled at the bottom. Notice also that the color scales for both spot and track features display a dummy range.
 
-\screenshotA{TrackMate_ManualTrackingEntryPoint.png}
+\screenshotC{TrackMate_ManualTrackingEntryPoint.png}
 
 
 \subsection{Creating spots one by one.}
