@@ -936,6 +936,9 @@ How far can it go really depends on the radius you set for the first spot, so re
 
 We recapitulate here the keyboard shortcuts we used above. Note that they are only functional when the main view is active and the TrackMate tool selected in the ImageJ toolbar.
 
+\screenshotB{TrackMate_KeyboardLayout.pdf}
+
+
 
 <wiki>
 [[Category:Tutorials]]
