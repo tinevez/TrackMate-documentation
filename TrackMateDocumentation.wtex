@@ -858,9 +858,7 @@ To create a link between the two,
 
 \end{myitemize}
 	
-The newly created link is displayed in magenta. Note that the track arrangement is not changed; you need to press the \textbf{Redo layout} button to rearrange the tracks.
-
-After doing so, you should now see a branching track, as picture below. Notice that the track colors are out of sync. The colors are not automatically updated when changing a track layout. You have to click the \textbf{Style} button in the TrackScheme toolbar to do so. Do so.
+The newly created link is displayed in magenta. Note that the track arrangement is not changed; you need to press the \textbf{Redo layout} button to rearrange the tracks. After doing so, you should now see a branching track, as picture below. Notice that the track colors are out of sync. The colors are not automatically updated when changing a track layout. You have to click the \textbf{Style} button in the TrackScheme toolbar to do so. Do so.
 
 \screenshotC{TrackMate_BranchingTrack.png}
 
@@ -876,11 +874,7 @@ Using \keys{Shift+click}, we can put several cells in the selection, and create 
 \subsection{Editing tracks: deleting links.}
 %-------------------------------------------
 
-We do not have much to say here. The tracks we generated had missing links, but no spurious ones. So we do not need to remove any. But here is how to do it:
-
-In TrackScheme, select the target link by clicking on it; it gets highlighted in the displayer as well. Press the \keys{Delete} key to remove it. 
-
-Removing a link often splits a track in 2 new tracks. To have them properly re-arranged,  press the \textbf{Redo layout} button.
+We do not have much to say here. The tracks we generated had missing links, but no spurious ones. So we do not need to remove any. But here is how to do it: In TrackScheme, select the target link by clicking on it; it gets highlighted in the displayer as well. Press the \keys{Delete} key to remove it. Removing a link often splits a track in two new tracks. To have them properly re-arranged,  press the \textbf{Redo layout} button.
 
 
 
