@@ -209,12 +209,18 @@ Defining a smaller area to analyze can be very beneficial to test and inspect fo
 \screenshotC{TrackMate_SegmenterChoice.png}
 
 You are now offered to choose a detection algorithm ("detector") amongst the currently implemented ones. 
-The choice is actually quite limited. Apart from the \texttt{Manual annotation}, you will find three detectors, but they are all based on \otherlink{https://en.wikipedia.org/wiki/Blob_detection\#The_Laplacian_of_Gaussian}{LoG (Laplacian of Gaussian) segmentation}. They are described in detail elsewhere, but here is what you need to know. 
+The choice is actually quite limited. Apart from the \texttt{Manual annotation}, you will find four detectors, but they are all based on the <wiki>\otherlink{https://en.wikipedia.org/wiki/Blob_detection\#The_Laplacian_of_Gaussian}{LoG (Laplacian of Gaussian) filter}</wiki><latex>LoG filter~\cite{lindeberg}</latex>. They are described in detail later, but here is what you need to know. 
 
 \begin{myitemize}
-	\item The \texttt{LoG detector} applies a plain LoG segmentation on the image. All calculations are made in the Fourier space, which makes it optimal for intermediate spot sizes, between 5 and 20 pixels in diameter.
-	\item The \texttt{DoG detector} uses the \otherlink{https://en.wikipedia.org/wiki/Blob_detection\#The_difference_of_Gaussians_approach}{difference of Gaussians} approach to approximate a LoG filter by the difference of 2 Gaussians. Calculations are made in the direct space, and it is optimal for small spot sizes, below 5 pixels.
+
+	\item The \texttt{LoG detector} applies a plain LoG filter on the image. All calculations are made in the Fourier space, which makes it optimal for intermediate spot sizes, between 5 and 20 pixels in diameter.
+	
+	\item The \texttt{DoG detector} uses the <wiki>\otherlink{https://en.wikipedia.org/wiki/Blob_detection\#The_difference_of_Gaussians_approach}{difference of Gaussians}</wiki><latex>difference of Gaussians</latex> approach to approximate a LoG filter by the difference of 2 Gaussians. Calculations are made in the direct space, and it is optimal for small spot sizes, below 5 pixels.
+	
 	\item The \texttt{Downsample LoG detector} uses the LoG detector, but downsizes the image by an integer factor before filtering. This makes it optimal for large spot sizes, above 20 pixels in diameter, at the cost of localization precision.
+	
+	\item The \texttt{Block LoG detector} splits the image in small blocks to limit memory usage in the case of large input image. 
+	
 \end{myitemize}
 
 In our case, let us just use the \texttt{DoG detector}.
@@ -232,7 +238,7 @@ There are extra fields that you can configure also. The \texttt{Threshold} numer
 
 You can check \textbf{Use median filter}: this will apply a 3x3 median filter prior to any processing. This can help dealing with images that have a marked salt and pepper noise which generates spurious spots. 
 
-We hope that TrackMate will be used in experiments requiring \textbf{Sub-pixel localization}, such as following motor proteins in biophysical experiments, so we added schemes to achieve this. The one currently implemented uses a quadratic fitting scheme (made by Stephan Saalfeld and Stephan Preibisch) based on \otherlink{http://www.cs.ubc.ca/~lowe/keypoints/}{David Lowe SIFT work}<wiki><ref>David G. Lowe, "Distinctive image features from scale-invariant keypoints", International Journal of Computer Vision, 60, 2 (2004), pp. 91-110.</ref></wiki><latex>\footnote{David G. Lowe, "Distinctive image features from scale-invariant keypoints", International Journal of Computer Vision, 60, 2 (2004), pp. 91-110.}</latex>. It is not as accurate as the algorithm typically used in super-localization, byt has the advantage of being very quick, compared to the segmentation time itself.
+We hope that TrackMate will be used in experiments requiring \textbf{Sub-pixel localization}, such as following motor proteins in biophysical experiments, so we added schemes to achieve this. The one currently implemented uses a quadratic fitting scheme (made by Stephan Saalfeld and Stephan Preibisch) based on \otherlink{http://www.cs.ubc.ca/~lowe/keypoints/}{David Lowe SIFT work}<wiki><ref>David G. Lowe, "Distinctive image features from scale-invariant keypoints", International Journal of Computer Vision, 60, 2 (2004), pp. 91-110.</ref></wiki><latex>~\cite{lowe}</latex>. It is not as accurate as the algorithm typically used in super-localization, byt has the advantage of being very quick, compared to the segmentation time itself.
 
 Finally, there is a \smallimg{Icon_flag_checked.png} \textbf{Preview} button that allows to quickly check your parameters on the current data. After some computations, you can check the results overlaid on the image. Most likely, you will see plenty of spurious spots that you will be tempted to discard by adjusting the \textbf{Threshold} value. This is a very good approach for large problems. Here, we care little for that, just leave the threshold at 0.
 
@@ -325,7 +331,7 @@ To move the threshold, simply click and drag inside the histogram window. Notice
   \item Or use the arrow keys: the left and right arrow keys will change the threshold value by 10\%, the up and down arrow will set it to the max and min value respectively. 
 \end{myitemize}
 
-A filter can be set to be above or below the given threshold. You change this behavior using the radio buttons below the histogram window. In our case, we want it to be above of course. The \textbf{Auto} button uses \otherlink{https://en.wikipedia.org/wiki/Otsu's_method}{Otsu's method} to determine automatically a threshold. In our case, we will put it manually around 33. 
+A filter can be set to be above or below the given threshold. You change this behavior using the radio buttons below the histogram window. In our case, we want it to be above of course. The \textbf{Auto} button uses <wiki>\otherlink{https://en.wikipedia.org/wiki/Otsu's_method}{Otsu's method}</wiki><latex>Otsu method\cite{otsu}</latex> to determine automatically a threshold. In our case, we will put it manually around 33. 
 
 You can inspect the data by scrolling on the hyperstack window and check that only mostly good spots are retained. This is an easy image. The spots you have filtered out are not discarded; they are simply not shown and they will not be taken into account when doing particle linking. In a later stage, you can step back to this step, and retrieve the filtered out spots by removing or changing the filters.
 
@@ -342,18 +348,21 @@ The next panel let you choose amongst available particle-linking algorithms, or 
 
 \screenshotLeft{TrackMate_TrackerChoice.png}
 
-The apparent profusion of choices should not disorient you, for it just that: an appearance. We chose to focus on the Linear Assignment Problem (LAP) in the framework first developed by Jaqaman \etal<wiki><ref name="Jaqaman">[http://www.nature.com/nmeth/journal/v5/n8/full/nmeth.1237.html Jaqaman et al., "Robust single-particle tracking in live-cell time-lapse sequences", Nat Methods. 2008 Aug;5(8):695-702.]</ref></wiki><latex>\footnote{\otherlink{http://www.nature.com/nmeth/journal/v5/n8/full/nmeth.1237.html}{Jaqaman et al.}, "Robust single-particle tracking in live-cell time-lapse sequences", Nat Methods. 2008 Aug;5(8):695-702.}</latex>. 
+The apparent profusion of choices should not disorient you, for it just that: an appearance. We chose to focus on the Linear Assignment Problem (LAP) in the framework first developed by Jaqaman \etal<wiki><ref name="Jaqaman">[http://www.nature.com/nmeth/journal/v5/n8/full/nmeth.1237.html Jaqaman et al., "Robust single-particle tracking in live-cell time-lapse sequences", Nat Methods. 2008 Aug;5(8):695-702.]</ref></wiki><latex>~\cite{jaqaman}</latex>. 
 
 The first two LAP trackers are based on LAP, with important differences from the original paper described \wikilink{TrackMate_algorithms#Main_differences_with_the_Jaqaman_paper.5B1.5D}{here}. We focused on this method for it gave us a lot of flexibility and it can be configured easily to handle most cases. You can tune it to allow \textit{splitting events}, where a track splits in two, for instance following a cell that encounters mitosis. \textit{Merging events} are handled too in the same way, though my small culture prevents me from quoting a relevant biological case obvious as the previous one. More importantly are \textit{gap-closing events}, where a spot disappear for one frame (because it moves out of focus, because segmentation fails, ...) but the track manages to recuperates and connect with reappearing spots later.
 
 These LAP algorithm exists in TrackMate in two flavors: a simple one and a not simple one. There are again the same, but the simple ones propose fewer configuration options and a thus more concise configuration panel. In short:
 
 \begin{myitemize}
+
 	\item The simple one only allows to deal with gap-closing events, and prevent splitting and merging events to be detected. Also, the costs to link two spots are computed solely based on their respective distance. 
+	
 	\item The not simple one allows to detect any kind of event, so if you need to build tracks that are splitting or merging, you must go for this one. If you want to forbid the detection of gap-closing events, you want to use it as well. Also, you can alter the cost calculation to disfavor the linking of spots that have very different feature values.
+	
 \end{myitemize}
 
-There is also a 3\textsuperscript{rd} tracker, the \otherlink{https://en.wikipedia.org/wiki/Nearest_neighbor_search}{\texttt{Nearest neighbor search}} tracker. This is the most simple tracker you can build, and it is mostly here for demonstration purposes. Each spot in one frame is linked to another one in the next frame, disregarding any other spot, thus achieving only a very local optimum. You can set a maximal linking distance to prevent the results to be totally pathological, but this is as far as it goes. It may be of use for very large and easy datasets: its memory consumption is very limited (at maximum only two frames need to be in memory) and is quick (the nearest neighbor search is performed using \otherlink{https://en.wikipedia.org/wiki/K-d_tree}{Kd-trees}).
+There is also a 3\textsuperscript{rd} tracker, the \otherlink{https://en.wikipedia.org/wiki/Nearest_neighbor_search}{\texttt{Nearest neighbor search}} tracker. This is the most simple tracker you can build, and it is mostly here for demonstration purposes. Each spot in one frame is linked to another one in the next frame, disregarding any other spot, thus achieving only a very local optimum. You can set a maximal linking distance to prevent the results to be totally pathological, but this is as far as it goes. It may be of use for very large and easy datasets: its memory consumption is very limited (at maximum only two frames need to be in memory) and is quick (the nearest neighbor search is performed using \otherlink{https://en.wikipedia.org/wiki/K-d_tree}{Kd-trees}<latex>~\cite{bentley}</latex>).
 
 The 4\textsuperscript{th} tracker, \texttt{Linear motion LAP tracker} is well suited for particles that move with a roughly constant velocity, this velocity being different for each particle. Its compared accuracy and relevance for various scenario is discussed later.
 
@@ -403,13 +412,10 @@ Now, we would like the shape of these tracks to change. We see that the yellow t
 \screenshotC{TrackMate_TrackerConfiguration_2.png}
 
 Look at the configuration panel. It is quite more complex than for the simple tracker, obviously, and it is the price for flexibility. Since it is quite long, the panel has to be scrolled to its bottom to venture on all fields.
-
 However, this apparent complexity is not that difficult to harness. If you look carefully, you will see that the main panel is made of 4 quasi-identical panel. Each one deals with one event type:
 
 The first one deals with the \underline{frame-to-frame linking}. It consists in creating small track segments by linking spots in one frame to the spots in the frame just after, not minding anything else. That is of course not enough to make us happy: there might be some spot missing, failed detection that might have caused your tracks to be broken. But let us focus on this one now.
-
-Linking is made by minimizing a global cost (from one frame to another, yet). A short word on the linking logic:  The base cost of linking a particle with another one is simply the squared distance<wiki><ref>There is some theoretical grounds for that, if you are investigating Brownian motion. See the \wikilink{TrackMate_algorithms#Cost_calculation_.26_Brownian_motion}{page} that details the segmenters and trackers for information.</ref></wiki><latex>\footnote{There is some theoretical grounds for that, if you are investigating Brownian motion. See the \wikilink{TrackMate_algorithms#Cost_calculation_.26_Brownian_motion}{page} that details the segmenters and trackers for information.}</latex>. Following the proposal of Jaqaman \etal, we also consider the possibility for a particle \textit{not} to make any link, if is advantageous for the global cost. The sum of all costs are minimized to find to set of link for this pair of frame, and we move to the next one. 
-
+Linking is made by minimizing a global cost (from one frame to another, yet). The base cost of linking a particle with another one is simply the squared distance between the two particles, which is the adequate cost definition to retrieve particle motion when it exhibits Brownian motion<latex>~\cite{crocker}</latex>. Following the proposal of Jaqaman \etal<wiki></wiki><latex>~\cite{jaqaman}</latex>, we also consider the possibility for a particle \textit{not} to make any link, if is advantageous for the global cost. The sum of all costs are minimized to find to set of link for this pair of frame, and we move to the next one. 
 As for the simple tracker, the \texttt{Max distance} field helps preventing irrelevant linking to occur. Two spots separated by more than this distance will never be considered for linking. This also saves some computation time. 
 
 The \texttt{Feature penalties} let you tune the linking cost using some measures of spot similarity. Typically in the single particle tracking framework, you cannot rely on shape 
@@ -1157,7 +1163,7 @@ We recapitulate here the keyboard shortcuts we used above. Note that they are on
 
 
 
-\section{TrackScheme.}
+\section{TrackScheme manual.}
 %----------------------
 
 TrackScheme displays a kind of "track map", where a track is laid on pane, arranged vertically over time, as a Parisian subway train map. In TrackScheme, the image data as well as the spatial location of spots are completely discarded in favor of a hierarchical layout that highlights how cells divide in time.
@@ -1434,10 +1440,10 @@ This section documents the current components of \wikilink{TrackMate}{TrackMate}
 	\item \textbf{Views}. Display the segmentation and tracking results overlaid on your image data.
 	
 	\item \textbf{Spot trackers}, or particle-linking algorithms. Take the filtered spots and link them together to build tracks.
-	
-	\item \textbf{Track analyzers}. Like for spot analyzers, but operate on whole track. Can be used to report track mean velocity, track displacement, etc... They are also used to filter spurious tracks.
 
 	\item \textbf{Edge analyzers}. Like for spot analyzers, but operate links between spots. Can be used to report instantaneous velocity, link direction, etc... 
+	
+	\item \textbf{Track analyzers}. Like for spot analyzers, but operate on whole track. Can be used to report track mean velocity, track displacement, etc... They are also used to filter spurious tracks.
 
 	\item \textbf{Actions}. Miscellaneous actions you can take on the complete result of the tracking process. It can be used to copy the track overlay to another image, launch a 3D viewer, export the results to a simple format, generate a track stack, etc...
 
@@ -1463,37 +1469,71 @@ Detectors can very much vary in implementation and in the technique they rely on
 	\item \textbf{R} the spot radius, also in physical units. The current detectors only set this radius value to be the one specified by the user. More advanced detectors could retrieve each spot radius from the raw image. 
 	
 	\item \textbf{Quality}: The implementation varies greatly from detector to detector, but this value reflects the quality of automated detection. It must be a positive real number, large values indicating good confidence in detection result for the target spot. This sole feature is then used in the initial filtering step, where spots with a quality lower that a specified threshold are purely and simply discarded. 
-
+ 
 \end{myitemize}
 
 The two other time features - \textbf{T} and \textbf{Frame number} - are set by TrackMate itself when performing detection on all the time-points of the target raw data. T is expressed in physical units, and the Frame number - starting from 0 - is simply the frame the spot was found in.
 
 
 
+\subsubsection{Laplacian of Gaussian particle detection (LoG detector).}
+%-------------------------------------------------------------------------
+
+The LoG detector is the best detector for Gaussian-like particles in the presence of noise<wiki><ref name="Sage">[http://bigwww.epfl.ch/publications/sage0501.pdf Sage, D. \etal], "Automatic tracking of Individual fluorescence Particles: Application to the study of chromosome dynamics", IEEE Transactions on Image Processing, vol. 14, no. 9, pp. 1372-1383, September 2005.</ref></wiki><latex>\cite{sage}</latex>.
+It is based on applying a LoG filter on the image and looking for local maxima<latex>~\cite{lindeberg}</latex>. The Laplacian of Gaussian result is obtained by summing the second order spatial derivatives of the gaussian-filtered image, and normalizing for scale<wiki>.</wiki><latex>:
+
+\begin{flalign*}
+	\text{in 1D:} && \text{LoG}_\sigma &= - \sigma^2 \left( \frac{\partial^2}{\partial X^2} \right) \ast G_\sigma \ast I && \\
+	\text{in 2D:} && \text{LoG}_\sigma &= - \sigma^2 \left( \frac{\partial^2}{\partial X^2} + \frac{\partial^2}{\partial Y^2} \right) \ast G_\sigma \ast I && \\
+	\text{in 3D:} && \text{LoG}_\sigma &= - \sigma^2 \left( \frac{\partial^2}{\partial X^2} + \frac{\partial^2}{\partial Y^2}  + \frac{\partial^2}{\partial Z^2} \right) \ast G_\sigma \ast I &&
+\end{flalign*}
+
+\noindent where $G_\sigma$ is the Gaussian filter operator with a standard deviation $\sigma$ and $I$ the source image.
+
+</latex>
+
+The value of $\sigma$ is tuned according to the particle radius, which is entered by the user: $\sigma = r / \sqrt{n}$ where $n$ is the dimensionality of the source image (1 for 1D, \etc) and $r$ the radius of the spot. In practice, filtering is made using real numbers, in the Fourier space to speed up calculation. This makes this detector ideal for spot size between 5 and 20 pixels roughly. The LoG kernel generation can handle anisotropic physical calibration (pixel sizes different in X, Y and Z), so that $r$ and $\sigma$ are in physical units. Local maxima in the filtered image yields spot detections. Each detected spot is assigned a quality value by taking the local maxima value in the filtered image. Spot with a quality lower than the value the detector is configured with are discarded immediately. If requested, the location of retained spots is refined using a quadratic fitting scheme derived from Lowe 2004<latex>~\cite{lowe}</latex>.
+
+
+
 \subsubsection{Difference of Gaussian particle detection (DoG detector).}
 %-------------------------------------------------------------------------
 
-Given $d$ an approximate expected particle diameter, determined upon inspection, two gaussian filters are produced with standard deviation $\sigma_1$ and $\sigma_2$:
+This detector reproduce the LoG detector logic described above, but use an approximation for the filtering step. 
+Given $d$ an approximate expected particle diameter, determined upon inspection, two Gaussian filters are produced with standard deviation $\sigma_1$ and $\sigma_2$:
 
-\begin{align}
-	\sigma_1 &= 1 / (1 + \sqrt{2} ) ×  d \\
+\begin{align*}
+	\sigma_1 &= 1 / (1 + \sqrt{2} ) \times  d \\
 	\sigma_2 &= \sqrt(2) \times \sigma_1 
-\end{align}
+\end{align*}
 
-The image is filtered using these two gaussians, and the result of the second filter (largest sigma) is subtracted from the result of the first filter (smallest sigma). This yields a smoothed image with sharp local maxima at particle locations. A detection spot is then created for each of these maxima, and an arbitrary quality feature is assigned to the new spot by taking the smoothed image value at the maximum. If two spots are found to be closer than the expected radius $d/2$, the one with the lowest quality is discarded.
+\noindent The image is filtered using these two Gaussian filters, and the result of the second filter (largest sigma) is subtracted from the result of the first filter (smallest sigma). This yields a smoothed image with sharp local maxima at particle locations. Spots are otherwise handled as for the LoG detector.
 
-To improve the localization accuracy, and extra step is taken to yield a sub-pixel localization of the spots. The position of each spot is recalculated using a simple parabolic interpolation scheme, as in [Lowe]. The quality feature is also interpolated using this scheme. 
 
-A large number of spurious spots are created by finding local maxima. There spurious spots are discarded inn extra step, by applying a threshold on the quality feature computed during segmentation. The value of this threshold is set manually, to match the SNR of the input image. Thresholded spots are then retained for subsequent particle-linking.
+
+
+\subsubsection{Downsample LoG detector.}
+%---------------------------------------------------------------------------------------
+
+The Downsample LoG detector is made to handle large spots. If the sought spots span more than 20 pixels in their smallest dimension, it is beneficial to down-sample the image prior to detection. The down-sampling operation has a negligible cost compared to the gain achieved by spot detection in a much smaller image. This detector handles the process of down-sampling the source image by an integer factor provided by the user, applying the LoG detector on the resulting image, and mapping the physical coordinates of the spots obtained back in the source image referential. For 3D images with a pixel size larger in Z than in X and Y, the down-sampling is tempered in Z to approach a quasi isotropic calibration in the down-sampled image. The down-sampling factor should be chosen so that spots have a diameter of at least 5 pixels in the down-sampled image.
+
+
+
+\subsubsection{Handling the detection of large images with the Block LoG detector.}
+%---------------------------------------------------------------------------------------
+
+The detection of spots in large images can require a lot of memory. With the LoG detector working on a 16-bit unsigned integer image, the source is first copied on 32-bit float numbers (doubling its size), then the Fourier convolution requires another image placeholder using 64-bit complex numbers (quadrupling its size). In the end, the detection requires an extra memory space six times larger that the one occupied by the source image. If several time-points are processed in parallel in multi-core computers, the required space is multiplied by the number of time-points processed concurrently. 
+
+The Block LoG detector limits memory consumption by processing small blocks of the input image sequentially. The number of blocks are specified by the user, and the partition generates several XY blocks. This privileges classical microscopy images, where the extent of an image in X and Y is much larger than in Z, and where the point-spread function is much larger along Z than along X and Y. Each block is processed independently with the LoG detector, and the resulting spot collections are pooled together. Spots lying on block borders might generate spurious detection, being detected in two separate blocks. To avoid this, spots found within the radius of another spot are discarded.
+
+Several blocks might be processed in parallel, if the number of cores allocated to \TrackMate is larger than 1. To avoid this, set the \texttt{Parallel threads} settings in the \menu{Edit > Options > Memory \& Threads...} menu to 1. 
 
 
 
 \subsection{Spot analyzers.}
 %---------------------------
 
-Spot features, such as \texttt{Max intensity}, \texttt{Estimated diameter}, \etc, are calculated for all spots just after the initial filtering step. They are then used to select spots, based on filters set to retain only spots with a given feature below or above a specified threshold. By the way initial filtering is a good way to limit spot feature calculation time on spots you know to be spurious. With the current features, this not such a reason to do it: most feature analyzer are cheap computationally. 
-
-
+Spot features, such as \texttt{Max intensity}, \texttt{Estimated diameter}, \etc, are calculated for all spots just after the initial filtering step. They are then used to select spots, based on filters set to retain only spots with a given feature below or above a specified threshold. Initial filtering is a good way to limit spot feature calculation time on spots known to be spurious. The current features however are made so that their calculation is cheap computationally. 
 
 
 \subsubsection{Mean, Median, Min, Max, Total intensity and its Standard Deviation.}
@@ -1524,9 +1564,7 @@ These two values depend greatly on the correctness of the radius of each spot. N
 %-----------------------------------
 
 This feature estimates an optimal diameter for each spot, based on contrast calculation. 
-
 The mean pixel intensity is calculated in 20 concentric, tangent rings, centered at the target spot location, and with radiuses ranging from a 10\textsuperscript{th} of the spot radius to twice its radius. The contrast at a given radius is defined as the difference between the mean intensity of a ring with inner radius the radius sought, and the previous ring. 
-
 The estimated diameter is then defined as the radius that maximizes this contrast. A quadratic interpolation is performed to improve diameter accuracy. 
 
 
@@ -1536,7 +1574,7 @@ The estimated diameter is then defined as the radius that maximizes this contras
 
 
 
-\subsection{Spot trackers.}
+\subsection{Spot trackers or particle-linking algorithms.}
 %---------------------------
 
 
@@ -1545,7 +1583,7 @@ The estimated diameter is then defined as the radius that maximizes this contras
 \subsubsection{LAP trackers.}
 %-----------------------------
 
-The Linear Assignment Problem (LAP) trackers implemented here follow a stripped down version of the renowned  method contributed by Jaqaman and colleagues<wiki><ref name="Jaqaman">[http://www.nature.com/nmeth/journal/v5/n8/full/nmeth.1237.html Jaqaman et al., "Robust single-particle tracking in live-cell time-lapse sequences", Nat Methods. 2008 Aug;5(8):695-702.]</ref></wiki><latex>\footnote{\label{jaqaman}\otherlink{http://www.nature.com/nmeth/journal/v5/n8/full/nmeth.1237.html}{Jaqaman et al.}, "Robust single-particle tracking in live-cell time-lapse sequences", Nat Methods. 2008 Aug;5(8):695-702.]}</latex>. We repeat here the ideas found in the reference paper, then stresses the differences with the nominal implementation. 
+The Linear Assignment Problem (LAP) trackers implemented here follow a stripped down version of the renowned  method contributed by Jaqaman and colleagues<wiki><ref name="Jaqaman">[http://www.nature.com/nmeth/journal/v5/n8/full/nmeth.1237.html Jaqaman et al., "Robust single-particle tracking in live-cell time-lapse sequences", Nat Methods. 2008 Aug;5(8):695-702.]</ref></wiki><latex>~\cite{jaqaman}</latex>. We repeat here the ideas found in the reference paper, then stresses the differences with the nominal implementation. 
 
 In TrackMate, the LAP framework backs up two instances of a tracker:
 
@@ -1575,7 +1613,7 @@ In the first step, two consecutive frames are inspected for linking. Each spot o
 
 	\item The bottom-left quadrant (size $m \times m$) contains the costs for a spot $j$ in the frame $t+1$ not to have any link with previous frame (yielding a segment start).
 
-	\item The bottom-right quadrant (size $m \times n$) is the auxiliary block mathematically required by the LAP formalism. A detailed explanation for its existence is given in the supplementary note 3 of <wiki><ref name="Jaqaman"/></wiki><latex>the Jaqaman paper\footnotemark{\ref{jaqaman}}.</latex>. This quadrant is built by taking the transpose of the top-left quadrant, and replacing all non-blocking costs by the minimal cost.
+	\item The bottom-right quadrant (size $m \times n$) is the auxiliary block mathematically required by the LAP formalism. A detailed explanation for its existence is given in the supplementary note 3 of <wiki><ref name="Jaqaman"/></wiki><latex>the Jaqaman paper~\cite{jaqaman}.</latex>. This quadrant is built by taking the transpose of the top-left quadrant, and replacing all non-blocking costs by the minimal cost.
 
 \end{myitemize}
 
@@ -1584,7 +1622,7 @@ In the first step, two consecutive frames are inspected for linking. Each spot o
 \paragraph{Solving LAP.}
 %-----------------------
 
-To solve this LAP, we rely on the Munkres \& Kuhn algorithm<wiki><ref>J. Munkres, "Algorithms for the Assignment and Transportation Problems", Journal of the Society for Industrial and Applied Mathematics, 5(1):32–38, 1957 March</ref></wiki><latex>\footnote{J. Munkres, "Algorithms for the Assignment and Transportation Problems", Journal of the Society for Industrial and Applied Mathematics, 5(1):32–38, 1957 March}</latex>, that solves the problem in polynomial time ($\mathcal{O}(n^3)$). The algorithm returns the assignment list that minimizes the sum of their costs. 
+To solve this LAP, we rely on the Munkres \& Kuhn algorithm<wiki><ref>J. Munkres, "Algorithms for the Assignment and Transportation Problems", Journal of the Society for Industrial and Applied Mathematics, 5(1):32–38, 1957 March</ref></wiki><latex>~\cite{munkres}</latex>, that solves the problem in polynomial time ($\mathcal{O}(n^3)$). The algorithm returns the assignment list that minimizes the sum of their costs. 
 
 The frame-to-frame linking described above is repeated first for all frame pairs. This yields a series of non-branching track segments. A track segment may be start or stop because of a missing detection, or because of a merge or split event, which is not taken into account at this stage. A second step where track segments are offered to link between each other (and not only spots) is need, and described further down.
 
@@ -1593,7 +1631,7 @@ The frame-to-frame linking described above is repeated first for all frame pairs
 \paragraph{Calculating linking costs.}
 %--------------------------------------
 
-In calculating costs, we deviate slightly from the original paper from  Jaqaman \etal<wiki><ref name="Jaqaman"/></wiki><latex>\footnotemark{\ref{jaqaman}}</latex>. In the paper, costs depend solely on the spot-to-spot distance, possibly weighted by the difference in spot intensity. Here, we offer to the user to tune costs by adding penalties on spot features, as explained below.
+In calculating costs, we deviate slightly from the original paper from  Jaqaman \etal<wiki><ref name="Jaqaman"/></wiki><latex>~\cite{jaqaman}</latex>. In the paper, costs depend solely on the spot-to-spot distance, possibly weighted by the difference in spot intensity. Here, we offer to the user to tune costs by adding penalties on spot features, as explained below.
 
 The user is asked for a maximal allowed linking distance (entered in physical units), and for a series of spot features, alongside with penalty weights. These parameters are used to tune the cost matrices. For two spots that may link, the linking cost is calculated as follow:
 
@@ -1624,7 +1662,7 @@ If the user feeds no penalty, the costs are simply the distances squared.
 \paragraph{Calculating non-linking costs.}
 %-----------------------------------------
 
-The top-right and bottom-left quadrant of the frame-to-frame linking matrix contain costs associated with track segment termination or initiation (a spot is not linking to a spot in the next or previous frame). Each of these two blocks is a square matrix with blocking value everywhere, except along the diagonal for which an alternative cost is computed. Following Jaqaman<wiki><ref name="Jaqaman"/></wiki></wiki><latex>\footnotemark{\ref{jaqaman}}</latex>, this cost is set to be
+The top-right and bottom-left quadrant of the frame-to-frame linking matrix contain costs associated with track segment termination or initiation (a spot is not linking to a spot in the next or previous frame). Each of these two blocks is a square matrix with blocking value everywhere, except along the diagonal for which an alternative cost is computed. Following Jaqaman<wiki><ref name="Jaqaman"/></wiki><latex>~\cite{jaqaman}</latex>, this cost is set to be
 
 $$ C_\text{alt} = 1.05 \times \max( C ) $$
 
@@ -1635,7 +1673,7 @@ where $C$ is the costs of the top-left quadrant.
 \paragraph{Cost calculation \& Brownian motion.}
 %-----------------------------------------------
 
-Without penalties and with a maximal linking allowed distance, the returned solution is the one that minimizes the sum of squared distances. This actually corresponds to the case where the motion of spots is governed by \otherlink{http://en.wikipedia.org/wiki/Brownian_motion}{Brownian motion}. See for instance Crocker and Grier<wiki><ref>[http://physics.nyu.edu/grierlab/methods3c/methods3c.pdf Crocker and Grier. "Methods of Digital Video Microscopy for Colloidal Studies." J Colloid Interf Sci (1996) vol. 179 (1) pp. 298-310]</ref></wiki><latex>\footnote{\otherlink{http://physics.nyu.edu/grierlab/methods3c/methods3c.pdf}{Crocker and Grier.} "Methods of Digital Video Microscopy for Colloidal Studies." J Colloid Interf Sci (1996) vol. 179 (1) pp. 298-310}</latex>.
+Without penalties and with a maximal linking allowed distance, the returned solution is the one that minimizes the sum of squared distances. This actually corresponds to the case where the motion of spots is governed by \otherlink{http://en.wikipedia.org/wiki/Brownian_motion}{Brownian motion}. See for instance Crocker and Grier<wiki><ref>[http://physics.nyu.edu/grierlab/methods3c/methods3c.pdf Crocker and Grier. "Methods of Digital Video Microscopy for Colloidal Studies." J Colloid Interf Sci (1996) vol. 179 (1) pp. 298-310]</ref></wiki><latex>~\cite{crocker}</latex>.
 
 By adding feature penalties, we aim at favoring linking particles that "resemble" each other. In brute single particle linking problems, spots are generally all the same, and they only differ by position. However, there is a variety of problems for which these feature penalties can add robustness to the tracking process.
 
@@ -1669,8 +1707,7 @@ As before, we modified the way costs are calculated, and re-used the feature pen
 \paragraph{Main differences with the Jaqaman paper.}
 %---------------------------------------------------
 
-The nominal implementation of the paper remains the one developed under MATLAB by Khuloud Jaqaman \etal and published in Nature Methods. The software is called \textbf{u-track} and can be found on \otherlink{http://www.utsouthwestern.edu/labs/jaqaman/software/}{Khuloud Jaqaman homepage}. TrackMate was initially developed to simplify\textit{C.elegans} lineaging. It therefore just bundles a stripped down version of this framework. 
-The notable differences are:
+The nominal implementation of the paper remains the one developed under MATLAB by Khuloud Jaqaman \etal ~\cite{jaqaman}. The software is called \textbf{u-track} and can be found on \otherlink{http://www.utsouthwestern.edu/labs/jaqaman/software/}{Khuloud Jaqaman homepage}. TrackMate was initially developed to simplify \textit{C.elegans} lineaging. It therefore just bundles a stripped down version of this framework. The notable differences are:
 
 \begin{myitemize}
 
@@ -1798,6 +1835,63 @@ The particle linking algorithm would read as follow:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%----------------------------------------------------------------------------------------
+%                                GLOBAL BIBLIORAPHY.
+%----------------------------------------------------------------------------------------
+
+
+
+<latex>
+
+\newpage
+\begin{thebibliography}{1}
+
+	\bibitem{lindeberg} Lindeberg, T. \textit{Feature detection with automatic scale selection.}
+International Journal of Computer Vision 30 (2) (1998) pp 77--116. 
+	
+	\bibitem{lowe} Lowe, D.G. \textit{Distinctive image features from scale-invariant keypoints}, 
+	International Journal of Computer Vision, 60, 2 (2004), pp. 91-110.
+	
+	\bibitem{otsu} Otsu, N., \textit{A threshold selection method from gray-level histograms}, in IEEE 
+	Transactions on Systems, Man, and Cybernetics, vol. 9, no. 1, pp. 62-66, Jan. 1979.
+
+	\bibitem{jaqaman}  \otherlink{
+http://www.nature.com/nmeth/journal/v5/n8/full/nmeth.1237.html}{Jaqaman, K. et al.}, \textit{Robust single-particle tracking in live-cell time-lapse sequences}, Nat Methods. 2008 Aug;5(8):695-702.
+
+	\bibitem{crocker} \otherlink{http://physics.nyu.edu/grierlab/methods3c/methods3c.pdf}{Crocker and 
+Grier.} \textit{Methods of Digital Video Microscopy for Colloidal Studies}, J Colloid Interf Sci (1996) vol. 179 (1) pp. 298-310.
+	  
+	\bibitem{bentley} Bentley, J. L.  \textit{Multidimensional binary search trees used for associative searching}, Communications of the ACM, vol. 18, no 9, 1975, p. 509-517.
+	
+	\bibitem{sage} \otherlink{http://bigwww.epfl.ch/publications/sage0501.pdf}{Sage, D. \etal}, \textit{Automatic tracking of Individual fluorescence Particles: Application to the study of chromosome dynamics}, IEEE Transactions on Image Processing, vol. 14, no. 9, pp. 1372-1383, September 2005.
+	
+	\bibitem{munkres} Munkres, J. \textit{Algorithms for the assignment and transportation problems}, 
+	Journal of the Society for Industrial and Applied Mathematics, 5(1):32–38, March 1957.
+
+	
+\end{thebibliography}
+
+
+
+</latex>
 
 
 
