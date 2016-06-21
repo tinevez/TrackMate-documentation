@@ -2172,7 +2172,7 @@ Also, this scenario was the only one to ship 3D data over time. TrackMate dealt 
 
 
 
-\subsubsection{Comments.}
+\subsection{Comments.}
 %------------------------
 
 These results serve as a base to help end-users picking the right algorithm for their problems, and maybe encourage developers to implement their own. As said before, a deeper interpretation of these metrics in the general case is found in the original paper<wiki><ref name="ISBIpaper"/></wiki><latex>~\cite{isbi}</latex>. Here are a few things specific to the current version of TrackMate.
