@@ -2579,7 +2579,8 @@ Now check that the new functions are available from MATLAB:
 \end{lstlisting}
 
 \begin{verbatim}
-/Users/tinevez/Development/Matlab/functions/jy/trackmate/trackmateGraph.m
+/Users/tinevez/Development/Matlab/functions/jy/...
+         trackmate/trackmateGraph.m
 \end{verbatim}
 
 
@@ -2667,10 +2668,10 @@ The function \texttt{importTrackMateTracks} has two switches to change this
 behavior. For instance:
 
 \begin{lstlisting}[language=matlab]
-clipZ   = true; % Remove Z coordinates, if you know you can.
-scaleT  = true; % Use physical time for T. 
-tracks = importTrackMateTracks(file_path_tracks, clipZ, scaleT);
-tracks{1}(5, :)
+>> clipZ   = true; % Remove Z coordinates, if you know you can.
+>> scaleT  = true; % Use physical time for T. 
+>> tracks = importTrackMateTracks(file_path_tracks, clipZ, scaleT);
+>> tracks{1}(5, :)
 \end{lstlisting}
 
 \begin{verbatim}
@@ -2760,7 +2761,7 @@ for the AB lineage) so they are not linear and the approach of the
 previous section will fail.
 
 \begin{lstlisting}[language=matlab]
-% C.elegans lineage TrackMate data file.
+>> % C.elegans lineage TrackMate data file.
 >> file_path = '10-03-17-3hours.xml';
 \end{lstlisting}
 
@@ -2788,7 +2789,7 @@ The table returned contains all the spot features by default, and spots
 are listed by frame order:
 
 \begin{lstlisting}[language=matlab]
-spot_table( 1 : 6, { 'ID', 'name', 'FRAME' } )
+>> spot_table( 1 : 6, { 'ID', 'name', 'FRAME' } )
 \end{lstlisting}
 
 \begin{verbatim}
@@ -2812,12 +2813,12 @@ created with TrackMate, and the spot features we measured are imported
 with name and units:
 
 \begin{lstlisting}[language=matlab]
-% List a subset of features, there are 32 of them.
-feature_subset = [ 1, 2, 13, 17, 22, 23, 24 ];
-
-[   spot_table.Properties.VariableNames(feature_subset)
-    spot_table.Properties.VariableDescriptions(feature_subset)
-    spot_table.Properties.VariableUnits(feature_subset) ]
+>> % List a subset of features, there are 32 of them.
+>> feature_subset = [ 1, 2, 13, 17, 22, 23, 24 ];
+>>
+>> [   spot_table.Properties.VariableNames(feature_subset)
+>>     spot_table.Properties.VariableDescriptions(feature_subset)
+>>     spot_table.Properties.VariableUnits(feature_subset) ]
 \end{lstlisting}
 
 \begin{verbatim}
@@ -2831,9 +2832,9 @@ ans =
 
   Columns 4 through 7
 
-    'MEAN_INTENSITY'    'POSITION_X'    'POSITION_Y'    'POSITION_Z'
-    'Mean intensity'    'X'             'Y'             'Z'         
-    'Counts'            'µm'            'µm'            'µm'      
+    'MEAN_INTENSITY'  'POSITION_X'  'POSITION_Y'  'POSITION_Z'
+    'Mean intensity'  'X'           'Y'           'Z'         
+    'Counts'          'µm'          'µm'          'µm'      
 \end{verbatim}
 
 Values can be accessed directly with the feature name:
@@ -2903,7 +2904,7 @@ You can redisplay the spot cloud in MATLAB:
 >> zlabel( [ 'Z (' units ')' ] )
 \end{lstlisting}
 
-\screenshotA{CelegansSpotCloud.pdf}
+\screenshotA{MATLAB_CelegansSpotCloud.pdf}
  
 Notice that there is no time information on this plot, nor track
 information. We just imported the spots so far, and there is not yet data
@@ -2934,32 +2935,32 @@ However here the data is not directly returned as a table but as a map of
 table, one for each track:
 
 \begin{lstlisting}[language=matlab]
-% What is the output class?
+>> % What is the output class?
 >> class( edge_map )
-
-% The track names are used as keys in the map:
->> track_names = edge_map.keys
-
-% How many tracks?
->> n_tracks = numel( track_names )
 \end{lstlisting}
-
 \begin{verbatim}
 ans =
 
-containers.Map
-
-
+    containers.Map
+\end{verbatim}
+\begin{lstlisting}[language=matlab]
+>> % The track names are used as keys in the map:
+>> track_names = edge_map.keys
+\end{lstlisting}
+\begin{verbatim}
 track_names = 
 
     'AB'    'P1'    'PB1'    'PB2'
-
-
+\end{verbatim}
+\begin{lstlisting}[language=matlab]
+>> % How many tracks?
+>> n_tracks = numel( track_names )
+\end{lstlisting}
+\begin{verbatim}
 n_tracks =
 
      4
 \end{verbatim}
-
 
 
 The values of the map are edge feature tables:
@@ -3059,7 +3060,7 @@ is useful. \texttt{spot\_ID\_map} is a map that links spot IDs to row number in
 the spot table. It is used as follow:
 
 \begin{lstlisting}[language=matlab]
-% Retrieve the spot with ID:
+>> % Retrieve the spot with ID:
 >> spot_ID = 3087;
 >> r = spot_ID_map( spot_ID )
 >> spot_table( r, feature_subset )
@@ -3145,7 +3146,7 @@ what follows.
 The function \texttt{trackmateGraph} imports the whole TrackMate data as a
 MATLAB \texttt{digraph}. Doing so, spot and edge features are imported as well,
 so this function can replace the two preceding ones. It offers optional
-arguments to import a subset of features, as for \texttt{trackmateSpots} and
+arguments to import a subset of features, as for \texttt{trackmate\-Spots} and
 \texttt{trackmateEdges}, plus an extra optinal flag for verbosity. They are all
 documented in the help section of the function.
 
@@ -3165,35 +3166,55 @@ The graph structure stores the spots and links features in tables:
 \begin{lstlisting}[language=matlab]
 >> % Spots.
 >> G.Nodes(1:5, feature_subset)
->> 
->> % Edges.
->> G.Edges(1:6, 1:5)
 \end{lstlisting}
-
 \begin{verbatim}
 ans = 
 
-     ID      name     ESTIMATED_DIAMETER    MEAN_INTENSITY    POSITION_X    POSITION_Y    POSITION_Z
-    _____    _____    __________________    ______________    __________    __________    __________
+     ID      name     ESTIMATED_DIAMETER    MEAN_INTENSITY
+    _____    _____    __________________    ______________
 
-        0    'AB'     4.5477                1129.4            34.136        30.564        21        
-        1    'PB1'    6.3325                2418.9            10.221         11.61        16        
-        2    'P1'     2.7192                1142.6            43.266        32.549        20        
-        3    'PB2'    4.5137                671.54            9.9233        27.587        22        
-    47360    'PB1'    4.5293                757.12             10.32        11.511        16        
+        0    'AB'     4.5477                1129.4        
+        1    'PB1'    6.3325                2418.9        
+        2    'P1'     2.7192                1142.6        
+        3    'PB2'    4.5137                671.54        
+    47360    'PB1'    4.5293                757.12        
 
+        POSITION_X        POSITION_Y        POSITION_Z
+        __________        __________        __________
 
+        34.136                30.564                21                
+        10.221                 11.61                16                
+        43.266                32.549                20                
+        9.9233                27.587                22                
+         10.32                11.511                16                
+\end{verbatim}
+
+\begin{lstlisting}[language=matlab]
+>> % Edges.
+>> G.Edges(1:6, 1:5)
+\end{lstlisting}
+\begin{verbatim}
 ans = 
 
-    EndNodes    SPOT_SOURCE_ID    SPOT_TARGET_ID    DISPLACEMENT    EDGE_TIME
-    ________    ______________    ______________    ____________    _________
+    EndNodes    SPOT_SOURCE_ID    SPOT_TARGET_ID
+    ________    ______________    ______________
 
-    1     8         0             47363              2.2946         1        
-    2     5         1             47360             0.14034         1        
-    3     7         2             47362              2.8798         1        
-    4     6         3             47361              18.875         1        
-    5     9     47360              3084             0.19847         3        
-    6    10     47361              3085              6.8934         3        
+    1     8         0             47363         
+    2     5         1             47360         
+    3     7         2             47362         
+    4     6         3             47361         
+    5     9     47360              3084         
+    6    10     47361              3085         
+    
+        DISPLACEMENT        EDGE_TIME
+        ____________        _________
+
+         2.2946                 1                
+        0.14034                 1                
+         2.8798                 1                
+         18.875                 1                
+        0.19847                 3                
+         6.8934                 3            
 \end{verbatim}
 
 These tables have the same shape that the tables imported by
@@ -3207,24 +3228,37 @@ target indices of nodes in the spot table. Careful: these indices are
 >> i_edge = 28; % 28th edge from AB to AB.p
 >> edge = G.Edges(i_edge, 1:5);
 >> source = G.Nodes( edge.EndNodes(1), feature_subset )
->> target = G.Nodes( edge.EndNodes(2), feature_subset )
 \end{lstlisting}
-
 \begin{verbatim}
 source = 
 
-     ID      name    ESTIMATED_DIAMETER    MEAN_INTENSITY    POSITION_X    POSITION_Y    POSITION_Z
-    _____    ____    __________________    ______________    __________    __________    __________
+     ID      name    ESTIMATED_DIAMETER    MEAN_INTENSITY
+    _____    ____    __________________    ______________
 
-    27303    'AB'    4.7838                1457.9            26.396        25.801        21        
+    27303    'AB'    4.7838                1457.9        
+
+        POSITION_X        POSITION_Y        POSITION_Z
+        __________        __________        __________
+
+        26.396                25.801                21                
+\end{verbatim}
 
 
+\begin{lstlisting}[language=matlab]
+>> target = G.Nodes( edge.EndNodes(2), feature_subset )
+\end{lstlisting}
+\begin{verbatim}
 target = 
 
-     ID       name     ESTIMATED_DIAMETER    MEAN_INTENSITY    POSITION_X    POSITION_Y    POSITION_Z
-    _____    ______    __________________    ______________    __________    __________    __________
+     ID       name     ESTIMATED_DIAMETER    MEAN_INTENSITY
+    _____    ______    __________________    ______________
 
-    31404    'AB.p'    4.5622                834.89            27.488        29.737        23        
+    31404    'AB.p'    4.5622                834.89        
+    
+        POSITION_X        POSITION_Y        POSITION_Z
+        __________        __________        __________
+
+        27.488                29.737                23                
 \end{verbatim}
 
 
@@ -3252,13 +3286,15 @@ on this graph all the descendant of the MS cell.
 >> % Find the first occurrence of MS using spot names.
 >> index_MS = find( strcmp( G.Nodes.name, 'MS'), 1 );
 >> 
->>% Use depth first iterator to have all its descendant. This will work since
->>% our graph is a directed graph. The following instruction generates a
->>% table with nodes indices (when they are met for the first time) and edge
->>% indices (when they are traversed).
+>> % Use depth first iterator to have all its descendant. This will
+>> % work since our graph is a directed graph. The following 
+>> % instruction generates a table with nodes indices (when they are 
+>> % met for the first time) and edge indices (when they are 
+>> % traversed).
 >> t = dfsearch(G, index_MS, { 'discovernode', 'edgetonew' } );
 >>
->> % We have to prune NaNs if we want a separate list of nodes and edges.
+>> % We have to prune NaNs if we want a separate list of nodes and 
+>> % edges.
 >> v = t.Node;
 >> v = v( ~isnan(v) );
 >> e = t.Edge;
@@ -3304,7 +3340,8 @@ is a procedure adapted from the work of John Gilbert:
 >> s = G.Edges.EndNodes( : , 1 );
 >> t = G.Edges.EndNodes( : , 2 );
 >> 
->> % We intercalate NaNs between node pairs to have a line for each edge.
+>> % We intercalate NaNs between node pairs to have a line for
+>> % each edge.
 >> n_nodes = numel(s);
 >> X = [ x(s) x(t) NaN( n_nodes, 1) ]';
 >> Y = [ y(s) y(t) NaN( n_nodes, 1) ]';
@@ -3315,9 +3352,9 @@ is a procedure adapted from the work of John Gilbert:
 >> 
 >> figure
 >> plot3( X, Y, Z, '-', 'Color', [ 0.5 0.5 0.5 ] )
->> xlabel( [ 'X (' char(spot_table.Properties.VariableUnits(22)) ')' ] )
->> ylabel( [ 'Y (' char(spot_table.Properties.VariableUnits(23)) ')' ] )
->> zlabel( [ 'Z (' char(spot_table.Properties.VariableUnits(24)) ')' ] )
+>> xlabel( [ 'X (' units ')' ] )
+>> ylabel( [ 'Y (' units ')' ] )
+>> zlabel( [ 'Z (' units ')' ] )
 >> view(-150, 30)
 >> axis equal
 \end{lstlisting}
@@ -3382,7 +3419,7 @@ relevant edges only:
 
 The three sections above presented the core of interoperability between
 TrackMate and MATLAB. The main function is \texttt{trackmateGraph} but
-\texttt{trackmateSpots} and \texttt{trackmateEdges} can be used advantageously when the
+\texttt{trackmateSpots} and \texttt{trackmate\-Edges} can be used advantageously when the
 whole graph is not required for analysis. The logic used in these
 three functions can be reproduced and translated to languages other than
 MATLAB.
@@ -3412,7 +3449,8 @@ The function \texttt{trackmateFeatureDeclarations} is used to probe what
 features are declared in the TrackMate file:
 
 \begin{lstlisting}[language=matlab]
->> [ spot_fd, edge_fd, track_df ] = trackmateFeatureDeclarations( file_path );
+>> [ spot_fd, edge_fd, track_df ] = ...
+>>        trackmateFeatureDeclarations( file_path );
 \end{lstlisting}
 
 They are returned as 3 maps, one for spot, edge and track feature
