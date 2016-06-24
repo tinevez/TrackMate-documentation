@@ -6,7 +6,7 @@
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\renewcommand{\ttdefault}{lmtt}       % use lmtt for teletype family
+\usepackage{courier}
 
 \usepackage[export]{adjustbox}
 \usepackage{wrapfig}
@@ -85,15 +85,16 @@
 \definecolor{sh_string}{rgb}{0.06, 0.10, 0.98} 
 
 \usepackage{listings}
-\usepackage{courier}
 \lstset{
- rulesepcolor=\color{black},
- showspaces=false,showtabs=false,tabsize=2,
- basicstyle=\ttfamily\small,
- stringstyle=\color{sh_string},
- keywordstyle = \color{sh_keyword}\bfseries,
- commentstyle=\color{sh_comment}\itshape,
- escapebegin={\lstsmallmath}, escapeend={\lstsmallmathend}
+	rulesepcolor=\color{black},
+	showstringspaces=false,showtabs=false,tabsize=2,
+	basicstyle=\ttfamily\small,
+	stringstyle=\color{sh_string},
+	keywordstyle = \color{sh_keyword}\bfseries,
+	commentstyle=\color{sh_comment}\itshape,
+	% escapebegin={\lstsmallmath}, escapeend={\lstsmallmathend}
+	breaklines=true,
+	postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
 }
 
 % Tables in the Wiki and LaTeX
@@ -196,7 +197,7 @@ This first panel allows you to check the spatial and temporal calibration of you
 
 What is critical is also to check the dimensionality of the image. In our case, we have a 2D time-lapse of 50 frames. If metadata are not present or cannot be read, ImageJ tends to assume that stack always are Z-stack on a single time-point. 
 
-If the calibration or dimensionality of your data is not right, I recommend changing it in the image metadata itself, using \menu{Image > Properties} (\keys{Shift+P}). The press the \textbf{Refresh source} button on the TrackMate start panel to grab changes.
+If the calibration or dimensionality of your data is not right, it is best changing it in the image metadata itself, using \menu{Image > Properties} (\keys{Shift+P}). The press the \textbf{Refresh source} button on the TrackMate start panel to grab changes.
 
 You can also define a sub-region for processing: if you are only interested in finding spots in a defined region of the image, you can use any of the ROI tools of ImageJ to draw a closed area on the image. Once you are happy with it, press the \textbf{Refresh source} button on the panel to pass it to TrackMate. You should see that the \textbf{X} \textbf{Y} start and end values change to reflect the bounding box of the ROI you defined. The ROI needs not to be a square. It can be any closed shape. 
 
@@ -327,7 +328,7 @@ We note that the histogram has a very desirable shape: a massive peak at low int
 
 To move the threshold, simply click and drag inside the histogram window. Notice how the overlay is updated to display only the remaining spots after filtering.
 
-\underline{Interlude}: A word on the GUI: I put some effort into having a GUI that can be navigated almost solely with the keyboard. Any of the small filter panel can be controlled with the keyboard. For instance: give the histogram the focus by either pressing the Tab key or clicking into it. 
+\underline{Interlude}: A word on the GUI: We put effort into having a GUI that can be navigated almost solely with the keyboard. Any of the small filter panel can be controlled with the keyboard. For instance: give the histogram the focus by either pressing the Tab key or clicking into it. 
 
 \begin{myitemize}
   \item The floating threshold value should turn from orange to dark red. You can now type a numerical value (including decimals using the dot '.' as separator); wait two seconds, and the threshold value will be updated to what you just typed.
@@ -557,7 +558,7 @@ Open it in Fiji. You will get a stack, made of 41 Z-slices over 17 time-points, 
 
 The context if the following: We used a \textit{C.elegans} strain named \otherlink{http://www.wormbase.org/db/gene/strain?name=AZ212;class=Strain}{AZ212} that has its histone H2B coupled to the eGFP. The nuclei can therefore be seen in the 488 nm excitation fluorescence channel. The movie started just after the first cell division, so you can see on the first frame two blob-like spots in the center of the egg. On the top-right part of the egg, there is also two smaller spots that are the polar bodies. One will remain at a fixed place, the other one will be pushed around as the cells divide. The movie has 17 time-points that span the first 34 minutes of the \textit{C.elegans} embryo development. 
 
-\otherlink{https://research.pasteur.fr/fr/team/imagopole/}{We} were trying to assess the impact of phototoxicity on development in this movie. We used a rather strong laser power, which explains the relatively good quality of the image, and the fact that this egg's development is slowed down compared to a classical development at 21°C. On this movie, I manually erased another egg that was lying on the top left-corner of the image, which makes it suitable only for educational purposes. 
+\otherlink{https://research.pasteur.fr/fr/team/imagopole/}{We} were trying to assess the impact of phototoxicity on development in this movie. We used a rather strong laser power, which explains the relatively good quality of the image, and the fact that this egg's development is slowed down compared to a classical development at 21°C. On this movie, we manually erased another egg that was lying on the top left-corner of the image, which makes it suitable only for educational purposes. 
 
 We want to reconstruct the cell lineage from this movie. Ideally, we will end up in having four tracks: two for the the two cells present on the first frame, and two for the polar bodies. The cell tracks will be branching, following cell division.
 
@@ -826,7 +827,7 @@ Now we want to connect the lonesome spots to the track they belong to. This is a
 
 You can create a link between two cells in TrackScheme simply by enabling the linking button on the TrackScheme toolbar, and dragging a line between the source cell and the target cell.
 
-This is pictured below, where the fore-to-last cell of the track 4 is connected to the new spot. For visibility, I brought on this screenshot the target cell closer to the lane of the track 4. You can normally find it either  on the far right of the panel. 
+This is pictured below, where the fore-to-last cell of the track 4 is connected to the new spot. For visibility on this screenshot, we brought the target cell closer to the lane of the track 4. You can normally find it either  on the far right of the panel. 
 
 \screenshotB{TrackMate_CreateLinksInTrackScheme_annotated.png}
 
@@ -3501,6 +3502,466 @@ It is hopefully well documented in this \otherlink{http://www.mathworks.com/matl
 
 
 
+%----------------------------------------------------------------------------------------
+%                                PYTHON SCRIPTING.
+%----------------------------------------------------------------------------------------
+
+
+\section{Scripting TrackMate in Python.}
+%----------------------------------------
+
+\wikilink{TrackMate}{TrackMate} can be used out of the GUI, using a scripting language that allows making calls to Java. The most simple way to get started is to use the \wikilink{Script Editor}{Script Editor} of Fiji, which takes care of the difficult and boring part for you (such as path). The examples proposed on this page all use Jython, but can be adapted to anything. 
+
+Since we are calling the internals of TrackMate, we must get to know a bit of its internal design. There are three main classes to interact with in a script:
+
+\begin{myitemize}
+
+	\item Model ( \otherlink{http://fiji.sc/javadoc/fiji/plugin/trackmate/Model.html}{\texttt{fiji.plugin.trackmate.Model}}) is the class in charge of \underline{storing the data} It cannot do anything to create it. It can help you follow manual modifications you would made in the manual editing mode, interrogate it, ... but it is conceptually just a data recipient. 
+
+	\item Settings (\otherlink{http://fiji.sc/javadoc/fiji/plugin/trackmate/Settings.html}{\texttt{fiji.plugin.trackmate.Settings}}) is the class storing the fields that will configure TrackMate and pilot how the data is created. This is where you specify what is the source image, what are the detector and tracking algorithms to use, what are the filters to use, \etc.
+
+	\item TrackMate (\otherlink{http://fiji.sc/javadoc/fiji/plugin/trackmate/TrackMate.html}{\texttt{fiji.plugin.trackmate.TrackMate}}) is the class that does the actual work. In scripts, we use it to actually \underline{perform the analysis tasks}, such as generating spots from images, linking them into track, \etc. It reads configuration information in the Settings object mentioned above and put the resulting data in the model.  
+
+\end{myitemize}
+ 
+So getting a working script is all about configuring a proper \texttt{Settings} object and calling \texttt{exec*} methods on a \texttt{TrackMate} object. Then we read the results in the \texttt{Model} object.
+
+
+
+\subsection{A full example.}
+%---------------------------
+
+Here is an example of full tracking process, using the easy image found in the \wikilink{Getting started with TrackMate}{first tutorial}. The following (Jython) script works as following:
+
+\begin{myitemize}
+
+	\item It fetches the image from the web.
+	\item It configures settings for segmentation and tracking.
+	\item The model is instantiated, with the settings and imp objects.
+	\item The \texttt{TrackMate} class is instantiated with the model object.
+	\item Then the \texttt{TrackMate} object performs all the steps needed.
+	\item The final results is displayed as an overlay.
+
+\end{myitemize}
+
+\begin{lstlisting}[language=python]
+from fiji.plugin.trackmate import Model
+from fiji.plugin.trackmate import Settings
+from fiji.plugin.trackmate import TrackMate
+from fiji.plugin.trackmate import SelectionModel
+from fiji.plugin.trackmate import Logger
+from fiji.plugin.trackmate.detection import LogDetectorFactory
+from fiji.plugin.trackmate.tracking.sparselap import SparseLAPTrackerFactory
+from fiji.plugin.trackmate.tracking import LAPUtils
+from ij import IJ
+import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer as HyperStackDisplayer
+import fiji.plugin.trackmate.features.FeatureFilter as FeatureFilter
+import sys
+import fiji.plugin.trackmate.features.track.TrackDurationAnalyzer as TrackDurationAnalyzer
+   
+# Get currently selected image
+#imp = WindowManager.getCurrentImage()
+imp = IJ.openImage('http://fiji.sc/samples/FakeTracks.tif')
+imp.show()
+   
+   
+#----------------------------
+# Create the model object now
+#----------------------------
+   
+# Some of the parameters we configure below need to have
+# a reference to the model at creation. So we create an
+# empty model now.
+   
+model = Model()
+   
+# Send all messages to ImageJ log window.
+model.setLogger(Logger.IJ_LOGGER)
+   
+   
+      
+#------------------------
+# Prepare settings object
+#------------------------
+      
+settings = Settings()
+settings.setFrom(imp)
+      
+# Configure detector - We use the Strings for the keys
+settings.detectorFactory = LogDetectorFactory()
+settings.detectorSettings = { 
+    'DO_SUBPIXEL_LOCALIZATION' : True,
+    'RADIUS' : 2.5,
+    'TARGET_CHANNEL' : 1,
+    'THRESHOLD' : 0.,
+    'DO_MEDIAN_FILTERING' : False,
+}  
+   
+# Configure spot filters - Classical filter on quality
+filter1 = FeatureFilter('QUALITY', 30, True)
+settings.addSpotFilter(filter1)
+    
+# Configure tracker - We want to allow merges and fusions
+settings.trackerFactory = SparseLAPTrackerFactory()
+settings.trackerSettings = LAPUtils.getDefaultLAPSettingsMap()
+# almost good enough
+settings.trackerSettings['ALLOW_TRACK_SPLITTING'] = True
+settings.trackerSettings['ALLOW_TRACK_MERGING'] = True
+   
+# Configure track analyzers - Later on we want to filter out tracks 
+# based on their displacement, so we need to state that we want 
+# track displacement to be calculated. By default, out of the GUI, 
+# not features are calculated. 
+   
+# The displacement feature is provided by the TrackDurationAnalyzer.
+   
+settings.addTrackAnalyzer(TrackDurationAnalyzer())
+   
+# Configure track filters - We want to get rid of the two immobile 
+# spots at the bottom right of the image. Track displacement must
+# be above 10 pixels.
+   
+filter2 = FeatureFilter('TRACK_DISPLACEMENT', 10, True)
+settings.addTrackFilter(filter2)
+   
+   
+#-------------------
+# Instantiate plugin
+#-------------------
+   
+trackmate = TrackMate(model, settings)
+      
+#--------
+# Process
+#--------
+   
+ok = trackmate.checkInput()
+if not ok:
+    sys.exit(str(trackmate.getErrorMessage()))
+   
+ok = trackmate.process()
+if not ok:
+    sys.exit(str(trackmate.getErrorMessage()))
+   
+      
+#----------------
+# Display results
+#----------------
+    
+selectionModel = SelectionModel(model)
+displayer =  HyperStackDisplayer(model, selectionModel, imp)
+displayer.render()
+displayer.refresh()
+   
+# Echo results with the logger we set at start:
+model.getLogger().log(str(model))
+\end{lstlisting}
+
+
+
+\subsection{Loading and reading from a saved TrackMate XML file.}
+%----------------------------------------------------------------
+
+Scripting is a good way to interrogate and play non-interactively with tracking results. The example below shows how to load a XML TrackMate file and rebuild a full working model from it. 
+
+That way you could for instance redo a full tracking process by only changing one parameter with respect to the saved one. You might also want to check results without relying on the GUI, \etc.
+
+For the example below to work for you, you will have to edit line 20 and put the actual path to your TrackMate file.
+
+
+\begin{lstlisting}[language=python]
+from fiji.plugin.trackmate.visualization.hyperstack import HyperStackDisplayer
+from fiji.plugin.trackmate.io import TmXmlReader
+from fiji.plugin.trackmate import Logger
+from fiji.plugin.trackmate import Settings
+from fiji.plugin.trackmate import SelectionModel
+from fiji.plugin.trackmate.providers import DetectorProvider
+from fiji.plugin.trackmate.providers import TrackerProvider
+from fiji.plugin.trackmate.providers import SpotAnalyzerProvider
+from fiji.plugin.trackmate.providers import EdgeAnalyzerProvider
+from fiji.plugin.trackmate.providers import TrackAnalyzerProvider
+from java.io import File
+import sys
+ 
+ 
+#----------------
+# Setup variables
+#----------------
+ 
+# Put here the path to the TrackMate file you want to load
+file = File('/Users/tinevez/Desktop/Data/FakeTracks.xml')
+ 
+# We have to feed a logger to the reader.
+logger = Logger.IJ_LOGGER
+ 
+#-------------------
+# Instantiate reader
+#-------------------
+ 
+reader = TmXmlReader(file)
+if not reader.isReadingOk():
+    sys.exit(reader.getErrorMessage())
+
+#-----------------
+# Get a full model
+#-----------------
+ 
+# This will return a fully working model, with everything
+# stored in the file. Missing fields (e.g. tracks) will be 
+# null or None in python
+model = reader.getModel()
+# model is a fiji.plugin.trackmate.Model
+ 
+#----------------
+# Display results
+#----------------
+ 
+# We can now plainly display the model. It will be shown on an
+# empty image with default magnification.
+sm = SelectionModel(model)
+displayer =  HyperStackDisplayer(model, sm)
+displayer.render()
+ 
+#---------------------------------------------
+# Get only part of the data stored in the file
+#---------------------------------------------
+ 
+# You might want to access only separate parts of the 
+# model. 
+ 
+spots = model.getSpots()
+# spots is a fiji.plugin.trackmate.SpotCollection
+ 
+logger.log(str(spots))
+ 
+# If you want to get the tracks, it is a bit trickier. 
+# Internally, the tracks are stored as a huge mathematical
+# simple graph, which is what you retrieve from the file. 
+# There are methods to rebuild the actual tracks, taking
+# into account for everything, but frankly, if you want to 
+# do that it is simpler to go through the model:
+ 
+trackIDs = model.getTrackModel().trackIDs(True)
+# only filtered tracks.
+for id in trackIDs:
+    logger.log(str(id) + ' - ' + str(model.getTrackModel().trackEdges(id)))
+ 
+ 
+#---------------------------------------
+# Building a settings object from a file
+#---------------------------------------
+ 
+# Reading the Settings object is actually currently complicated.
+# The reader wants to initialize properly everything you saved
+# in the file, including the spot, edge, track analyzers, the
+# filters, the detector, the tracker, etc...
+# It can do that, but you must provide the reader with providers,
+# that are able to instantiate the correct TrackMate Java classes
+# from the XML data.
+ 
+# We start by creating an empty settings object
+settings = Settings()
+ 
+# Then we create all the providers, and point them to the target
+# model:
+detectorProvider        = DetectorProvider()
+trackerProvider         = TrackerProvider()
+spotAnalyzerProvider    = SpotAnalyzerProvider()
+edgeAnalyzerProvider    = EdgeAnalyzerProvider()
+trackAnalyzerProvider   = TrackAnalyzerProvider()
+ 
+# Now we can flesh out our settings object:
+reader.readSettings(settings, detectorProvider, trackerProvider, spotAnalyzerProvider, edgeAnalyzerProvider, trackAnalyzerProvider)
+ 
+logger.log(str('\n\nSETTINGS:'))
+logger.log(str(settings))
+ 
+# The settings object is also instantiated with the target image.
+# Note that the XML file only stores a link to the image.
+# If the link is not valid, the image will not be found.
+imp = settings.imp
+imp.show()
+ 
+# With this, we can overlay the model and the source image:
+displayer =  HyperStackDisplayer(model, sm, imp)
+displayer.render()
+\end{lstlisting}
+
+
+
+
+\subsection{Export spot, edge and track numerical features after tracking.}
+%--------------------------------------------------------------------------
+
+This example shows how to extract numerical features from tracking results. 
+
+TrackMate computes and stores three kind of numerical features:
+
+\begin{myitemize}
+	
+	\item Spot features, such as a spot location (X, Y, Z), its mean intensity, radius \etc. 
+
+	\item Edge or link features: An edge is a link between two spots. Its feature typically stores the velocity and displacement, which are defined only for two consecutive spots in the same track.
+	
+	\item Track features: numerical features that apply to a whole track, such as the number of spots it contains. 
+
+\end{myitemize}
+
+By default, TrackMate only computes a very limited number of features. The GUI forces TrackMate to compute them all, but if you do scripting, you will have to explicitly configures TrackMate to compute the features you desire. This is done by adding feature analyzers to the settings object. 
+
+There are some gotchas: some feature analyzers require other numerical features to be already calculated. If something does not work, it is a good idea to directly check the preamble in the source code of the analyzers (\otherlink{https://github.com/fiji/fiji/tree/master/src-plugins/TrackMate_/src/main/java/fiji/plugin/trackmate/features}{TrackMate feature logic}).
+
+Finally, depending on their type, numerical features are not stored at the same place:
+
+\begin{myitemize}
+
+	\item Spot features are simply conveyed by the spot object, and you can access them through \texttt{spot.getFeature('FEATURE\_NAME')}
+	
+	\item Edge and track features are stored in a sub-component of the model object called the FeatureModel (\otherlink{https://github.com/fiji/TrackMate/blob/master/src/main/java/fiji/plugin/trackmate/FeatureModel.java}{FeatureModel.java}).
+
+\end{myitemize}
+Check the script below to see a working example.
+
+\begin{lstlisting}[language=python]
+from ij import IJ, ImagePlus, ImageStack
+import fiji.plugin.trackmate.Settings as Settings
+import fiji.plugin.trackmate.Model as Model
+import fiji.plugin.trackmate.SelectionModel as SelectionModel
+import fiji.plugin.trackmate.TrackMate as TrackMate
+import fiji.plugin.trackmate.Logger as Logger
+import fiji.plugin.trackmate.detection.DetectorKeys as DetectorKeys
+import fiji.plugin.trackmate.detection.DogDetectorFactory as DogDetectorFactory
+import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory as SparseLAPTrackerFactory
+import fiji.plugin.trackmate.tracking.LAPUtils as LAPUtils
+import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer as HyperStackDisplayer
+import fiji.plugin.trackmate.features.FeatureFilter as FeatureFilter
+import fiji.plugin.trackmate.features.FeatureAnalyzer as FeatureAnalyzer
+import fiji.plugin.trackmate.features.spot.SpotContrastAndSNRAnalyzerFactory as SpotContrastAndSNRAnalyzerFactory
+import fiji.plugin.trackmate.action.ExportStatsToIJAction as ExportStatsToIJAction
+import fiji.plugin.trackmate.io.TmXmlReader as TmXmlReader
+import fiji.plugin.trackmate.action.ExportTracksToXML as ExportTracksToXML
+import fiji.plugin.trackmate.io.TmXmlWriter as TmXmlWriter
+import fiji.plugin.trackmate.features.ModelFeatureUpdater as ModelFeatureUpdater
+import fiji.plugin.trackmate.features.SpotFeatureCalculator as SpotFeatureCalculator
+import fiji.plugin.trackmate.features.spot.SpotContrastAndSNRAnalyzer as SpotContrastAndSNRAnalyzer
+import fiji.plugin.trackmate.features.spot.SpotIntensityAnalyzerFactory as SpotIntensityAnalyzerFactory
+import fiji.plugin.trackmate.features.track.TrackSpeedStatisticsAnalyzer as TrackSpeedStatisticsAnalyzer
+import fiji.plugin.trackmate.util.TMUtils as TMUtils
+  
+  
+# Get currently selected image
+#imp = WindowManager.getCurrentImage()
+imp = IJ.openImage('http://fiji.sc/samples/FakeTracks.tif')
+#imp.show()
+  
+  
+#-------------------------
+# Instantiate model object
+#-------------------------
+  
+model = Model()
+  
+# Set logger
+model.setLogger(Logger.IJ_LOGGER)
+  
+#------------------------
+# Prepare settings object
+#------------------------
+     
+settings = Settings()
+settings.setFrom(imp)
+     
+# Configure detector
+settings.detectorFactory = DogDetectorFactory()
+settings.detectorSettings = {
+    DetectorKeys.KEY_DO_SUBPIXEL_LOCALIZATION : True,
+    DetectorKeys.KEY_RADIUS : 2.5,
+    DetectorKeys.KEY_TARGET_CHANNEL : 1,
+    DetectorKeys.KEY_THRESHOLD : 5.,
+    DetectorKeys.KEY_DO_MEDIAN_FILTERING : False,
+} 
+   
+# Configure tracker
+settings.trackerFactory = SparseLAPTrackerFactory()
+settings.trackerSettings = LAPUtils.getDefaultLAPSettingsMap()
+settings.trackerSettings['LINKING_MAX_DISTANCE'] = 10.0
+settings.trackerSettings['GAP_CLOSING_MAX_DISTANCE']=10.0
+settings.trackerSettings['MAX_FRAME_GAP']= 3
+  
+# Add the analyzers for some spot features.
+# You need to configure TrackMate with analyzers that will generate 
+# the data you need. 
+# Here we just add two analyzers for spot, one that computes generic
+# pixel intensity statistics (mean, max, etc...) and one that
+# computes an estimate of each spot's SNR. 
+# The trick here is that the second one requires the first one to be
+# in place. Be aware of this kind of gotchas, and read the docs. 
+settings.addSpotAnalyzerFactory(SpotIntensityAnalyzerFactory())
+settings.addSpotAnalyzerFactory(SpotContrastAndSNRAnalyzerFactory())
+  
+# Add an analyzer for some track features, such as the track mean speed.
+settings.addTrackAnalyzer(TrackSpeedStatisticsAnalyzer())
+  
+settings.initialSpotFilterValue = 1
+  
+print(str(settings))
+     
+#----------------------
+# Instantiate trackmate
+#----------------------
+  
+trackmate = TrackMate(model, settings)
+     
+#------------
+# Execute all
+#------------
+  
+    
+ok = trackmate.checkInput()
+if not ok:
+    sys.exit(str(trackmate.getErrorMessage()))
+    
+ok = trackmate.process()
+if not ok:
+    sys.exit(str(trackmate.getErrorMessage()))
+        
+     
+#----------------
+# Display results
+#----------------
+  
+model.getLogger().log('Found ' + str(model.getTrackModel().nTracks(True)) + ' tracks.')
+   
+selectionModel = SelectionModel(model)
+displayer =  HyperStackDisplayer(model, selectionModel, imp)
+displayer.render()
+displayer.refresh()
+  
+# The feature model, that stores edge and track features.
+fm = model.getFeatureModel()
+  
+for id in model.getTrackModel().trackIDs(True):
+  
+    # Fetch the track feature from the feature model.
+    v = fm.getTrackFeature(id, 'TRACK_MEAN_SPEED')
+    model.getLogger().log('')
+    model.getLogger().log('Track ' + str(id) + ': mean velocity = ' + str(v) + ' ' + model.getSpaceUnits() + '/' + model.getTimeUnits())
+      
+    track = model.getTrackModel().trackSpots(id)
+    for spot in track:
+        sid = spot.ID()
+        # Fetch spot features directly from spot. 
+        x=spot.getFeature('POSITION_X')
+        y=spot.getFeature('POSITION_Y')
+        t=spot.getFeature('FRAME')
+        q=spot.getFeature('QUALITY')
+        snr=spot.getFeature('SNR') 
+        mean=spot.getFeature('MEAN_INTENSITY')
+        model.getLogger().log('\tspot ID = ' + str(sid) + ': x='+str(x)+', y='+str(y)+', t='+str(t)+', q='+str(q) + ', snr='+str(snr) + ', mean = ' + str(mean))
+\end{lstlisting}
+
+
+
 
 
 
@@ -3535,7 +3996,7 @@ International Journal of Computer Vision 30 (2) (1998) pp 77--116.
 	Transactions on Systems, Man, and Cybernetics, vol. 9, no. 1, pp. 62-66, Jan. 1979.
 
 	\bibitem{jaqaman}  \otherlink{
-http://www.nature.com/nmeth/journal/v5/n8/full/nmeth.1237.html}{Jaqaman, K. et al.}, \textit{Robust single-particle tracking in live-cell time-lapse sequences}, Nat Methods. 2008 Aug;5(8):695-702.
+http://www.nature.com/nmeth/journal/v5/n8/full/nmeth.1237.html}{Jaqaman, K. et al.}, \textit{Robust single-particle trac\-king in live-cell time-lapse se\-quences}, Nat Me\-thods. 2008 Aug;5(8):695-702.
 
 	\bibitem{crocker} \otherlink{http://physics.nyu.edu/grierlab/methods3c/methods3c.pdf}{Crocker and 
 Grier.} \textit{Methods of Digital Video Microscopy for Colloidal Studies}, J Colloid Interf Sci (1996) vol. 179 (1) pp. 298-310.
