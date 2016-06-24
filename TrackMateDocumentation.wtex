@@ -18,13 +18,14 @@
 \usepackage{notation}
 \usepackage{array}
 \usepackage{menukeys}
-\usepackage{hyperref}
 \input{tikzstyles}
 \usepackage{subfig}
 \usepackage{longtable}
 \usepackage{caption}
 \usepackage{multirow}
 \usepackage{tabulary}
+\usepackage{hyperref}
+\PassOptionsToPackage{hyphens}{url}
 
 % Put a dot after section number.
 \usepackage{secdot}
@@ -368,7 +369,7 @@ There is also a 3\textsuperscript{rd} tracker, the \otherlink{https://en.wikiped
 
 The 4\textsuperscript{th} tracker, \texttt{Linear motion LAP tracker} is well suited for particles that move with a roughly constant velocity, this velocity being different for each particle. Its compared accuracy and relevance for various scenario is discussed later.
 
-Then of course, there is the option to skip the automated tracking using \texttt{Manual tracking}.
+Then of course, there is the option to skip the automated tracking using \texttt{Manual trac\-king}.
 
 Right now, in our first trial, let us pick the \texttt{Simple LAP tracker}.
 
@@ -1675,7 +1676,7 @@ where $C$ is the costs of the top-left quadrant.
 \paragraph{Cost calculation \& Brownian motion.}
 %-----------------------------------------------
 
-Without penalties and with a maximal linking allowed distance, the returned solution is the one that minimizes the sum of squared distances. This actually corresponds to the case where the motion of spots is governed by \otherlink{http://en.wikipedia.org/wiki/Brownian_motion}{Brownian motion}. See for instance Crocker and Grier<wiki><ref>[http://physics.nyu.edu/grierlab/methods3c/methods3c.pdf Crocker and Grier. "Methods of Digital Video Microscopy for Colloidal Studies." J Colloid Interf Sci (1996) vol. 179 (1) pp. 298-310]</ref></wiki><latex>~\cite{crocker}</latex>.
+Without penalties and with a maximal linking allowed distance, the returned solution is the one that minimizes the sum of squared distances. This actually corresponds to the case where the motion of spots is governed by \otherlink{http://en.wikipedia.org/wiki/Brownian_motion}{Brownian} motion. See for instance Crocker and Grier<wiki><ref>[http://physics.nyu.edu/grierlab/methods3c/methods3c.pdf Crocker and Grier. "Methods of Digital Video Microscopy for Colloidal Studies." J Colloid Interf Sci (1996) vol. 179 (1) pp. 298-310]</ref></wiki><latex>~\cite{crocker}</latex>.
 
 By adding feature penalties, we aim at favoring linking particles that "resemble" each other. In brute single particle linking problems, spots are generally all the same, and they only differ by position. However, there is a variety of problems for which these feature penalties can add robustness to the tracking process.
 
