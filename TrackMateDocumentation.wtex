@@ -3899,7 +3899,8 @@ settings.trackerSettings['MAX_FRAME_GAP']= 3
 settings.addSpotAnalyzerFactory(SpotIntensityAnalyzerFactory())
 settings.addSpotAnalyzerFactory(SpotContrastAndSNRAnalyzerFactory())
   
-# Add an analyzer for some track features, such as the track mean speed.
+# Add an analyzer for some track features, such as the track mean
+# speed.
 settings.addTrackAnalyzer(TrackSpeedStatisticsAnalyzer())
   
 settings.initialSpotFilterValue = 1
@@ -3963,9 +3964,162 @@ for id in model.getTrackModel().trackIDs(True):
 
 
 
+\subsection{Manually creating a model.}
 
+TrackMate aims at combining automatic and manual tracking facilities. This is also the case when scripting: a part of the API offers to a edit a model extensively. A few code patterns must be followed.
 
+First, every edit must happen between a call to \texttt{model.beginUpdate()} and \texttt{model.end\-Update()}:
 
+\begin{lstlisting}[language=python]
+model.beginUpdate()
+# ... do whatever you want to the model here.
+model.endUpdate()
+\end{lstlisting}
+
+The reason for this is that TrackMate caches each modification made to its model. This is required because we can deal with a rather complex content. For instance: imagine you have a single track that splits in two branches at some point. If you decide to remove the spot at the fork, a complex series of events will happen:
+
+\begin{myitemize}
+	\item First, three edges will be removed: the ones that were connected to the spot you just removed.
+	\item Then the spot will actually be removed from the model.
+	\item But then you need to recompute the tracks, because now, you have 3 tracks instead of 1.
+	\item But also: all the numerical features of the tracks are now invalid, and you need to recompute them. 
+	\item And what happens to the track name? What track, amongst the 3 new ones, will receive the old name?
+\end{myitemize}
+
+Well, TrackMate does that for you automatically, but for the chain of events to happen timely, you must make your edits within this \texttt{model.beginUpdate()} / \texttt{model.end\-Update()} code block. 
+
+This script just shows you how to use this construct to build and populate a model from scratch. Appending content to a model is done by, sequentially:
+
+\begin{myitemize}
+	\item Creating spot objects. You have to provide their x, y, z location, as well as a radius and a quality value for each. At this stage, you don't provide at what frame (or time) they belong. 
+	\item This is done by adding the spot to the model, using \texttt{model.addSpotTo\-(Spot, fra\-me)}, frame being a positive integer number.
+	\item Then you create a link, or an edge as it is called in TrackMate, between two spots. You have to provide the link cost: \texttt{model.addEdge(Spot1, Spot2, cost)}.
+\end{myitemize}
+
+Spot quality and link cost are useful to quantify automatic spot detection and linking. We typically use negative values for these two numbers when doing manual edits. The following script writes the letter T using spots and links.
+
+\begin{lstlisting}[language=python]
+import ij.gui.NewImage as NewImage
+import fiji.plugin.trackmate.Settings as Settings
+import fiji.plugin.trackmate.Model as Model
+import fiji.plugin.trackmate.Logger as Logger
+import fiji.plugin.trackmate.Spot as Spot
+import fiji.plugin.trackmate.SelectionModel as SelectionModel
+import fiji.plugin.trackmate.TrackMate as TrackMate
+import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer as HyperStackDisplayer
+import fiji.plugin.trackmate.visualization.trackscheme.TrackScheme as TrackScheme
+import fiji.plugin.trackmate.visualization.PerTrackFeatureColorGenerator as PerTrackFeatureColorGenerator
+import fiji.plugin.trackmate.features.ModelFeatureUpdater as ModelFeatureUpdater
+import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer as TrackIndexAnalyzer
+import ij.plugin.Animator as Animator
+import math
+  
+# We just need a model for this script. Nothing else, since 
+# we will do everything manually.
+model = Model()
+model.setLogger(Logger.IJ_LOGGER)
+ 
+# Well actually, we still need a bit:
+# We want to color-code the tracks by their feature, for instance 
+# with the track index. But for this, we need to compute the 
+# features themselves. 
+#
+# Manually, this is done by declaring what features interest you
+# in a settings object, and creating a ModelFeatureUpdater that 
+# will listen to changes in the model, and compute the feautures
+# on the fly.
+settings = Settings()
+settings.addTrackAnalyzer( TrackIndexAnalyzer() )
+# If you want more, add more analyzers.
+ 
+# The object in charge of keeping the numerical features
+# up to date:
+ModelFeatureUpdater( model, settings )
+# Nothing more to do. When the model changes, this guy will be
+# notified and recalculate all the features you declared in
+# the settings object.
+   
+# Every manual edit to the model must be made 
+# between a model.beginUpdate() and a model.endUpdate()
+# call, otherwise you will mess with the event signalling
+# and feature calculation.
+model.beginUpdate()
+  
+# The letter T.
+  
+s1 = None
+for t in range(0, 5):
+    x = 10 + t * 10
+    if s1 is None:
+  
+        # When you create a spot, you always have to specify its x,
+        # y, z coordinates (even if z=0 in 2D images), AND its 
+        # radius, AND its quality. We enforce these 5 values so as
+        # to avoid any bad surprise in other TrackMate component.
+        # Typically, we use negative quality values to tag spot
+        # created manually. 
+        s1 = Spot(x, 10, 0, 1, -1)
+        model.addSpotTo(s1, t)
+        continue
+            
+    s2 = Spot(x, 10, 0, 1, -1)
+    model.addSpotTo(s2, t)
+    # You need to specify an edge cost for the link you create
+    # between two spots. Again, we use negative costs to tag
+    # edges created manually.
+    model.addEdge(s1, s2, -1)
+    s1 = s2
+  
+# So that's how you manually build a model from scratch. 
+# The next lines just do more of this, to build something enjoyable.
+  
+middle = s2
+s1 = s2
+for t in range(0, 4):
+    x = 60 + t * 10
+    s2 = Spot(x, 10, 0, 1, -1)
+    model.addSpotTo(s2, t + 5)
+    model.addEdge(s1, s2, -1)
+    s1 = s2
+  
+s1 = middle
+for t in range(0, 16):
+    y = 20 + t * 6
+    s2 = Spot(50, y, 0, 1, -1)
+    model.addSpotTo(s2, t + 5)
+    model.addEdge(s1, s2, -1)
+    s1 = s2
+    
+# Commit all of this.
+model.endUpdate()
+# This actually triggers the features to be recalculated.
+   
+# Prepare display.
+sm = SelectionModel(model)
+color = PerTrackFeatureColorGenerator(model, 'TRACK_INDEX')
+# The last line does not work if you did not compute the
+# 'TRACK_INDEX' feature earlier.
+   
+# The TrackScheme view is a bit hard to interpret.
+trackscheme = TrackScheme(model, sm)
+trackscheme.setDisplaySettings('TrackColoring', color)
+trackscheme.render()
+  
+# You can create an hyperstack viewer without specifying any
+# ImagePlus. It will then create a dummy one tuned to
+# display the model content.
+view = HyperStackDisplayer(model, sm)
+# Display tracks as comets
+view.setDisplaySettings('TrackDisplaymode', 1)
+view.setDisplaySettings('TrackDisplayDepth', 20)
+view.setDisplaySettings('TrackColoring', color)
+view.render()
+  
+# Animate it a bit
+imp = view.getImp()
+imp.getCalibration().fps = 30
+Animator().run('start')
+\end{lstlisting}
 
 
 
