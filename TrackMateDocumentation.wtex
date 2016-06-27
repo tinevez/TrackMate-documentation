@@ -3317,7 +3317,7 @@ on this graph all the descendant of the MS cell.
 Now let's find a path in the graph, from AB to AB.araappp
 
 \begin{lstlisting}[language=matlab]
-index_AB1 = find( strcmp( G.Nodes.name, 'AB'), 1 );
+>> index_AB1 = find( strcmp( G.Nodes.name, 'AB'), 1 );
 >> index_AB2 = find( strcmp( G.Nodes.name, 'AB.araappp'), 1 );
 >> 
 >> path_AB = shortestpath( G, index_AB1, index_AB2 );
@@ -3373,7 +3373,7 @@ repaint these descendants in another color on this 3D plot:
 >> s = e(:,1);
 >> t = e(:,2);
 >> 
->> Same procedure otherwise:
+>> % Same procedure otherwise:
 >> n_nodes = numel(s);
 >> Xms = [ x(s) x(t) NaN( n_nodes, 1) ]';
 >> Yms = [ y(s) y(t) NaN( n_nodes, 1) ]';
@@ -3396,11 +3396,11 @@ relevant edges only:
 \begin{lstlisting}[language=matlab]
 >> path_AB2 = shortestpathtree( G, index_AB1, index_AB2 );
 >> 
->> We get edges from the created digraph:
+>> % We get edges from the created digraph:
 >> s = path_AB2.Edges.EndNodes(:,1);
 >> t = path_AB2.Edges.EndNodes(:,2);
 >> 
->> Same procedure otherwise:
+>> % Same procedure otherwise:
 >> n_nodes = numel(s);
 >> Xab = [ x(s) x(t) NaN( n_nodes, 1) ]';
 >> Yab = [ y(s) y(t) NaN( n_nodes, 1) ]';
@@ -4612,6 +4612,28 @@ You can find the full source for this example \otherlink{https://github.com/fiji
 [[Category:Tutorials]]
 </wiki>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%----------------------------------------------------------------------------------------
+%                                EDGE ANALYZER
+%----------------------------------------------------------------------------------------
+
+\section
 
 
 
