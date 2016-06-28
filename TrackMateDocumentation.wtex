@@ -131,14 +131,31 @@
 
 
 
-\title{TrackMate documentation.}
+\title{\protect{\includegraphics[width=8cm]{figures/TrackMate_logo.png}}\\TrackMate documentation.}
 \author{Jean-Yves Tinevez}
 
 \begin{document}
 \maketitle
 
 
-This document regroups the \wikilink{TrackMate}{TrackMate} documentation. It starts with several tutorial covering basic usage, manual annotation and scripting, then gives technical information about TrackMate components.
+This document constitutes the \wikilink{TrackMate}{TrackMate} documentation. It is divided in four parts, that groups sections by interest.
+\begin{myitemize}
+	
+	\item The first part contains three tutorials, aimed at end-users. They are meant to guide users with the \TrackMate plugin as a single-particle tracking Fiji plugin. They cover the three applications of the plugin:
+	\begin{myitemize}
+		\item automated single-particle tracking;
+		\item manual curation and correction of tracking results;
+		\item manual and semi-automatic tracking.
+	\end{myitemize}
+	
+	\item The second part contains technical information. It documents the use of some TrackMate components and gives their exact definition, accuracy and performance. This part is meant to guide the user in choosing the right algorithm for their application.
+	
+	\item The third part is aimed at advanced users, that want to analyze the tracking results in another software package, or use a scripting language to configure and run \TrackMate programmatically. 
+	
+	\item The last part is made of seven tutorials aimed at Java developers and document how to extend \TrackMate with custom modules. The seven tutorials document a specific \TrackMate module (detection, particle-linking, \etc) but are best read first in order, as they introduce developers to the annotation mechanism used for automatic plugin discovery.
+	
+\end{myitemize}
+
 
 
 </latex>
@@ -146,6 +163,7 @@ This document regroups the \wikilink{TrackMate}{TrackMate} documentation. It sta
 __TOC__
 </wiki>
 
+\newpage
 \tableofcontents
 \newpage
 
@@ -158,8 +176,8 @@ __TOC__
 
 
 
-\section{Getting started with TrackMate.}
-%-----------------------------------------
+\section{Using TrackMate for automated single-particle tracking.}
+%----------------------------------------------------------------
 
 
 
@@ -168,7 +186,7 @@ __TOC__
 
 This tutorial is the starting point for \wikilink{TrackMate}{TrackMate} users. It explains how it works by walking you through a simple case, using an easy image. 
 
-The \wikilink{TrackMate}{TrackMate} plugin provides a way to semi-automatically segment spots or roughly spherical objects from a 1D, 2D or 3D image, and track them over time. It follows the classical single-particle tracking scheme, where the segmentation step and the particle-linking step are separated. Therefore each step is handled in the user interface by a specific panel, and you will go back in forth through them. 
+The \wikilink{TrackMate}{TrackMate} plugin provides a way to semi-automatically segment spots or roughly sphe\-rical objects from a 1D, 2D or 3D image, and track them over time. It follows the classical single-particle tracking scheme, where the segmentation step and the particle-linking step are separated. Therefore each step is handled in the user interface by a specific panel, and you will go back in forth through them. 
 Also, TrackMate works like a fishing net with small holes: it will find as much spots as it can, even the ones you are not interested. So there is a step to filter them out before tracking. 
 In these views, TrackMate resembles a bit to the Spot Segmentation Wizard of \otherlink{http://www.bitplane.com/go/products/imaris}{Imaris™}.
 
@@ -241,7 +259,6 @@ The choice is actually quite limited. Apart from the \texttt{Manual annotation},
 	\item The \texttt{Block LoG detector} splits the image in small blocks to limit memory usage in the case of large input image. 
 	
 \end{myitemize}
-
 In our case, let us just use the \texttt{DoG detector}.
 
 
@@ -257,7 +274,7 @@ There are extra fields that you can configure also. The \texttt{Threshold} numer
 
 You can check \textbf{Use median filter}: this will apply a 3x3 median filter prior to any processing. This can help dealing with images that have a marked salt and pepper noise which generates spurious spots. 
 
-We hope that TrackMate will be used in experiments requiring \textbf{Sub-pixel localization}, such as following motor proteins in biophysical experiments, so we added schemes to achieve this. The one currently implemented uses a quadratic fitting scheme (made by Stephan Saalfeld and Stephan Preibisch) based on \otherlink{http://www.cs.ubc.ca/~lowe/keypoints/}{David Lowe SIFT work}<wiki><ref>David G. Lowe, "Distinctive image features from scale-invariant keypoints", International Journal of Computer Vision, 60, 2 (2004), pp. 91-110.</ref></wiki><latex>~\cite{lowe}</latex>. It is not as accurate as the algorithm typically used in super-localization, byt has the advantage of being very quick, compared to the segmentation time itself.
+We hope that TrackMate will be used in experiments requiring \textbf{Sub-pixel localization}, such as following motor proteins in biophysical experiments, so we added schemes to achieve this. The one currently implemented uses a quadratic fitting scheme (made by Stephan Sa\-alfeld and Stephan Prei\-bisch) based on \otherlink{http://www.cs.ubc.ca/~lowe/keypoints/}{David Lowe SIFT work}<wiki><ref>David G. Lowe, "Distinctive image features from scale-invariant keypoints", International Journal of Computer Vision, 60, 2 (2004), pp. 91-110.</ref></wiki><latex>~\cite{lowe}</latex>. It is not as accurate as the algorithms typically used in super-localization, but has the advantage of being very quick, compared to the segmentation time itself.
 
 Finally, there is a \smallimg{Icon_flag_checked.png} \textbf{Preview} button that allows to quickly check your parameters on the current data. After some computations, you can check the results overlaid on the image. Most likely, you will see plenty of spurious spots that you will be tempted to discard by adjusting the \textbf{Threshold} value. This is a very good approach for large problems. Here, we care little for that, just leave the threshold at 0.
 
@@ -584,20 +601,19 @@ This tutorial uses the following strategy: we will use an inadequate set of segm
 \subsection{Generating a sub-optimal segmentation.}
 %---------------------------------------------------
 
-\screenshotLeftC{TrackMate_DownsampledLogSegmenter.png}
 
-Launch TrackMate \menu{Plugins > Tracking > TrackMate}) and select the 		\textit{C.elegans} stack as a target. Check on the first panel that all the spatial calibration is OK. The pixel size is about 200 nm in XY, 1 µm in Z, and each frame is separated by 2 minutes.
+Launch TrackMate \menu{Plugins > Tracking > TrackMate} and select the 		\textit{C.elegans} stack as a target. Check on the first panel that all the spatial calibration is OK. The pixel size is about 200 nm in XY, 1 µm in Z, and each frame is separated by 2 minutes.
 
 Select the \texttt{Downsampled LoG detector}. This choice actually makes sense: the nuclei are about 8 µm in diameter, and with a sampling of 200 nm, that makes 40 pixels wide nuclei. It is already advantageous to use the down-sampled version of the LoG segmenter above 20 pixels: segmenting 3D data over time takes already quite some time. Having to track large objects allow to downsample them, making the data to iterate over smaller, which speed up the process. 
 
-This comes at a cost: the localization precision. To simulate segmentation defects, we will make it very bad. In the segmenter configuration panel, choose a down-sampling factor of 10 (a factor of 4 would have been wiser), and a target nuclei radius of 8 µm, as depicted to the right. 
+This comes at a cost: the localization precision. To simulate segmentation defects, we will make it very bad. In the segmenter configuration panel, choose a down-sampling factor of 10 (a factor of 4 would have been wiser), and a target nuclei radius of 8 µm, as depicted below. 
+
+\screenshotB{TrackMate_DownsampledPanels.pdf}
 
 The segmentation should take you no more than a minute, even on a standard machine, a considerable improvement over a standard detector. But at what cost!
 
+On the Initial thresholding panel, we see that it is easy to separate spurious spots using the \texttt{Quality} feature only. There is a big and sharp peak at the left of the histogram. By moving the slider around you can get the remaining number of spot after filtering. If we put the threshold around 70, just above the first sharp peak, we see that we are left with about 115 spots. Now: We have 17 time-points, each of them containing at most 4 cells and two polar bodies (check the raw movie). So 115 remaining spots seems to be correct, therefore the threshold set at 70 seems right. 
 
-\screenshotA{TrackMate_DownsampledInitThreshold.png}
-
-On the Initial thresholding panel, we see that it is easy to separate spurious spots using the '''Quality''' feature only. There is a big and sharp peak at the left of the histogram. By moving the slider around you can get the remaining number of spot after filtering. If we put the threshold around 70, just above the first sharp peak, we see that we are left with about 115 spots. Now: We have 17 time-points, each of them containing at most 4 cells and two polar bodies (check the raw movie). So 115 remaining spots seems to be correct, therefore the threshold set at 70 seems right. 
 
 Now move to the next panel. On the \textit{Displayer choice} panel you must pick the \texttt{HyperStack Displayer}. It is the only one that allows for manual editing.
 
@@ -617,7 +633,7 @@ Almost all polar bodies are incorrectly detected, and the localization of cells 
 
 \screenshotLeftC{Celegans-5pc_17timepoints-Incorrect.png}
 
-Normally, TrackMate can robustly handles track splitting events, representing ''e.g.'' cell division. Though this happens in this movie, we choose to dismiss this possibility in the automated tracking part.
+Normally, TrackMate can robustly handles track splitting events, representing \eg cell division. Though this happens in this movie, we choose to dismiss this possibility in the automated tracking part.
 
 In the \textit{Tracker choice} panel, select the \texttt{Simple LAP tracker}. Leave the default values for the parameters, and press \smallimg{Icon_arrow_right.png} \textbf{Next}. You should end up in having something similar to the image to the right.
 
@@ -947,8 +963,8 @@ Plus or minus the localization errors and some incorrect cell radii, you now hav
 
 
 
-\section{Manual tracking with TrackMate.}
-%----------------------------------------
+\section{Manual and semi-automated tracking with TrackMate.}
+%-----------------------------------------------------------
 
 
 The previous TrackMate tutorial - \wikilink{Manual editing of tracks using TrackMate}{Manual editing of tracks using TrackMate} is dedicated to manually correcting the results of an automated process. This small tutorial here shows how to do a fully manual annotation, from scratch, with \wikilink{TrackMate}{TrackMate}.
@@ -1203,7 +1219,7 @@ Moving around is done classically with the mouse, and the panning is triggered b
 \begin{myitemize}
 	\item \keys{Mousewheel} scrolls up and down.
 	\item \keys{Shift+Mousewheel} scrolls left and right.
-	\item \keys{Space+Mousedrag} pans the view, à la ImageJ. If you pull the mouse out of the TrackScheme window, it will scroll in the direction of the mouse cursor.
+	\item \keys{Space+Mousedrag} pans the view, à la ImageJ. If you pull the mouse out of the \TrackScheme window, it will scroll in the direction of the mouse cursor.
 	\item \keys{Space+Mousewheel} is used for zooming.
 \end{myitemize}
 
@@ -1343,7 +1359,7 @@ Here is a way to do it. In TrackScheme using \keys{Mousedrag} select all the spo
 \subsubsection{Triggering re-layout and style refresh.}
 %---------------------------------------------------
 
-Notice that the TrackScheme display of this new track is somewhat unsatisfactory. The first track may have changed color in the main view, but this change did not happen in TrackScheme. Plus, the new track does not have its own column, and the color of some of its spots might be wrong. The reasons for this are:
+Notice that the TrackScheme display of this new track is somewhat unsatisfactory. The first track may have changed color in the main view, but this change did not happen in \TrackScheme. Plus, the new track does not have its own column, and the color of some of its spots might be wrong. The reasons for this are:
 \begin{myitemize}
 
 	\item We changed the annotation and these changes affected the numerical features that color the tracks. For instance, if you picked the \texttt{Track index} numerical feature for track coloring, there is now two tracks instead of one. The feature update is seen immediately in the main view, but for performance reason, TrackScheme as well as the color line on the main GUI window have to be refreshed manually. To do so, click on the \smallimg{Icon_theme.png} \textbf{Style} button in the TrackScheme toolbar, and directly on the track color line on the main GUI window.
@@ -1730,7 +1746,7 @@ The nominal implementation of the paper remains the one developed under MATLAB b
 
 \begin{myitemize}
 
-	\item The LAP framework is generic: Jaqaman and colleagues proposed a framework to approximate  multiple-hypothesis tracking solutions using linear assignment problems. One just need to provide the link cost matrix. \textbf{TrackMate} properly implements the LAP framework, but the cost matrix calculation - which is specific to each problem - is much more simpler than in \textbf{u-track}. 
+	\item The LAP framework is generic: Jaqaman and colleagues proposed a framework to ap\-proximate  mul\-tiple-hypothesis tracking solutions using linear assignment pro\-blems. One just need to provide the link cost matrix. \textbf{TrackMate} properly implements the LAP framework, but the cost matrix calculation - which is specific to each problem - is much more simpler than in \textbf{u-track}. 
 	
 	For instance, in TrackMate all link costs are based on the square distance between two spots (weighted or not by feature differences, see above), which make it tailored for Brownian motion. In <b>u-track</b>, the user is proposed with different motion types, including a linear motion whose parameters are determined on the fly. See for instance CD36 tracking, in the supplementary note 7 of the Jaqaman paper.
 	
@@ -1876,7 +1892,17 @@ The particle linking algorithm would read as follow:
 %----------------------------------------------------------------------------------------
 
 
-\newpage
+
+
+
+
+
+
+
+
+
+
+
 \section{Particle-linking algorithms accuracy.}
 %----------------------------------------------
 
@@ -5529,7 +5555,7 @@ The method specific to actions is more interesting:
 public TrackMateAction create( final TrackMateGUIController controller )
 \end{lstlisting}
 
-This means that when we create our specific action, we have access to the some of GUI context through the controller. We therefore have to check its {{GitHub|org=fiji|repo=TrackMate|source=fiji/plugin/trackmate/gui/TrackMateGUIController.java|label=API}} to know what we can get. It gives us access to:
+This means that when we create our specific action, we have access to the some of GUI context through the controller. We therefore have to check its \otherlink{https://github.com/fiji/TrackMate/blob/master/src/main/java/fiji/plugin/trackmate/gui/TrackMateGUIController.java}{API} to know what we can get. It gives us access to:
 \begin{myitemize}
   \item The GUI window itself (\texttt{public TrackMateWizard getGUI()}), that we can use as parent for dialogs, wild live GUI editing...
   \item The trackmate plugin (\texttt{public TrackMate getPlugin()}), hereby the model and settings objects.
@@ -5759,8 +5785,7 @@ Let's get started with the easiest part, the detection algorithm.
 %--------------------------------------------------------------
 
 The detection part itself is implemented in a class that implements the \otherlink{https://github.com/fiji/TrackMate/blob/master/src/main/java/fiji/plugin/trackmate/detection/SpotDetector.java}{SpotDetector} interface. Browsing there, you will see that it is just a specialization of an output algorithm from \wikilink{ImgLib2}{ImgLib2}. We are required to spit out a \texttt{List<Spot>} that represents the list of detection (one \texttt{Spot} per detection) for a \textbf{single frame}. 
-
-This is important: \underline{an instance of your detector is supposed to work on a single frame}. TrackMate will generate as many instances of the detector per frame it has to operate on. This facilitates development, but also multithreading: TrackMate fires one detector per thread it has access to, and this is done without you having to worry about it. TrackMate will bundle the outputs of all detectors in a thread-safe manner.
+This is important: an instance of your detector is supposed to work on a single frame. \TrackMate will generate as many instances of the detector per frame it has to operate on. This facilitates development, but also multithreading: TrackMate fires one detector per thread it has access to, and this is done without you having to worry about it. TrackMate will bundle the outputs of all detectors in a thread-safe manner.
 
 It is the work of the detector factory to provide each instance with the data required to segment a specific frame. But we will see how this is done below. 
 
@@ -6401,7 +6426,7 @@ Here is what our dummy example looks, after tracking the spots this it creates.
 
 \subsection{Introduction.}
 %-------------------------
-This last part on particle-linking modules concludes the series of tutorials on extending \wikilink{TrackMate}{TrackMate}. The most difficult modules to create are spot detectors, which was the subject of the previous section. Particle-linking modules, or trackers, are a little bit less complicated. 
+This last part on particle-linking modules concludes the series of tutorials on extending \TrackMate. The most difficult modules to create are spot detectors, which was the subject of the previous section. Particle-linking modules, or trackers, are a little bit less complicated. 
 However, you still need to understand how we store and manipulate links in TrackMate, and this implies very briefly introducing mathematical graphs.
 
 
