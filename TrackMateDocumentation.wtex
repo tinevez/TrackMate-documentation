@@ -31,6 +31,7 @@
 \usepackage[scaled=.75]{beramono}
 % Put a dot after section number.
 \usepackage{secdot}
+\usepackage[super]{nth}
 
 % I want a proper degree symbol in text.
 \usepackage{textcomp}       % additional symbols using companion encoding TS1
@@ -138,7 +139,7 @@
 \maketitle
 
 
-This document constitutes the \wikilink{TrackMate}{TrackMate} documentation. It is divided in four parts, that groups sections by interest.
+This document constitutes the \wikilink{TrackMate}{TrackMate} documentation. It is divided in four parts, that group sections by interest.
 \begin{myitemize}
 	
 	\item The first part contains three tutorials, aimed at end-users. They are meant to guide users with the \TrackMate plugin as a single-particle tracking Fiji plugin. They cover the three applications of the plugin:
@@ -186,7 +187,7 @@ __TOC__
 
 This tutorial is the starting point for \wikilink{TrackMate}{TrackMate} users. It explains how it works by walking you through a simple case, using an easy image. 
 
-The \wikilink{TrackMate}{TrackMate} plugin provides a way to semi-automatically segment spots or roughly sphe\-rical objects from a 1D, 2D or 3D image, and track them over time. It follows the classical single-particle tracking scheme, where the segmentation step and the particle-linking step are separated. Therefore each step is handled in the user interface by a specific panel, and you will go back in forth through them. 
+The \wikilink{TrackMate}{TrackMate} plugin provides a way to automatically segment spots or roughly sphe\-rical objects from a 1D, 2D or 3D image, and track them over time. It follows the classical single-particle tracking scheme, where the detection step and the particle-linking step are separated. Therefore each step is handled in the user interface by a specific panel, and you will go back in forth through them. 
 Also, TrackMate works like a fishing net with small holes: it will find as much spots as it can, even the ones you are not interested. So there is a step to filter them out before tracking. 
 In these views, TrackMate resembles a bit to the Spot Segmentation Wizard of \otherlink{http://www.bitplane.com/go/products/imaris}{Imaris™}.
 
@@ -213,11 +214,11 @@ But first, just a few words about its look. The user interface is a single frame
 
 The \smallimg{Icon_arrow_right.png} \textbf{Next} button allows to step through the tracking process. It might be disabled depending on the current panel content. For instance, if you do not select a valid image in the first panel, it will be disabled. The \smallimg{Icon_arrow_left.png} \textbf{Previous} button steps back in the process, without executing actions. For instance, if you go back on the segmentation panel, segmentation will not be re-executed. 
 
-The \smallimg{Icon_page_save.png} \textbf{Save} button creates a XML file that contains all of the data you generated at the moment you click it. Since you can save at any time, the resulting file might miss tracks, spots, etc... You can load the saved file using the menu item \menu{Plugins > Tracking > Load a TrackMate file}. It will restore the session just where you saved it.
+The \smallimg{Icon_page_save.png} \textbf{Save} button creates a XML file that contains all of the data you generated at the moment you click it. Since you can save at any time, the resulting file might miss tracks, spots, \etc. You can load the saved file using the menu item \menu{Plugins > Tracking > Load a TrackMate file}. It will restore the session just where you saved it.
 
 Now is a good time to speak strategy when it comes to saving/restoring. You can save at anytime in TrackMate. If you save just before the tracking process, you will be taken there with the data you generated so far upon loading. TrackMate saves a \underline{link to the image file} (as an absolute file path) but not the image itself. When loading a TrackMate file, it tries first to retrieve and open this file in ImageJ. So it is a good idea to pre-process, crop, edit metadata and massage the target image first in Fiji, then save it as a \texttt{.tif}, then launch TrackMate. Particularly if you deal with a multi-series file, such as Leica \texttt{.lif} files.
 
-The advantage of this approach is that you load in TrackMate, and everything you need will be loaded and displayed. However, if you need to change the target file or if it cannot be retrieved, you will have to open the TrackMate XML file and edit its 4th line.
+The advantage of this approach is that you load in TrackMate, and everything you need will be loaded and displayed. However, if you need to change the target file or if it cannot be retrieved, you will have to open the TrackMate XML file and edit its \nth{4} line.
 
 \screenshotC{TrackMate_MainButtons.pdf}
 
@@ -230,10 +231,9 @@ This first panel allows you to check the spatial and temporal calibration of you
 
 What is critical is also to check the dimensionality of the image. In our case, we have a 2D time-lapse of 50 frames. If metadata are not present or cannot be read, ImageJ tends to assume that stack always are Z-stack on a single time-point. 
 
-If the calibration or dimensionality of your data is not right, it is best changing it in the image metadata itself, using \menu{Image > Properties} (\keys{Shift+P}). The press the \textbf{Refresh source} button on the TrackMate start panel to grab changes.
+If the calibration or dimensionality of your data is not right, it is best changing it in the image metadata itself, using \menu{Image > Properties} (\keys{Shift+P}). Then press the \textbf{Refresh source} button on the TrackMate start panel to grab changes.
 
 You can also define a sub-region for processing: if you are only interested in finding spots in a defined region of the image, you can use any of the ROI tools of ImageJ to draw a closed area on the image. Once you are happy with it, press the \textbf{Refresh source} button on the panel to pass it to TrackMate. You should see that the \textbf{X} \textbf{Y} start and end values change to reflect the bounding box of the ROI you defined. The ROI needs not to be a square. It can be any closed shape. 
-
 If you want to define the min and max \textbf{Z} and / or \textbf{T}, you have to edit manually the fields on the panel. 
 
 Defining a smaller area to analyze can be very beneficial to test and inspect for correct parameters, particularly for the segmentation step. In this tutorial, the image is so small and parse that we need not worrying about it. Press the \smallimg{Icon_arrow_right.png} \textbf{Next} button to step forward.
@@ -250,9 +250,9 @@ The choice is actually quite limited. Apart from the \texttt{Manual annotation},
 
 \begin{myitemize}
 
-	\item The \texttt{LoG detector} applies a plain LoG filter on the image. All calculations are made in the Fourier space, which makes it optimal for intermediate spot sizes, between 5 and 20 pixels in diameter.
+	\item The \texttt{LoG detector} applies a plain Laplacian of Gaussian filter on the image. All calculations are made in the Fourier space, which makes it optimal for intermediate spot sizes, between 5 and 20 pixels in diameter.
 	
-	\item The \texttt{DoG detector} uses the <wiki>\otherlink{https://en.wikipedia.org/wiki/Blob_detection\#The_difference_of_Gaussians_approach}{difference of Gaussians}</wiki><latex>difference of Gaussians</latex> approach to approximate a LoG filter by the difference of 2 Gaussians. Calculations are made in the direct space, and it is optimal for small spot sizes, below 5 pixels.
+	\item The \texttt{DoG detector} uses the <wiki>\otherlink{https://en.wikipedia.org/wiki/Blob_detection\#The_difference_of_Gaussians_approach}{difference of Gaussians}</wiki><latex>difference of Gaussians</latex> approach to approximate a LoG filter by the difference of two Gaussians. Calculations are made in the direct space, and it is optimal for small spot sizes, below 5 pixels.
 	
 	\item The \texttt{Downsample LoG detector} uses the LoG detector, but downsizes the image by an integer factor before filtering. This makes it optimal for large spot sizes, above 20 pixels in diameter, at the cost of localization precision.
 	
@@ -278,7 +278,7 @@ We hope that TrackMate will be used in experiments requiring \textbf{Sub-pixel l
 
 Finally, there is a \smallimg{Icon_flag_checked.png} \textbf{Preview} button that allows to quickly check your parameters on the current data. After some computations, you can check the results overlaid on the image. Most likely, you will see plenty of spurious spots that you will be tempted to discard by adjusting the \textbf{Threshold} value. This is a very good approach for large problems. Here, we care little for that, just leave the threshold at 0.
 
-The two others automated segmenters share more or less the same fields in their own configuration panel. The \texttt{Downsampled LoG segmenter} simply asks for an extra down-sampling integer factor. 
+The two others automated detectors share more or less the same fields in their own configuration panel. The \texttt{Downsampled LoG detector} simply asks for an extra down-sampling integer factor. 
 In our case, the spots we want to track are about 5 pixels in diameter, so this is what we enter in the corresponding field. We don't need anything else. The \textbf{Sub-pixel localization} option adds a very little time penalty so we can leave it on.
 
 
@@ -288,13 +288,13 @@ In our case, the spots we want to track are about 5 pixels in diameter, so this 
 
 \screenshotC{TrackMate_Segmenting.png}
 
-Once you are happy with the segmentation parameters, press the \smallimg{Icon_arrow_right.png} \textbf{Next} button and the segmentation will start. The TrackMate GUI displays the \texttt{log panel}, that you will meet several times during the process. It is basically made of a text area that recapitulates your choices and send information on the current process, and of a progress bar on top. You can copy-paste the text if you want to keep track of the process somewhere. You can even add comments as text in it: it is editable, and everything you type there is saved in the XML file, and retrieved upon loading. You can access the log panel anytime, by clicking on the log button at the bottom of the TrackMate window. 
+Once you are happy with the segmentation parameters, press the \smallimg{Icon_arrow_right.png} \textbf{Next} button and the segmentation will start. The TrackMate GUI displays the \texttt{log panel}, that you will meet several times during the process. It is basically made of a text area that recapitulates your choices and send information on the current process, and of a progress bar on top. You can copy-paste the text if you want to keep track of the process somewhere. You can even add comments as text in it: it is editable, and everything you type there is saved in the XML file, and retrieved upon loading. You can access the log panel anytime, by clicking on the \smallimg{Icon_information.png} log button at the bottom of the TrackMate window. 
 
 Should the process be long enough, you should be able to see that the \smallimg{Icon_arrow_right.png} \textbf{Next} button turned into a \smallimg{Icon_cancel.png} \textbf{Cancel} button. If you press it while the detection is running, TrackMate will finish the detection of the current frames, and stop. You could now go on with the spots it found, or go back and restart. 
 
-TrackMate takes advantage of multi-core computers, which seems to be the standard nowadays. If you the source image has more time-points than CPU cores, it will segment one time-frame per core available. On computers with many cores, the progress bar will seems to move in a bulky way: if you have 16 cores, 16 time-points will be segmented at once, and it is likely that they will be finished approximately on the same time. So don't be worried if the progress bar does not move in the beginning for large images. If you have more cores than time-points, then TrackMate will allocate cores differently and give more cores to each time-point. For instance, if you have 12 CPU cores and only 4 time-points, each time-point will get 3 cores for calculation.
+TrackMate takes advantage of multi-core computers, which seems to be the standard nowadays. If the source image has more time-points than CPU cores, it will segment one time-frame per core available. On computers with many cores, the progress bar will seems to move in a bulky way: if you have 16 cores, 16 time-points will be segmented at once, and it is likely that they will be finished approximately on the same time. So don't be worried if the progress bar does not move in the beginning for large images. If you have more cores than time-points, then TrackMate will allocate cores differently and give more cores to each time-point. For instance, if you have 12 CPU cores and only 4 time-points, each time-point will get 3 cores for calculation.
 
-On our dummy image, this is clearly something we need to worry about, and the segmentation should be over in a few seconds. Typically, this is the step that takes the longer. Once the segmentation is done, the \smallimg{Icon_arrow_right.png} \textbf{Next} button is re-enabled.
+On our dummy image, this is clearly something we need to worry about, and the segmentation should be over in a few seconds. Typically, this is the step that takes the most time. Once the segmentation is done, the \smallimg{Icon_arrow_right.png} \textbf{Next} button is re-enabled.
 
 
 
@@ -307,11 +307,11 @@ Here is a difficult step to explain, particularly because we do not need at all 
 
 TrackMate uses generic segmentation algorithms for which there is only a little number of parameters to specify. The price to pay then, is that you can get a lot of undesired spots as an outcome. And in some cases, a really large amount of those.
 
-This is why there is spot features and feature filters. In the next steps, each spot will have a series of numerical features calculated using its location, radius and the image it is found in, such as the mean pixel intensity. You will be able to define filters on these features, to retain only the ones that are relevant to your study.
+This is why there are spot features and feature filters. In the next steps, each spot will have a series of numerical features calculated using its location, radius and the image it is found in, such as the mean pixel intensity. You will be able to define filters on these features, to retain only the ones that are relevant to your study.
 
 But for a very large number of spots - let's say: more than 1 million of them - performance issues can kick in. Those millions of spots will be stored in the model, and saved in the TrackMate file, in case you want to step back and change the filters, because for instance you realized you are not happy with the end results (you can do that). Some visualization tools - the 3D displayer for instance - will generate the renderings for those millions of spots at once and hide or show them depending on the filter values, because it is too expensive to recreate the renderings while tuning the filter values.
 
-To deal with that, we added a first filter prior to any other step, that uses the \texttt{Quality} value. The quality value is set by the segmenter, and is an arbitrary measure of the likelihood of each spot to be relevant. This panel collects all the quality values for all spots, and display their histogram (Y-scale is logarithmic). You can manually set a threshold on this histogram by clicking and dragging in its window. All spots with a quality value below this threshold will be \textbf{discarded}. That is: they will be deleted from the process, not saved in the file, they won't be displayed, nor their features will be calculated. Which is what we want when meeting a gigantic number of spurious spots. Note that this step is \textbf{irreversible}: if you step back to this panel, you will see the original histogram, but beware that the spots you have discarded cannot be recovered by changing the threshold. The only way is to step back further and restart the segmentation step. 
+To deal with that, we added a first filter prior to any other step, that uses the \texttt{Quality} value. The quality value is set by the detector, and is an arbitrary measure of the likelihood of each spot to be relevant. This panel collects all the quality values for all spots, and display their histogram (Y-scale is logarithmic). You can manually set a threshold on this histogram by clicking and dragging in its window. All spots with a quality value below this threshold will be \textbf{discarded}. That is: they will be deleted from the process, not saved in the file, they won't be displayed, nor their features will be calculated. Which is what we want when meeting a gigantic number of spurious spots. Note that this step is \textbf{irreversible}: if you step back, you will be taken to the detector configuration panel, ready to generate a new detection from scratch.
 
 In our case, we see from the histogram that we could make sense of this step. There is a big peak at low quality (around a value of 1.2) that contains the majority of spots and is most likely represent spurious spots. So we could put the threshold around let's say 5.5 and probably ending in having only relevant spots. But with less than 10 000 spots, we are very very far from 1 million so we need not to use this trick. Leave the threshold bar close to 0 and proceed to the next step. 
 
@@ -367,7 +367,7 @@ To move the threshold, simply click and drag inside the histogram window. Notice
   \item Or use the arrow keys: the left and right arrow keys will change the threshold value by 10\%, the up and down arrow will set it to the max and min value respectively. 
 \end{myitemize}
 
-A filter can be set to be above or below the given threshold. You change this behavior using the radio buttons below the histogram window. In our case, we want it to be above of course. The \textbf{Auto} button uses <wiki>\otherlink{https://en.wikipedia.org/wiki/Otsu's_method}{Otsu's method}</wiki><latex>Otsu method\cite{otsu}</latex> to determine automatically a threshold. In our case, we will put it manually around 33. 
+A filter can be set to be above or below the given threshold. You change this behavior using the radio buttons below the histogram window. In our case, we want it to be above of course. The \textbf{Auto} button uses <wiki>\otherlink{https://en.wikipedia.org/wiki/Otsu's_method}{Otsu's method}</wiki><latex>Otsu method~\cite{otsu}</latex> to determine automatically a threshold. In our case, we will put it manually around 33. 
 
 You can inspect the data by scrolling on the hyperstack window and check that only mostly good spots are retained. This is an easy image. The spots you have filtered out are not discarded; they are simply not shown and they will not be taken into account when doing particle linking. In a later stage, you can step back to this step, and retrieve the filtered out spots by removing or changing the filters.
 
@@ -386,7 +386,7 @@ The next panel let you choose amongst available particle-linking algorithms, or 
 
 The apparent profusion of choices should not disorient you, for it just that: an appearance. We chose to focus on the Linear Assignment Problem (LAP) in the framework first developed by Jaqaman \etal<wiki><ref name="Jaqaman">[http://www.nature.com/nmeth/journal/v5/n8/full/nmeth.1237.html Jaqaman et al., "Robust single-particle tracking in live-cell time-lapse sequences", Nat Methods. 2008 Aug;5(8):695-702.]</ref></wiki><latex>~\cite{jaqaman}</latex>. 
 
-The first two LAP trackers are based on LAP, with important differences from the original paper described \wikilink{TrackMate_algorithms#Main_differences_with_the_Jaqaman_paper.5B1.5D}{here}. We focused on this method for it gave us a lot of flexibility and it can be configured easily to handle most cases. You can tune it to allow \textit{splitting events}, where a track splits in two, for instance following a cell that encounters mitosis. \textit{Merging events} are handled too in the same way, though my small culture prevents me from quoting a relevant biological case obvious as the previous one. More importantly are \textit{gap-closing events}, where a spot disappear for one frame (because it moves out of focus, because segmentation fails, ...) but the track manages to recuperates and connect with reappearing spots later.
+The first two LAP trackers are based on LAP, with important differences from the original paper described \wikilink{TrackMate_algorithms#Main_differences_with_the_Jaqaman_paper.5B1.5D}{here}. We focused on this method for it gave us a lot of flexibility and it can be configured easily to handle most cases. You can tune it to allow \textit{splitting events}, where a track splits in two, for instance following a cell that encounters mitosis. \textit{Merging events} are handled too in the same way. More importantly are \textit{gap-closing events}, where a spot disappear for one frame (because it moves out of focus, because segmentation fails, ...) but the track manages to recuperates and connect with reappearing spots later.
 
 These LAP algorithm exists in TrackMate in two flavors: a simple one and a not simple one. There are again the same, but the simple ones propose fewer configuration options and a thus more concise configuration panel. In short:
 
@@ -398,7 +398,7 @@ These LAP algorithm exists in TrackMate in two flavors: a simple one and a not s
 	
 \end{myitemize}
 
-There is also a 3\textsuperscript{rd} tracker, the \otherlink{https://en.wikipedia.org/wiki/Nearest_neighbor_search}{\texttt{Nearest neighbor search}} tracker. This is the most simple tracker you can build, and it is mostly here for demonstration purposes. Each spot in one frame is linked to another one in the next frame, disregarding any other spot, thus achieving only a very local optimum. You can set a maximal linking distance to prevent the results to be totally pathological, but this is as far as it goes. It may be of use for very large and easy datasets: its memory consumption is very limited (at maximum only two frames need to be in memory) and is quick (the nearest neighbor search is performed using \otherlink{https://en.wikipedia.org/wiki/K-d_tree}{Kd-trees}<latex>~\cite{bentley}</latex>).
+There is also a \nth{3} tracker, the \otherlink{https://en.wikipedia.org/wiki/Nearest_neighbor_search}{\texttt{Nearest neighbor search}} tracker. This is the most simple tracker you can build, and it is mostly here for demonstration purposes. Each spot in one frame is linked to another one in the next frame, disregarding any other spot, thus achieving only a very local optimum. You can set a maximal linking distance to prevent the results to be totally pathological, but this is as far as it goes. It may be of use for very large and easy datasets: its memory consumption is very limited (at maximum only two frames need to be in memory) and is quick (the nearest neighbor search is performed using \otherlink{https://en.wikipedia.org/wiki/K-d_tree}{Kd-trees}<latex>~\cite{bentley}</latex>).
 
 The 4\textsuperscript{th} tracker, \texttt{Linear motion LAP tracker} is well suited for particles that move with a roughly constant velocity, this velocity being different for each particle. Its compared accuracy and relevance for various scenario is discussed later.
 
@@ -450,25 +450,24 @@ Now, we would like the shape of these tracks to change. We see that the yellow t
 Look at the configuration panel. It is quite more complex than for the simple tracker, obviously, and it is the price for flexibility. Since it is quite long, the panel has to be scrolled to its bottom to venture on all fields.
 However, this apparent complexity is not that difficult to harness. If you look carefully, you will see that the main panel is made of 4 quasi-identical panel. Each one deals with one event type:
 
-The first one deals with the \underline{frame-to-frame linking}. It consists in creating small track segments by linking spots in one frame to the spots in the frame just after, not minding anything else. That is of course not enough to make us happy: there might be some spot missing, failed detection that might have caused your tracks to be broken. But let us focus on this one now.
-Linking is made by minimizing a global cost (from one frame to another, yet). The base cost of linking a particle with another one is simply the squared distance between the two particles, which is the adequate cost definition to retrieve particle motion when it exhibits Brownian motion<latex>~\cite{crocker}</latex>. Following the proposal of Jaqaman \etal<wiki></wiki><latex>~\cite{jaqaman}</latex>, we also consider the possibility for a particle \textit{not} to make any link, if is advantageous for the global cost. The sum of all costs are minimized to find to set of link for this pair of frame, and we move to the next one. 
-As for the simple tracker, the \texttt{Max distance} field helps preventing irrelevant linking to occur. Two spots separated by more than this distance will never be considered for linking. This also saves some computation time. 
+The first one deals with the \textbf{frame-to-frame linking}. It consists in creating small track segments by linking spots in one frame to the spots in the frame just after, not minding anything else. That is of course not enough to make us happy: there might be some spot missing, failed detection that might have caused your tracks to be broken. But let us focus on this one now.
+Linking is made by minimizing a global cost (from one frame to another, yet). The base cost of linking a particle with another one is simply the squared distance between the two particles, which is the adequate cost definition to retrieve particle motion when it exhibits Brownian motion<latex>~\cite{crocker}</latex>. Following the proposal of Jaqaman \etal<wiki></wiki><latex>~\cite{jaqaman}</latex>, we also consider the possibility for a particle \textit{not} to make any link, if is advantageous for the global cost. The sum of all costs are minimized to find the set of link for this pair of frame, and we move to the next one. 
+As for the simple tracker, the \texttt{Max distance} field helps preventing irrelevant linking to occur. Two spots separated by more than this distance will never be considered for linking. This also saves some computation time and complexity.
 
 The \texttt{Feature penalties} let you tune the linking cost using some measures of spot similarity. Typically in the single particle tracking framework, you cannot rely on shape 
 descriptors to identify a single object across multiple frames, for spots are "shapeless": they are just described by a X, Y, Z, T position tuple. 
+Yet, you might know your Biology better. For instance, you might be in the case where the mean intensity of a spot is roughly conserved along time, but vary even slightly from one spot to another. Or it might be the spot diameters, or its intensity distribution. Feature penalties allow you to penalize links between spots that have feature values that are different. Since the case you study might be anything, you can pick any feature to build your penalties.  
 
-Yet, you might know your Biology better. For instance, you might be in the case where the mean intensity of a spot is roughly conserved along time, but vary even slightly from one spot to another. Or it might be the spot diameters, or its intensity distribution. Feature penalties allow you to penalize links between spots that have feature values that are different. Since the case you study might be anything, you can pick any feature to build your penalties. This one of the novelties in TrackMate, already evoked in Jaqaman \etal, but extended here. 
+If you want to use feature penalties for frame-to-frame linking, simply press the green \smallimg{Icon_add.png} \textbf{+} button in the sub-panel. A combo-box will appear, in which you can choose the target feature. The text field to its right allows specifying the penalty weight. Feature penalties will \textit{change} the base cost. We will not go in the details here (particularly because we are not going to use feature penalties in this tutorial), but basically, two spots with different features will have a linking cost higher than if the selected features values were the same. The weight allows you to specify how much you want to penalize a specific feature difference. A weight of 10 is already very penalizing.
 
-If you want to use feature penalties for frame-to-frame linking, simply press the green \textbf{+} button in the sub-panel. A combo-box will appear, in which you can choose the target feature. The text field ti its right allows specifying the penalty weight. Feature penalties will ''change'' the base cost. We will not go in the details here (particularly because we are not going to use feature penalties in this tutorial), but basically, two spots with different features will have a linking cost higher than if the selected features values were the same. The weight allows you to specify how much you want to penalize a specific feature difference. A weight of 10 is already very penalizing.
-
-In our case, given the sparsity of spots, we do not need help from the features at all. Remove any penalties you might have added, using the red \textbf{-} button. 
+In our case, given the sparsity of spots, we do not need help from the features at all. Remove any penalties you might have added, using the red \smallimg{Icon_delete.png} \textbf{-} button. 
 
 
-The three other sub-panels deal with the second pass of the linking algorithm, where you take track segments created above and relink them. This \underline{gap-closing} part is already known to you, it is the same as we saw in the previous section: you have to specify a maximal distance, and a maximal frame separation. You can also specify feature penalties, like for frame-to-frame linking. They will be computed on the last spot of the first segment and the first spot of the 2nd segment you are trying to bridge.
+The three other sub-panels deal with the second pass of the linking algorithm, where you take track segments created above and relink them. This \textbf{gap-closing} part is already known to you, it is the same as we saw in the previous section: you have to specify a maximal distance, and a maximal frame separation. You can also specify feature penalties, like for frame-to-frame linking. They will be computed on the last spot of the first segment and the first spot of the \nth{2} segment you are trying to bridge.
 
-The 3rd and 4th panels deal respectively with track splitting events and track merging events. The mechanisms at play are the same that for the gap-closings: track segments are bridge together depending on the penalties and on the max distance allowed. Track splitting and merging are only allowed from one frame to the next one. 
+The \nth{3} and \nth{4} panels deal respectively with track splitting events and track merging events. The mechanisms at play are the same that for the gap-closings: track segments are bridge together depending on the penalties and on the max distance allowed. Track splitting and merging are only allowed from one frame to the next one. 
 
-For \underline{track splitting}, the middle of a segment is offered to bridge to the start of another segment. For \underline{track merging}, the end of a segment is offered to bridge to the middle of another one.  A check box sets if you want to forbid or allow any of these events. 
+For \textbf{track splitting}, the middle of a segment is offered to bridge to the start of another segment. For \textbf{track merging}, the end of a segment is offered to bridge to the middle of another one.  A check box sets whether you want to forbid or allow any of these events. 
 
 As an exercise, try to find the parameters the will fuse the central track segments in a single large track, with two splitting events and a merge event. You should obtain the track layout pictured below.
 
@@ -479,11 +478,11 @@ As an exercise, try to find the parameters the will fuse the central track segme
 \subsection{Filtering tracks.}
 %-----------------------------
 
-The next panel is just the equivalent of the spot filtering step we met before, but this time we use track features,. The filter principles are the same: you simply add filters, choosing a target feature, until you are happy with the remaining tracks. As for the spots, the tracks are not really deleted; they are just hidden and you can retrieve them by switching back to this panel and delete the filters. 
+The next panel is just the equivalent of the spot filtering step we met before, but this time we use track features. The filter principles are the same: you simply add filters, choosing a target feature, until you are happy with the remaining tracks. As for the spots, the tracks are not really deleted; they are just hidden and you can retrieve them by switching back to this panel and delete the filters. 
 
 \screenshotC{TrackMate_TrackingFiltering.png}
 
-Here, we have a total of 4 tracks. The two immobile spots of the bottom left contribute one track each, that we can barely see because they do not move much. Let us say that we want to get rid of them. There are several ways to do that, but the simple is simply to add a filter on track displacement, as picture above. 
+Here, we have a total of 4 tracks. The two immobile spots of the bottom left contribute one track each, that we can barely see because they do not move much. Let us say that we want to get rid of them. There are several ways to do that, but the simple is simply to add a filter on track displacement, as pictured above. 
 
 
 
@@ -496,7 +495,7 @@ We are now close to the end of a typical workflow for a tracking problem. The pa
 
 The \wikilink{TrackScheme}{TrackScheme} button launches a module that allow manually editing tracks, and performing analysis on them. It is the subject of another tutorial. 
 
-If you press \smallimg{Icon_arrow_right.png} \textbf{Next}, you will see that there is still two panels after this one. The first one allows to plot any kind of feature as a function of another one. TrackMate deals with 3 kind of features: spot, link and track feature, depending on where it makes sense to compute them. For instance, instantaneous velocity is computed over a link (between two spots linked in a track), so you will find it on the \texttt{Links} tab. The \textbf{+} and \textbf{-} buttons allow you add several features on the Y-axis, and they will be pooled on the same graph or not, depending on the dimensionality of the features.
+If you press \smallimg{Icon_arrow_right.png} \textbf{Next}, you will see that there is still two panels after this one. The first one allows to plot any kind of feature as a function of another one. TrackMate deals with 3 kind of features: spot, link and track feature, depending on where it makes sense to compute them. For instance, instantaneous velocity is computed over a link (between two spots linked in a track), so you will find it on the \texttt{Links} tab. The \smallimg{Icon_add.png} \textbf{+} and \smallimg{Icon_delete.png} \textbf{-} buttons allow you add several features on the Y-axis, and they will be pooled on the same graph or not, depending on the dimensionality of the features.
 
 The last panel is the Action chooser panel, that allows you to execute simple actions on your data, such as exporting, copying, re-calculating feature, etc... 
 
@@ -570,7 +569,7 @@ Now that you know how the plugin works, you should be able to reach the end resu
 \subsection{Introduction.}
 %-------------------------
 
-This tutorial show how to manually edit, correct and create spots and tracks in \wikilink{TrackMate}{TrackMate}. You might want to use manual editing to correct mistakes of automated segmenting or tracking, to do a full manual annotation of a dataset, or to create a "ground-truth" data.
+This tutorial show how to manually edit, correct and create spots and tracks in \wikilink{TrackMate}{TrackMate}. You might want to use manual editing to correct mistakes of automated detection or tracking, to do a full manual annotation of a dataset, or to create a "ground-truth" data.
 
 Manual annotation is seldom the most adequate alternative: depending on the size of the target data, it can take an important amount of time and energy, is not objective, and is not reproducible. But sometimes you have to bite the bullet, whether because a detector does not exist for your kind of images, or because it is quicker to manually correct error than to come with the ultimate, flawless algorithm. 
 
@@ -584,7 +583,7 @@ It is a good idea to be already familiar with the automated segmentation in Trac
 \subsection{The test image: Development of a \textit{C.elegans} embryo.}
 %-----------------------------------------------------------------------
 
-Download the target image here: \otherlink{http://samples.fiji.sc/Celegans-5pc-17timepoints.zip}{Celegans-5pc-17timepoints.zip (94 MB)}. It is a rather large file, so it is zipped. Unzip it somewhere; you should end up having a single tiff file, \textit{Celegans-5pc-17timepoints.tif} of about 100 MB.
+Download the target image here: \otherlink{http://samples.fiji.sc/Celegans-5pc-17timepoints.zip}{Celegans-5pc-17timepoints.zip (34 MB)}. It is a rather large file, so it is zipped. Unzip it somewhere; you should end up having a single tiff file, \textit{Celegans-5pc-17timepoints.tif} of about 100 MB.
 
 Open it in Fiji. You will get a stack, made of 41 Z-slices over 17 time-points, each image being 240 x 295. As you can see in \menu{Image > Properties} (\keys{Shift+P}), it has a spatial and temporal calibration. 
 
@@ -837,7 +836,7 @@ By default, the new spot has the radius of the last spot edited with the mouse. 
 %---------------------------------
 
 
-You now have the tools to correct the mistakes our crude detection made. Unfortunately for is exercise, there is just one: At the last time-point the leftmost cell just divided, but one of the daughter cell has been missed. 
+You now have the tools to correct the mistakes our crude detection made. Unfortunately for this exercise, there is just one: At the last time-point the leftmost cell just divided, but one of the daughter cell has been missed. 
 
 Notice that when you add spots, they also appear in the TrackScheme window as a magenta cells, on the far right in a lane without track number (under the column \texttt{Unlaid spots}). As long as you do not incorporate them in a track, they will remain there.
 
@@ -869,7 +868,7 @@ Press the \smallimg{Icon_refresh.png} \textbf{Redo layout} button to see the arr
 \subsubsection{Using selection and right-click menu.}
 %----------------------------------------------------
 
-The cell in TrackScheme cannot be easily moved due to a very tricky bug we cannot solve. When the source and target cells are far away, it might be better to use another way to create links. We do this using the shared selection.
+The cell in TrackScheme cannot be easily moved. When the source and target cells are far away, it might be better to use another way to create links. We do this using the shared selection.
 
 In TrackScheme, find the first spot of \texttt{Track\_4}, in frame 9. When you click on the corresponding cell in TrackScheme, it gets highlighted in green. In the HyperStack viewer, the displayed slice and time points are changed to display the spot, also highlighted in green.
 
