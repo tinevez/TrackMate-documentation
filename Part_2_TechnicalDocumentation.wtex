@@ -1,0 +1,1560 @@
+<latex>
+\ifdefined\wtexpart
+\else
+\documentclass{scrartcl}
+
+\usepackage{libertine} 
+\usepackage[libertine]{newtxmath}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{courier}
+
+\usepackage[export]{adjustbox}
+\usepackage{wrapfig}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsrefs}
+\usepackage{calc}
+\usepackage{funkey}
+\usepackage{notation}
+\usepackage{array}
+\usepackage{menukeys}
+\input{tikzstyles}
+\usetikzlibrary{shapes.misc}
+\usepackage{subfig}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage{tabulary}
+\usepackage{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\usepackage[htt]{hyphenat}
+\usepackage[scaled=.75]{beramono}
+% Put a dot after section number.
+\usepackage{secdot}
+\usepackage[super]{nth}
+
+% I want a proper degree symbol in text.
+\usepackage{textcomp}       % additional symbols using companion encoding TS1
+\usepackage{gensymb}        % provides macro \degree which works in text and math
+\DeclareUnicodeCharacter{00B0}{\degree}
+
+\newcommand\button[1]{\textit{#1}}
+\newcommand\key[1]{\texttt{#1}}
+\newcommand\screenshotA[1]{\centerline{\includegraphics[scale=0.5]{figures/#1}}}
+\newcommand\screenshotB[1]{\centerline{\includegraphics[width=.8\textwidth]{figures/#1}}}
+\newcommand\screenshotC[1]{\centerline{\includegraphics[width=.5\textwidth]{figures/#1}}}
+\newcommand\screenshotLeft[1]{\begin{wrapfigure}{r}{7.5cm}{\centerline{\includegraphics[width=7.3cm]{figures/#1}}}\end{wrapfigure}}
+\newcommand\screenshotLeftB[1]{\begin{wrapfigure}{r}{6cm}{\centerline{\includegraphics[width=5.8cm]{figures/#1}}}\end{wrapfigure}}
+\newcommand\screenshotLeftC[1]{\begin{wrapfigure}{r}{4cm}{\centerline{\includegraphics[width=3.8cm]{figures/#1}}}\end{wrapfigure}}
+\newcommand\screenshotTikz[1]{\centerline{\includetikz{figures/#1}}}
+\newcommand\coloredlink[1]{\textcolor{blue!75!black}{\underline{\smash{#1}}}}
+\newcommand\wikilink[2]{\href{http://imagej.net/#1}{\coloredlink{#2}}}
+\newcommand\otherlink[2]{\href{#1}{\coloredlink{#2}}}
+\newcommand\TODO[1]{\textcolor{red}{#1}}
+
+% Small font in verbatime environment.
+\makeatletter
+\def\verbatim{\small\@verbatim \frenchspacing\@vobeyspaces \@xverbatim}
+\makeatother
+
+% Small images in text (for e.g. small icon).
+\newcommand*{\smallimg}[1]{%
+  \raisebox{-.1\baselineskip}{%
+    \includegraphics[
+      height=0.8\baselineskip,
+      width=\baselineskip,
+      keepaspectratio,
+    ]{figures/#1}%
+  }%
+}
+
+% Properly hyphen TrackMate & TrackScheme
+\newcommand\TrackScheme[0]{Track\-Scheme\xspace}
+\newcommand\TrackMate[0]{Track\-Mate\xspace}
+
+% Less space when we make bullet lists.
+\newenvironment{myitemize}
+{ \begin{itemize}
+    \setlength{\itemsep}{2pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}     }
+{ \end{itemize}                  } 
+
+
+% Syntax highlighting for code.
+\usepackage{color}
+\definecolor{sh_comment}{rgb}{0.12, 0.38, 0.18 }
+\definecolor{sh_keyword}{rgb}{0.37, 0.08, 0.25}  
+\definecolor{sh_string}{rgb}{0.06, 0.10, 0.98} 
+
+\usepackage{listings}
+\lstset{
+	rulesepcolor=\color{black},
+	showstringspaces=false,showtabs=false,tabsize=2,
+	basicstyle=\ttfamily\small,
+	stringstyle=\color{sh_string},
+	keywordstyle = \color{sh_keyword}\bfseries,
+	commentstyle=\color{sh_comment}\itshape,
+	% escapebegin={\lstsmallmath}, escapeend={\lstsmallmathend}
+	breaklines=true,
+	postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
+}
+
+% Tables in the Wiki and LaTeX
+\newcommand{\specialcell}[2][c]{%
+  \begin{tabular}[#1]{@{}l@{}}#2\end{tabular}}
+\newcommand\tablecell[2][&]{#2 #1}
+
+% Highlight a sentence or word of wisdom like for amsbox
+\newcommand\amsbox[1]{\begin{center}
+	\begin{tikzpicture}[baseline=(char.base)]
+		\node(char)[draw,
+			fill=lightgray!20,
+			shape=rectangle,
+			drop shadow,
+			rounded corners,
+			minimum width=6cm,
+			text width=13cm]
+			{#1};
+	\end{tikzpicture}
+\end{center}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\title{\protect{\includegraphics[width=8cm]{figures/TrackMate_logo.png}}\\TrackMate documentation.\\Part 3: Interoperability}
+\author{Jean-Yves Tinevez}
+
+\begin{document}
+\maketitle
+</latex>
+
+
+<wiki>
+__TOC__
+</wiki>
+<latex>
+\newpage
+\tableofcontents
+\fi
+</latex>
+
+
+
+%----------------------------------------------------------------------------------------
+%                        2nd part: TECHNICAL DOCUMENTATION
+%----------------------------------------------------------------------------------------
+
+\newpage
+\part{Technical documentation.}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%----------------------------------------------------------------------------------------
+%                                TRACKSCHEME
+%----------------------------------------------------------------------------------------
+
+
+
+\section{TrackScheme manual.}
+%----------------------
+
+TrackScheme displays a kind of "track map", where a track is laid on pane, arranged vertically over time, as a Parisian subway train map. In TrackScheme, the image data as well as the spatial location of spots are completely discarded in favor of a hierarchical layout that highlights how cells divide in time.
+
+In the display settings panel of TrackMate, click on the \smallimg{Icon3a_print_transparency.png} \textbf{TrackScheme} button. A new window should appear, and depending on what you tracked, its content resembles this.
+
+\screenshotC{TrackScheme_Start.png}
+
+In TrackScheme, tracks are arranged from left to right and time runs from top to bottom. At this time we just have a single track, with two branches. The cell we tracked divides immediately after the first time-point, which is represented in TrackScheme by a fork going down. Each branch below this fork represents the annotation of a daughter cell. However, all the spots and links for these two daughter cells still belong to the same track, as they are connected \emph{via} the mother cell.
+
+Though this view is very synthetic, there is a lot you can do with TrackMate. 
+
+
+\subsection{Moving around in TrackScheme.}
+%-----------------------------------------
+
+Moving around is done classically with the mouse, and the panning is triggered by holding down the \keys{Space} key:
+\begin{myitemize}
+	\item \keys{Mousewheel} scrolls up and down.
+	\item \keys{Shift+Mousewheel} scrolls left and right.
+	\item \keys{Space+Mousedrag} pans the view, à la ImageJ. If you pull the mouse out of the \TrackScheme window, it will scroll in the direction of the mouse cursor.
+	\item \keys{Space+Mousewheel} is used for zooming.
+\end{myitemize}
+
+The keyboard can also be used:
+\begin{myitemize}
+	\item The numeric keypad numbers \keys{6}, \keys{9}, \keys{8}, \keys{7}, \keys{4}, \keys{1}, \keys{2} and \keys{3} are used to move as on a compass.
+	\item \keys{{+}} zoom in. 
+	\item \keys{{-}} zoom out.
+	\item \keys{{=}} restores the zoom to its default level.
+\end{myitemize}
+
+The top-left part of the TrackScheme window shows the outline of the graph. The blue square represents the current view and can be resized and moved around. 
+
+\screenshotC{MaMuT_TrackSchemeOutline.pdf}
+
+
+
+
+\subsection{Configuring TrackScheme look.}
+%-----------------------------------------
+
+Though TrackScheme is a view of the annotation data, it completely and purposely ignores some the display settings you can set on the main GUI window, such as the track display mode and the global visibility of spots and tracks. The color it chooses for the links and spots representation is also peculiar: The spot color by feature mode is ignored, even for the circles that represent spot. They take their color from the track color mode, and use the color of the incident link. For instance, if you pick the \texttt{Displacement} feature in the \textbf{track color mode}, you will get this:
+
+\screenshotB{TrackMate_TrackSchemeTrackDisplayColor.png}
+
+Tracks have a name, and are arranged in columns, separated by a vertical black line. 
+\TrackScheme arranges the annotations line by line, and each line represents a time-point. The row header tells you what time-point you are looking at. The background color of each row alternates to highlight different frames. If you find the background too crowded, you can disable the alternating color by clicking on the \smallimg{Icon_application_view_columns.png} \textbf{Display decoration button} on the toolbar. The second mode disables track columns and rows alternating colors; the third mode re-enables track columns. 
+
+\screenshotB{MaMuT_TrackSchemeDecorationButton.png}
+
+Finally, there is two \smallimg{Icon_theme.png} \textbf{Styles} for the spot display. The \texttt{simple} style sonly displays them as round spots. The \texttt{full} style displays them as rounded boxes, with each spot name apparent. In the \texttt{full} style, small thumbnails can be captured and displayed in TrackScheme for all spots. Just next to the menu, there is a thumbnail button. If activated, thumbnails are collected from all spots, using the image source they were created on. Thumbnails are captured around the spot location, using their radius plus a tolerance factor. Interestingly, the \textbf{Spot display radius ratio} is used to define the size of the thumbnail. For instance, with a display factor of 2, you can obtain the layout below. Notice that the spot boxes can be resized manually to better display thumbnails.
+
+\screenshotC{MaMuT_TrackSchemeThumbnails.pdf}
+
+
+\subsection{Exporting TrackScheme display.}
+%-----------------------------------------
+
+The hierarchical layout of the lineages provided by TrackScheme can be useful for communications. It can be exported using the three export buttons in the toolbar.
+
+\screenshotB{MaMuT_TrackSchemeExportButtons.pdf}
+
+\begin{myitemize}
+
+	\item The \smallimg{Icon_camera_go.png} \textbf{Capture undecorated TrackScheme} button will generate a view of \TrackScheme and open it in Fiji. The background is set to white and the zoom level is set to the default, regardless of what the actual zoom is in TrackScheme. Once this image is in Fiji, you can modify it, save it, \etc using the tools in Fiji.
+	
+	\item The \smallimg{Icon_camera_edit.png} \textbf{Capture TrackScheme with decorations} button does the converse. It captures a snapshot of the TrackScheme window as is, and uses the current zoom level to generate an image.
+	
+	\item The \smallimg{Icon_camera_export.png} \textbf{Export to...} opens file browser on which you can pick the export file format and its location. Many file formats are supported:
+	\begin{myitemize}
+		\item PNG image file with/without transparent background.
+		\item PDF or SVG file, that can later be edited with \eg Illustrator.
+		\item As a HTML page, though the layout is somewhat simplified.
+		\item The now deprecated VML file format (replaced by SVG).
+		\item As text, but this only saves a minimal amount of information.
+		\item The MXE file format is a specialized XML format, that can be parsed with classical XML parsers.
+		\item And all the common image formats (PNG, JPEG, GIF, BMP).
+	\end{myitemize}
+\end{myitemize}
+
+
+
+\subsection{Managing a selection in TrackScheme.}
+%----------------------------------------------------
+
+\TrackScheme is useful to build a selection and query its properties. As we said above, \TrackScheme does not abide any visibility setting. Spots and links are always visible, which is useful to build a selection. Spots and links are added to the current selection in a classical way:
+
+\begin{myitemize}
+
+	\item \keys{Left-Click} on a spot or link to set the selection with this spot or link. The selection is cleared before. 
+	
+	\item \keys{Left-Click} outside a spot to clear the selection. 
+
+	\item \keys{Shift+Left-Click} on a spot or link to add or remove this spot or link to the selection.
+	
+	 \item \keys{Mousedrag} to select multiple spots and links in a selection box. Hold \keys{Shift} to add them to the current selection.
+	
+\end{myitemize}
+
+Adding to this, several items in the \keys{Right-click} popup menu help selecting part of tracks. If you \keys{Right-click} on a spot or \keys{Right-click} outside a spot with a non-empty selection, you can:
+
+\begin{myitemize}
+
+	\item \smallimg{Icon_arrow_updown.png} \texttt{Select whole track} will include all the spots and the links of the tracks the selection belongs to.
+
+	\item \smallimg{Icon_arrow_down.png} \texttt{Select track downwards} walks from the spots and links in the selection, and add the spots and links that connect from them, forward in time (downward in \TrackScheme).
+
+	\item \smallimg{Icon_arrow_up.png} \texttt{Select track upwards} does the same, but backward in time.
+
+\end{myitemize}
+
+Selections are very useful for visualization within a crowded annotation. For instance, select one of the two branches in our single track. With the default track display mode, the selection is drawn on the MaMuT viewer as a thick green light that extends fully in time. The eighth track display mode is called \texttt{Show selection only} and just does that. It displays in the main view only the spots and links in the selection, with their proper color settings, and abide to the frame and depth limit settings. 
+
+For instance, you can use it to only display a series of disjoint parts of a tracks:
+
+\screenshotB{TrackMate_TrackSchemeSelectionOnly.png}
+
+
+
+\subsection{TrackScheme info-pane and feature plots.}
+%----------------------------------------------------
+
+Another use of the selection is to display, plot and export information on its content. The left side bar of TrackScheme has two small panels dedicated to this, in addition to the outline panel in the top left.
+
+The info pane in the middle left takes the shape of a table, that displays the numerical feature values of the spot selection as a table. Spots are arranged as columns and feature as lines. This table can be exported to an ImageJ table with the \keys{Right-click} popup menu.
+
+The bottom left part if the spot feature plotter. The \textbf{Feature for X axis} drop down menu lets you choose what will be the feature used for the X axis. \textbf{Feature for Y axis} menus work the same way. Y-axis features can be added and removed using the \smallimg{Icon_add.png} add and \smallimg{Icon_delete.png} remove buttons.
+
+To generate the plot, click the \smallimg{Icon_plots.png} \textbf{Plot features} button. 
+A graph should appear on which you can interact a bit. \keys{Mousedrag} towards the bottom right direction will zoom the plot, and \keys{Mousedrag} towards to up right direction will reset the zoom. The \keys{Right-click} menu lets you configure the plot, save it to an image file and export it as an ImageJ table.
+
+
+\screenshotB{MaMuT_TrackSchemeSideBar.pdf}
+
+
+
+\subsection{Editing tracks with TrackScheme.}
+%----------------------------------------------
+
+The main application of TrackScheme is to edit annotations in conjunction with creating and moving spots on another view. Let's do this now. 
+
+
+\subsubsection{Linking spots with the popup menu item.}
+%---------------------------------------------------
+
+If you have a TrackScheme window opened while you create spots on the source image, you should see them appearing in TrackScheme, under a special column on the right called \texttt{Unlaid spots}. The TrackScheme window should then resembles this:
+
+\screenshotB{TrackMate_TrackSchemeUnlaidSpots.png}
+
+Normally, TrackScheme only displays the spots that belong in a track. Lonely spots that are not linked to anything when you launch TrackScheme are not shown. The spots you create after TrackScheme are however stacked under this special column. From there, you can attach them to an existing track or create a new one.
+
+Here is a way to do it. In TrackScheme using \keys{Mousedrag} select all the spots in the unlaid column. \keys{Right-click} somewhere in TrackScheme to make the pop-up menu appear. One of the menu item should be something like \texttt{Link X spots}. Choose this one. Each spots is then linked to the next one, frame by frame, and the links should appear in TrackScheme and in other views. You just created a new track.
+
+
+
+
+\subsubsection{Triggering re-layout and style refresh.}
+%---------------------------------------------------
+
+Notice that the TrackScheme display of this new track is somewhat unsatisfactory. The first track may have changed color in the main view, but this change did not happen in \TrackScheme. Plus, the new track does not have its own column, and the color of some of its spots might be wrong. The reasons for this are:
+\begin{myitemize}
+
+	\item We changed the annotation and these changes affected the numerical features that color the tracks. For instance, if you picked the \texttt{Track index} numerical feature for track coloring, there is now two tracks instead of one. The feature update is seen immediately in the main view, but for performance reason, TrackScheme as well as the color line on the main GUI window have to be refreshed manually. To do so, click on the \smallimg{Icon_theme.png} \textbf{Style} button in the TrackScheme toolbar, and directly on the track color line on the main GUI window.
+	
+	\item The changes we made affected the track hierarchy, but the re-layout is not triggered automatically by such changes. To do so, press the  \smallimg{Icon_refresh.png} \textbf{Layout} button in TrackScheme toolbar. This will reorganize TrackScheme with a proper layout. Since in TrackScheme, spots can be moved around at will, this is also a good way to reorder things.
+	
+\end{myitemize}
+
+
+
+
+
+\subsubsection{Linking spots with drag and drop.}
+%---------------------------------------------
+
+Another way to create single links is to enable the drag-and-drop linking mode. In the \TrackScheme toolbar, click on the grayed-out \smallimg{Icon_connect.png} \textbf{Toggle linking} button.
+
+Now move over any cell in one track. As you do, the cell gets highlighted with a green square. If you click and drag from this cell, a new link (in magenta) will emerge. Release it on any cells to create a link between the source and the target. 
+
+% \screenshotB{MaMuT_TrackSchemeDragAndDropLink.png}
+\screenshotB{TrackMate_CreateLinksInTrackScheme_annotated.png}
+
+
+\subsubsection{Removing spots and links.}
+%-------------------------------------
+
+The last you link you added may have strongly perturbed our annotation, particularly if you did what was on the screenshot above. Correct it by removing the last link. Simply select it press \keys{Delete}. The same key will remove everything in the selection.
+
+
+
+\subsubsection{Editing track names and imposing track order.}
+%---------------------------------------------------------
+
+Tracks are ordered from left to right alphanumerically with their name. To change a track name, \keys{Double-click} on it in the column header part. Track names should be made of a single line with a combination of any character. You can change the track order by changing their name. If you call the first one 'B' and the second one 'A', then click the \smallimg{Icon_refresh} \textbf{Layout} button, they will be permuted.
+
+
+\subsubsection{Editing spot names and imposing branch order.}
+%---------------------------------------------------------
+
+Spots also have a name, that you can see either in the main view by checking the \textbf{Display spot names}, either in TrackScheme by using the \texttt{full} display style. They are all called \texttt{ID\#\#} by default, which is not very informative.
+
+To edit a spot name in TrackScheme, \keys{Double-click} on the spot. It should be replaced by an orange box  in which you can type the spot name. Press \keys{Shift+Enter} to validate the new name, or \keys{Escape} to cancel the change. Spot names may be several lines long, but their display might then not be very pleasing.
+
+You can also set the name of several spots at once. For instance, select a whole track and \keys{Right click} (outside of a spot) to bring the popup menu. There is an item called \texttt{Edit X spot names}. The closest spot is changed to an edit box. When you validate the new name, all the selected spots get this new name.
+
+Apart from their use to mark some biological meaning to the annotations, spot names have several purposes. There is a search box in TrackScheme toolbar that centers the view on spots with name matching the text you enter there. Press \keys{Enter} to loop over all the matching spots.
+
+Spot names are also used to decide in what order to lay out track branches. For instance, in a track with a cell division, you can force one branch to be the laid left or the right by setting the name of the spot just after the division. Sister cells are laid out from left to right alphanumerically, like for tracks.
+
+\screenshotB{MaMuT_TrackSchemeSpotNames.png}
+
+
+
+
+
+<wiki>
+[[Category:Tutorials]]
+</wiki>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%----------------------------------------------------------------------------------------
+%                                TRACKMATE ALGORITHMS
+%----------------------------------------------------------------------------------------
+
+
+
+\section{Description of TrackMate algorithms.}
+%---------------------------------------------
+
+
+
+This section documents the current components of \wikilink{TrackMate}{TrackMate}. TrackMate has a modular design, meaning that it is made of different modules that each have a specific role. Developers can build their own module and re-used the other ones and the GUI to achieve a quick development. The module types are (in the order you meet them when executing the plugin):
+
+\begin{myitemize}
+
+	\item \textbf{Spot detectors}. Taking your image data, they detect spots in them.
+	
+	\item \textbf{Spot analyzers}. Each spot can receive a wide range of features, calculated from their location, radius and the image data. For instance: max intensity in spot, rough morphology, etc... They are then used to filter out spurious spots and retain only good ones for the subsequent tracking step.
+	
+	\item \textbf{Views}. Display the segmentation and tracking results overlaid on your image data.
+	
+	\item \textbf{Spot trackers}, or particle-linking algorithms. Take the filtered spots and link them together to build tracks.
+
+	\item \textbf{Edge analyzers}. Like for spot analyzers, but operate links between spots. Can be used to report instantaneous velocity, link direction, etc... 
+	
+	\item \textbf{Track analyzers}. Like for spot analyzers, but operate on whole track. Can be used to report track mean velocity, track displacement, etc... They are also used to filter spurious tracks.
+
+	\item \textbf{Actions}. Miscellaneous actions you can take on the complete result of the tracking process. It can be used to copy the track overlay to another image, launch a 3D viewer, export the results to a simple format, generate a track stack, etc...
+
+\end{myitemize}
+
+We describe here the best we can the current modules that are shipped with TrackMate.
+
+
+\subsection{Spot detectors.}
+%----------------------------
+
+\subsubsection{Spot features generated by the spot detectors.}
+%--------------------------------------------------------------
+
+Behind this barbaric name stands the part responsible for spot detection in your image. The algorithm currently implemented are very generic and naive. They will most likely fail for complicated case such as touching objects, very weak SNR, \etc. The three of them present are all based on Laplacian of Gaussian filtering, which we describe below.
+
+Detectors can very much vary in implementation and in the technique they rely on, but they must all at least provide the following common spot features:
+
+\begin{myitemize}
+
+	\item \textbf{X}, \textbf{Y}, and \textbf{Z}: the spot coordinates in space. Coordinates are expressed in physical units (µm, ...).
+	
+	\item \textbf{R} the spot radius, also in physical units. The current detectors only set this radius value to be the one specified by the user. More advanced detectors could retrieve each spot radius from the raw image. 
+	
+	\item \textbf{Quality}: The implementation varies greatly from detector to detector, but this value reflects the quality of automated detection. It must be a positive real number, large values indicating good confidence in detection result for the target spot. This sole feature is then used in the initial filtering step, where spots with a quality lower that a specified threshold are purely and simply discarded. 
+ 
+\end{myitemize}
+
+The two other time features - \textbf{T} and \textbf{Frame number} - are set by TrackMate itself when performing detection on all the time-points of the target raw data. T is expressed in physical units, and the Frame number - starting from 0 - is simply the frame the spot was found in.
+
+
+
+\subsubsection{Laplacian of Gaussian particle detection (LoG detector).}
+%-------------------------------------------------------------------------
+
+The LoG detector is the best detector for Gaussian-like particles in the presence of noise<wiki><ref name="Sage">[http://bigwww.epfl.ch/publications/sage0501.pdf Sage, D. \etal], "Automatic tracking of Individual fluorescence Particles: Application to the study of chromosome dynamics", IEEE Transactions on Image Processing, vol. 14, no. 9, pp. 1372-1383, September 2005.</ref></wiki><latex>\cite{sage}</latex>.
+It is based on applying a LoG filter on the image and looking for local maxima<latex>~\cite{lindeberg}</latex>. The Laplacian of Gaussian result is obtained by summing the second order spatial derivatives of the gaussian-filtered image, and normalizing for scale<wiki>.</wiki><latex>:
+
+\begin{flalign*}
+	\text{in 1D:} && \text{LoG}_\sigma &= - \sigma^2 \left( \frac{\partial^2}{\partial X^2} \right) \ast G_\sigma \ast I && \\
+	\text{in 2D:} && \text{LoG}_\sigma &= - \sigma^2 \left( \frac{\partial^2}{\partial X^2} + \frac{\partial^2}{\partial Y^2} \right) \ast G_\sigma \ast I && \\
+	\text{in 3D:} && \text{LoG}_\sigma &= - \sigma^2 \left( \frac{\partial^2}{\partial X^2} + \frac{\partial^2}{\partial Y^2}  + \frac{\partial^2}{\partial Z^2} \right) \ast G_\sigma \ast I &&
+\end{flalign*}
+
+\noindent where $G_\sigma$ is the Gaussian filter operator with a standard deviation $\sigma$ and $I$ the source image.
+
+</latex>
+
+The value of $\sigma$ is tuned according to the particle radius, which is entered by the user: $\sigma = r / \sqrt{n}$ where $n$ is the dimensionality of the source image (1 for 1D, \etc) and $r$ the radius of the spot. In practice, filtering is made using real numbers, in the Fourier space to speed up calculation. This makes this detector ideal for spot size between 5 and 20 pixels roughly. The LoG kernel generation can handle anisotropic physical calibration (pixel sizes different in X, Y and Z), so that $r$ and $\sigma$ are in physical units. Local maxima in the filtered image yields spot detections. Each detected spot is assigned a quality value by taking the local maxima value in the filtered image. Spot with a quality lower than the value the detector is configured with are discarded immediately. If requested, the location of retained spots is refined using a quadratic fitting scheme derived from Lowe 2004<latex>~\cite{lowe}</latex>.
+
+
+
+\subsubsection{Difference of Gaussian particle detection (DoG detector).}
+%-------------------------------------------------------------------------
+
+This detector reproduce the LoG detector logic described above, but use an approximation for the filtering step. 
+Given $d$ an approximate expected particle diameter, determined upon inspection, two Gaussian filters are produced with standard deviation $\sigma_1$ and $\sigma_2$:
+
+\begin{align*}
+	\sigma_1 &= 1 / (1 + \sqrt{2} ) \times  d \\
+	\sigma_2 &= \sqrt(2) \times \sigma_1 
+\end{align*}
+
+\noindent The image is filtered using these two Gaussian filters, and the result of the second filter (largest sigma) is subtracted from the result of the first filter (smallest sigma). This yields a smoothed image with sharp local maxima at particle locations. Spots are otherwise handled as for the LoG detector.
+
+
+
+
+\subsubsection{Downsample LoG detector.}
+%---------------------------------------------------------------------------------------
+
+The Downsample LoG detector is made to handle large spots. If the sought spots span more than 20 pixels in their smallest dimension, it is beneficial to down-sample the image prior to detection. The down-sampling operation has a negligible cost compared to the gain achieved by spot detection in a much smaller image. This detector handles the process of down-sampling the source image by an integer factor provided by the user, applying the LoG detector on the resulting image, and mapping the physical coordinates of the spots obtained back in the source image referential. For 3D images with a pixel size larger in Z than in X and Y, the down-sampling is tempered in Z to approach a quasi isotropic calibration in the down-sampled image. The down-sampling factor should be chosen so that spots have a diameter of at least 5 pixels in the down-sampled image.
+
+
+
+\subsubsection{Handling the detection of large images with the Block LoG detector.}
+%---------------------------------------------------------------------------------------
+
+The detection of spots in large images can require a lot of memory. With the LoG detector working on a 16-bit unsigned integer image, the source is first copied on 32-bit float numbers (doubling its size), then the Fourier convolution requires another image placeholder using 64-bit complex numbers (quadrupling its size). In the end, the detection requires an extra memory space six times larger that the one occupied by the source image. If several time-points are processed in parallel in multi-core computers, the required space is multiplied by the number of time-points processed concurrently. 
+
+The Block LoG detector limits memory consumption by processing small blocks of the input image sequentially. The number of blocks are specified by the user, and the partition generates several XY blocks. This privileges classical microscopy images, where the extent of an image in X and Y is much larger than in Z, and where the point-spread function is much larger along Z than along X and Y. Each block is processed independently with the LoG detector, and the resulting spot collections are pooled together. Spots lying on block borders might generate spurious detection, being detected in two separate blocks. To avoid this, spots found within the radius of another spot are discarded.
+
+Several blocks might be processed in parallel, if the number of cores allocated to \TrackMate is larger than 1. To avoid this, set the \texttt{Parallel threads} settings in the \menu{Edit > Options > Memory \& Threads...} menu to 1. 
+
+
+
+\subsection{Spot analyzers.}
+%---------------------------
+
+Spot features, such as \texttt{Max intensity}, \texttt{Estimated diameter}, \etc, are calculated for all spots just after the initial filtering step. They are then used to select spots, based on filters set to retain only spots with a given feature below or above a specified threshold. Initial filtering is a good way to limit spot feature calculation time on spots known to be spurious. The current features however are made so that their calculation is cheap computationally. 
+
+
+\subsubsection{Mean, Median, Min, Max, Total intensity and its Standard Deviation.}
+%----------------------------------------------------------------------------------
+
+The plain statistical estimates are simply calculated from all the values for pixels within the physical radius from the spot center. 
+
+
+\subsubsection{Contrast \& Signal/Noise ratio.}
+%----------------------------------------------
+
+This contrast followed \otherlink{http://en.wikipedia.org/wiki/Michelson_contrast\#Formula Michelson}{contrast} definition:
+
+$$ C = \frac{I_\text{in} - I_\text{out} } { I_\text{in} + I_\text{out} } $$
+
+\noindent where $I_\text{in}$ is the mean intensity inside the spot volume (using the physical radius), and $I_\text{out}$ is the mean intensity in a ring ranging from its radius to twice its radius. 
+
+The spots SNR is computed as
+
+$$ SNR = \frac{ I_\text{in} - I_\text{out} } { \text{std}_\text{in} } $$
+
+\noindent where $\text{std}_\text{in}$ is the standard deviation computed within the spot. 
+
+These two values depend greatly on the correctness of the radius of each spot. Negative values might be caused by incorrect radius.
+
+
+\subsubsection{Estimated diameter.}
+%-----------------------------------
+
+This feature estimates an optimal diameter for each spot, based on contrast calculation. 
+The mean pixel intensity is calculated in 20 concentric, tangent rings, centered at the target spot location, and with radiuses ranging from a 10\textsuperscript{th} of the spot radius to twice its radius. The contrast at a given radius is defined as the difference between the mean intensity of a ring with inner radius the radius sought, and the previous ring. 
+The estimated diameter is then defined as the radius that maximizes this contrast. A quadratic interpolation is performed to improve diameter accuracy. 
+
+
+
+
+
+
+
+
+\subsection{Spot trackers or particle-linking algorithms.}
+%----------------------------------------------------------
+
+
+
+
+\subsubsection{LAP trackers.}
+%-----------------------------
+
+The Linear Assignment Problem (LAP) trackers implemented here follow a stripped down version of the renowned  method contributed by Jaqaman and colleagues<wiki><ref name="Jaqaman">[http://www.nature.com/nmeth/journal/v5/n8/full/nmeth.1237.html Jaqaman et al., "Robust single-particle tracking in live-cell time-lapse sequences", Nat Methods. 2008 Aug;5(8):695-702.]</ref></wiki><latex>~\cite{jaqaman}</latex>. We repeat here the ideas found in the reference paper, then stresses the differences with the nominal implementation. 
+
+In TrackMate, the LAP framework backs up two instances of a tracker:
+
+\begin{myitemize}
+	\item the Simple LAP tracker;
+	\item the LAP tracker.
+\end{myitemize}
+
+The first one is simply a simplified version of the second: it has less settings and only deal with particle that do not divide nor merge, and ignores any feature penalty (see below). 
+
+All the linking costs for these two trackers are based on the particle-to-particle square distance. If this tracker had to be summarized in one sentence, it would be the following: \textbf{The Simple LAP tracker and the LAP tracker are well suited for particle undergoing Brownian motion}. Of course, they will be fine for a non-Brownian motion as long as the particles are not too dense. 
+
+Particle-linking happens in two step: track segments creation from frame-to-frame particle linking, then track segments linking to achieve gap closing. The mathematical formulation used for both steps is linear assignment problem (LAP): a cost matrix is assembled contained all possible assignment costs. Actual assignments are retrieved by solving this matrix for minimal total cost. We describe first how cost matrices are arranged, then how individual costs are calculated.
+
+
+
+\paragraph{Cost matrix for frame-to-frame linking.}
+%--------------------------------------------------
+
+In the first step, two consecutive frames are inspected for linking. Each spot of the first frame is offered to link to any other spot in the next frame, or not to link.  This takes the shape of a $(n+m) \times (n+m)$ matrix ($n$ is the number of spots in the frame $t$, $m$ is the number of spots in the frame $t+1$), that can be divided in four quadrants. 
+
+\begin{myitemize}
+
+	\item The top-left quadrant (size $n \times m$) contains the costs for linking a spot $i$ in the frame $t$ to any spot $j$ in the frame $t+1$.
+
+	\item The top-right quadrant (size $n \times n$) contains the costs for a spot $i$ in the frame $t$ not to create a link with next frame (yielding a segment stop).
+
+	\item The bottom-left quadrant (size $m \times m$) contains the costs for a spot $j$ in the frame $t+1$ not to have any link with previous frame (yielding a segment start).
+
+	\item The bottom-right quadrant (size $m \times n$) is the auxiliary block mathematically required by the LAP formalism. A detailed explanation for its existence is given in the supplementary note 3 of <wiki><ref name="Jaqaman"/></wiki><latex>the Jaqaman paper~\cite{jaqaman}.</latex>. This quadrant is built by taking the transpose of the top-left quadrant, and replacing all non-blocking costs by the minimal cost.
+
+\end{myitemize}
+
+
+
+\paragraph{Solving LAP.}
+%-----------------------
+
+To solve this LAP, we rely on the Munkres \& Kuhn algorithm<wiki><ref>J. Munkres, "Algorithms for the Assignment and Transportation Problems", Journal of the Society for Industrial and Applied Mathematics, 5(1):32–38, 1957 March</ref></wiki><latex>~\cite{munkres}</latex>, that solves the problem in polynomial time ($\mathcal{O}(n^3)$). The algorithm returns the assignment list that minimizes the sum of their costs. 
+
+The frame-to-frame linking described above is repeated first for all frame pairs. This yields a series of non-branching track segments. A track segment may be start or stop because of a missing detection, or because of a merge or split event, which is not taken into account at this stage. A second step where track segments are offered to link between each other (and not only spots) is need, and described further down.
+
+
+
+\paragraph{Calculating linking costs.}
+%--------------------------------------
+
+In calculating costs, we deviate slightly from the original paper from  Jaqaman \etal<wiki><ref name="Jaqaman"/></wiki><latex>~\cite{jaqaman}</latex>. In the paper, costs depend solely on the spot-to-spot distance, possibly weighted by the difference in spot intensity. Here, we offer to the user to tune costs by adding penalties on spot features, as explained below.
+
+The user is asked for a maximal allowed linking distance (entered in physical units), and for a series of spot features, alongside with penalty weights. These parameters are used to tune the cost matrices. For two spots that may link, the linking cost is calculated as follow:
+
+\begin{myitemize}
+
+	\item The distance between the two spots $D$ is calculated.
+	
+	\item If the spots are separated by more than the max allowed distance, the link is forbidden, and the cost is set to $\infty$ (\ie the blocking value). If not, 
+	
+	\item For each feature in the map, a penalty p is calculated as $p = 3 \times W \times \frac{ | f_1 - f_2 | }{ f_1 + f_2 } $ where $W$ is the factor associated to the feature in the map. This expression is such that:
+	
+	\begin{myitemize}
+		\item there is no penalty if the two feature values $f_1$ and $f_2$ are the same; 
+		\item with a factor of 1, the penalty is 1 is one value is the double of the other; 
+		\item the penalty is 2 if one is 5 times the other one. 
+	\end{myitemize}
+
+	\item All penalties are summed, to form $P = (1 + \sum p )$.
+	
+	\item The cost is set to the square of the product: $C = ( D \times P )^2$
+
+\end{myitemize}
+
+If the user feeds no penalty, the costs are simply the distances squared.
+
+
+
+\paragraph{Calculating non-linking costs.}
+%-----------------------------------------
+
+The top-right and bottom-left quadrant of the frame-to-frame linking matrix contain costs associated with track segment termination or initiation (a spot is not linking to a spot in the next or previous frame). Each of these two blocks is a square matrix with blocking value everywhere, except along the diagonal for which an alternative cost is computed. Following Jaqaman<wiki><ref name="Jaqaman"/></wiki><latex>~\cite{jaqaman}</latex>, this cost is set to be
+
+$$ C_\text{alt} = 1.05 \times \max( C ) $$
+
+where $C$ is the costs of the top-left quadrant.
+
+
+
+\paragraph{Cost calculation \& Brownian motion.}
+%-----------------------------------------------
+
+Without penalties and with a maximal linking allowed distance, the returned solution is the one that minimizes the sum of squared distances. This actually corresponds to the case where the motion of spots is governed by \otherlink{http://en.wikipedia.org/wiki/Brownian_motion}{Brownian} motion. See for instance Crocker and Grier<wiki><ref>[http://physics.nyu.edu/grierlab/methods3c/methods3c.pdf Crocker and Grier. "Methods of Digital Video Microscopy for Colloidal Studies." J Colloid Interf Sci (1996) vol. 179 (1) pp. 298-310]</ref></wiki><latex>~\cite{crocker}</latex>.
+
+By adding feature penalties, we aim at favoring linking particles that "resemble" each other. In brute single particle linking problems, spots are generally all the same, and they only differ by position. However, there is a variety of problems for which these feature penalties can add robustness to the tracking process.
+
+For instance, we originally developed \wikilink{TrackMate}{TrackMate} for semi-automated lineaging of \textit{C.elegans} embryos, using a strain fluorescent in the nucleus. Cells that are dividing have a fluorescence distribution which is very different from non-dividing cells, and this can be exploited for robust tracking.
+
+
+
+\paragraph{Track segment linking.}
+%----------------------------------
+
+In a second step, the track segments built above are offered to link between each other. Jaqaman and colleagues proposes to exploit again the LAP framework for this step. A new cost matrix is generated, but this time the following events are considered:
+
+\begin{myitemize}
+
+	\item The end of a track segment is offered to link to any other track segment start. This corresponds to \underline{gap-closing} events, where a link is created typically over two spots separated by a missed detection.
+
+	\item The start of a track segment is offered to link to the spots in the central part (not start, not end) of any other track segment. This corresponds to \underline{splitting} events, where a track branches in two sub-tracks.
+
+	\item The end of a track segment is offered to link to the spots in the central part of any other track segment. This corresponds to \underline{merging} events, where two tracks merges into one.
+	
+	\item A spot part of any track segment is offered not to create any link. 
+	
+\end{myitemize}
+
+The second cost matrix has a shape that resembles the first cost matrix, calculated for frame-to-frame linking, and which is best described in the original article. 
+
+As before, we modified the way costs are calculated, and re-used the feature penalties framework described above. Also, the user must provide on top a maximal time-difference to link, over which linking will be provided. Careful: this maximal time is expressed in physical units and not in number of frames. 
+
+
+
+\paragraph{Main differences with the Jaqaman paper.}
+%---------------------------------------------------
+
+The nominal implementation of the paper remains the one developed under MATLAB by Khuloud Jaqaman \etal ~\cite{jaqaman}. The software is called \textbf{u-track} and can be found on \otherlink{http://www.utsouthwestern.edu/labs/jaqaman/software/}{Khuloud Jaqaman homepage}. TrackMate was initially developed to simplify \textit{C.elegans} lineaging. It therefore just bundles a stripped down version of this framework. The notable differences are:
+
+\begin{myitemize}
+
+	\item The LAP framework is generic: Jaqaman and colleagues proposed a framework to ap\-proximate  mul\-tiple-hypothesis tracking solutions using linear assignment pro\-blems. One just need to provide the link cost matrix. \textbf{TrackMate} properly implements the LAP framework, but the cost matrix calculation - which is specific to each problem - is much more simpler than in \textbf{u-track}. 
+	
+	For instance, in TrackMate all link costs are based on the square distance between two spots (weighted or not by feature differences, see above), which make it tailored for Brownian motion. In <b>u-track</b>, the user is proposed with different motion types, including a linear motion whose parameters are determined on the fly. See for instance CD36 tracking, in the supplementary note 7 of the Jaqaman paper.
+	
+	\item In \textbf{u-track}, merging and splitting of tracks are used to describe two particles that temporally overlap spatially. These events' costs are weighted by the two particle intensities to properly catch the apparent increase in intensity due to the overlap. In \textbf{TrackMate}, we use splitting events to describe cell divisions, as we developed it initially to deal with \textit{C.elegans} lineages. However is seems than Jaqaman and colleagues used it the same way to investigate CD36 dissociation and re-association. 
+	
+	\item In \textbf{TrackMate}, distance and time cutoffs are specified manually by the user. In \textbf{u-track} they are derived for each particle automatically, providing self adaptation.
+	
+\end{myitemize}
+
+
+
+\subsubsection{Linear motion tracker.}
+%--------------------------------------
+
+The linear motion tracker can deal specifically with linear motion, or particle moving with a roughly constant velocity. This velocity does not need to be the same for all particles. You can find it in TrackMate tracker selection under the name \texttt{Linear motion LAP tracker}.
+
+Though it deals with a completely different motion model compared to the LAP trackers in TrackMate, it reuses the Jaqaman LAP framework, and it is similar to a tracker proposed in the Jaqaman paper as well: See the CD36 tracking, in the supplementary note 7 of the Jaqaman paper. But again, the version in TrackMate is simplified compared to what you can find in \textbf{u-track}.
+
+
+
+\paragraph{Principle.}
+%---------------------
+
+The linear motion tracker relies on the \otherlink{http://en.wikipedia.org/wiki/Kalman_filter}{Kalman filter} to \textit{predict} the most probable position of a particle undergoing constant velocity movement.
+
+Tracks are initiated from the first two frames, using the classical LAP framework with the Jaqaman cost matrix (see above), using the square distance as cost. The user can set what is the maximal distance allowed for the initial search with the \texttt{Initial search radius} setting. 
+
+Each track initiated from a pair of spots is used to create an instance of a Kalman filter. There are as many Kalman filters as tracks. In the next frames, each Kalman filter is used to generate a prediction of the most probable position of the particle. All these predictions are stored. 
+
+Then, all the predicted positions are linked against the actual spot positions in the frame, using again the Jaqaman LAP framework, with the square distance as costs. The user can set how far can be an actual position from a predicted position for linking with the \texttt{Search radius} setting.
+
+\screenshotB{TrackMate_KalmanTrackerPrinciple.png}
+
+Now of course, after linking, some Kalman filters might not get linked to a found spot. This event is called an occlusion: the predicted position did not correspond to an actual measurement (spot). The good thing with Kalman filters is that they are fine with this, and are still able to make a prediction for the next frame even with a missing detection. If the number of successive occlusions is too large, the track is considered terminated. The user can set the maximal number of successive occlusions allowed before a track is terminated with the \texttt{Max frame gap} setting.
+
+Conversely, some spots might not get linked to a track. They will be used to initiate a new track in the next frame, as for the tracker initiation described above. 
+
+It is important to note here that the cost functions we use is the square distance, like for the Brownian motion, but from the predicted positions to the actual detections. Because the prediction positions are made assuming constant velocity, we are indeed dealing with an adequate cost function for linear motion. But since we are linking predicted positions to measured positions with the square distance cost function, we do as if the predicted positions deviate from actual particle position with an error that follows the gaussian distribution. This is a reasonable assumption and this is why this tracker will be robust.
+
+
+
+\paragraph{Implementation.}
+%--------------------------
+
+The code can be found on \otherlink{https://github.com/fiji/TrackMate/blob/master/src/main/java/fiji/plugin/trackmate/tracking/kalman/KalmanTracker.java}{GitHub}. We now repeat the section above in pseudo-language. When you see the word \textbf{link} below, this means:
+
+\begin{myitemize}
+
+	\item Take all the source detections in frame $t$ and the target detections in frame $t+1$.
+	
+	\item Compute the costs for all possible physical assignment (potential links) between source and target  detections and store them in the cost matrix.
+	
+	\item Solve the LAP associated to this matrix.
+	
+	\item Create a link for each assignment found.
+	
+\end{myitemize}
+
+The particle linking algorithm would read as follow:
+
+\begin{myitemize}
+
+	\item Initialization:
+	
+	\begin{myitemize}
+	
+		\item Link all the detections of frame 0 to the detections of frame 1, just based on the square distance costs (for instance).
+		
+		\item From each of the $m$ links newly created, compute a velocity. This velocity is enough to initialize $m$ Kalman filters.
+		
+		\item Initialize $m$ tracks with the found detections and links, and store the associated Kalman filters.
+		
+	\end{myitemize}
+
+	\item Track elongation:
+	
+	\begin{myitemize}
+	
+		\item For each Kalman filter, run the prediction step. This will generate $m$ predicted positions. 
+		
+		\item Link the $m$ predicted positions to the n detections in frame 2, based on square distance. 
+		
+		\item Target detection that have been linked to a predicted position are added to the corresponding track. 
+		
+		\item The accepted target detection is used to run the update step of the Kalman filter.
+		
+		\item Loop to next frame.
+
+	\end{myitemize}
+
+	\item Track termination:
+	
+	\begin{myitemize}
+	
+		\item Some of the $m$ predicted position might not find an actual detection to link to. In that case, we have an occlusion. The algorithm must decide whether it has to terminate the track or to bridge over a gap.
+		
+		\item If the number of successive occlusions for a Kalman filter is below a certain limit (typically 2 to 10), the track is not terminated, and the filter goes back to the track elongation step. Hopefully, from the new prediction a target particle will be found, and the detection in frame t will be linked to a detection in frame $t+2$ (or $t+3$ etc).
+		\item Otherwise, the track is terminated and the Kalman filter object is dropped.
+
+	\end{myitemize}
+	
+	\item Track initiation:
+	
+	\begin{myitemize}
+	
+		\item Conversely, some detections in frame $t+1$ might not be linked to a predicted position. In this case, these orphan detections are stored to initiate a new track. But for this, other orphans detections are needed in frame $t+2$.
+		
+		\item This step is identical to the initiation step, but for subsequent frames. It requires to store orphan detections in current and previous frames. 
+		
+		\item In frame $t+2$, priority must be given to detections linked to the predicted positions by the Kalman filters over orphan detections of frame $t+1$. So when you deal with frame $t+2$, you perform first the track elongation step, get a list of orphan detections in frame $t+2$, and then combine it to the orphan detections in frame $t+1$ to initiate new Kalman filters.
+
+	\end{myitemize}
+
+\end{myitemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%----------------------------------------------------------------------------------------
+%                                PARTICLE-LINKING ALGORITHMS ACCURACY
+%----------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Particle-linking algorithms accuracy.}
+%----------------------------------------------
+
+\textit{The problem with tracking algorithms is that they always give an answer.}
+
+This answer can be completely irrelevant, even non-physical, and there is no built-in flags that would indicate something wrong. The best way to avoid basing your downstream analysis on faulty tracking results is to know in what situation the tracker works the best, and what are its limitations. This is the aim of this page for the trackers and detectors shipped with \wikilink{TrackMate}{TrackMate}.
+
+
+\subsection{The ISBI 2012 single particle challenge.}
+%-----------------------------------------------------
+
+
+In 2011-2012, an \otherlink{http://bioimageanalysis.org/track/}{ISBI Grand Challenge} was organized for the Single-Particle Tracking algorithms. For this challenge, images were numerically simulated to serve as dataset for single-particle tracking algorithms. Simulations relied on several particle and motion models, used in turn as ground truth for the quantification of the accuracy of tested algorithms. 
+
+We took this challenge with TrackMate, which was in early version 1.1 at the time of the challenge. The results and the methodology to compute the accuracy of a tracking algorithms were published<wiki><ref name="ISBIpaper"> [http://www.nature.com/nmeth/journal/v11/n3/full/nmeth.2808.html Chenouard ''et al.'', "Objective comparison of particle tracking methods", '''Nature Methods, 2014 ''']</ref></wiki><latex>~\cite{isbi}</latex> thereafter.
+In its early version, TrackMate scored roughly in the middle rankings for most scenarios. 
+
+\subsection{Current TrackMate version accuracy against the ISBI dataset.}
+%-------------------------------------------------------------------------
+
+Since then TrackMate improved and from version 2.7.x it ships a new tracker that can deal specifically with linear motion. We can now assess its accuracy again, using the ISBI challenge data. The people behind \wikilink{Icy}{Icy} maintains the website that hosts the challenge data, and made it available for download.
+The section compares the particle-linking accuracy for the 3 classes of tracking algorithms available in TrackMate:
+
+\begin{myitemize}
+
+	\item The LAP framework derived from Jaqaman \etal<wiki><ref name="Jaqaman"/></wiki><latex>~\cite{jaqaman}</latex>.
+	
+	\item The linear motion tracker based on Kalman filter.
+	
+	\item The plain Nearest neighbor tracker for reference.
+
+\end{myitemize}
+
+
+
+\subsubsection{Scenarios.}
+%-------------------------
+
+The testing dataset cover four scenarios, that are detailed in the challenge paper<wiki><ref name="ISBIpaper"/></wiki><latex>~\cite{isbi}</latex>. We survey briefly here what is their particle and motion models they are based on the following scenarios:
+
+<wiki>
+{| class="wikitable"
+|-
+! Scenario name
+! Particle shape
+! Motion type
+|-
+| [[#Microtubule_scenario.|MICROTUBULE]]
+| Slightly elongated shape to mimic MT tip staining.
+| Roughly constant velocity motion.
+|-
+| [[#Receptor_scenario.|RECEPTOR]]
+| rowspan=3 | Spherical.
+| [[wikipedia:Tethered particle motion|Tethered motion]]: switch between Brownian and directed motion with random orientation for the later.
+|-
+| [[#Vesicle_scenario.|VESICLE]]
+| [[wikipedia:Brownian motion|Brownian motion]].
+|-
+| [[#Virus_scenario.|VIRUS]]
+| Switch between Brownian and directed motion with fixed orientation for the later.
+|}
+</wiki>
+<latex>
+%\begin{table*}[h]
+%	\centering
+\begin{center}
+	\begin{tabulary}{0.9\textwidth}{|l|L|L|}
+		\hline
+		\textbf{Scenario name} & \textbf{Particle shape} & \textbf{Motion type} \\
+		\hline
+		\hline
+		MICROTUBULE   & Slightly elongated shape to mimic MT tip staining. & Roughly constant velocity motion.     \\
+		\hline
+		RECEPTOR      & \multirow{3}{*}[-1cm]{Spherical.}  & Tethered motion: switch between Brownian and directed motion with random orientation for the later. \\
+		\cline{1-1} \cline{3-3}
+		VESICLE       & & Brownian motion.  \\
+		\cline{1-1} \cline{3-3}
+		VIRUS         & &  Switch between Brownian and directed motion with fixed orientation for the later.  \\
+		\hline      
+
+	\end{tabulary}
+\end{center}
+%	\caption{Tracking scenarios of the ISBI challenge.}
+%	\label{table-scenarios}
+%\end{table*}
+</latex>
+
+For each scenario, images covers several particle density:
+\begin{myitemize}
+	\item low: 60-100 / frame
+	\item mid: 400-500 / frame
+	\item high: 700-1000 / frame
+\end{myitemize}
+\noindent to check how a tracking algorithm behaves when particles get very dense.
+Also, particles SNR spans several values: 1, 2, 4, 7 (plus 3 for the RECEPTOR scenario). As said on the \otherlink{http://bioimageanalysis.org/track/}{challenge page}: "SNR=4 is a critical level at which methods may start to break down".
+
+
+
+\subsubsection{Example images from the challenge dataset.}
+%---------------------------------------------------------
+
+Below are shown typical images taken from the challenge.
+
+
+
+
+
+
+
+\paragraph{Varying particle density.}
+%------------------------------------
+
+<wiki>
+<gallery caption="From the VESICLE scenario.">
+File:VESICLE snr 7 density low-1.png|Low density
+File:VESICLE snr 7 density mid-1.png|Medium density
+File:VESICLE snr 7 density high-1.png|High density 
+</gallery>
+</wiki>
+<latex>
+
+Variation in the particle density, illustrated in the case of the VESICLE scenario with SNR = 7. Contrast stretched to the 0-150 8-bit range.
+
+
+\screenshotB{TrackMate_VaryingDensity_VESICLEscenario.pdf}
+</latex>
+
+
+
+\paragraph{Varying particle SNR.}
+%--------------------------------
+
+<wiki>
+<gallery caption="From the RECEPTOR scenario." >
+File:RECEPTOR snr 7 density low-1.png|SNR = 7
+File:RECEPTOR snr 4 density low-1.png|SNR = 4
+File:RECEPTOR snr 3 density low-1.png|SNR = 3
+File:RECEPTOR snr 2 density low-1.png|SNR = 2
+File:RECEPTOR snr 1 density low-1.png|SNR = 1
+</gallery>
+
+Contrast stretched to the 0-50 8-bit range.
+</wiki>
+<latex>
+
+
+Varying SNR in the RECEPTOR scenario dataset. Contrast stretched to the 0-50 8-bit range.
+
+\screenshotB{TrackMate_VaryingSNR_RECEPTORscenario.pdf}
+
+</latex>
+
+
+
+
+
+\paragraph{The MICROTUBULE scenario particle shape.}
+%---------------------------------------------------
+
+An excerpt from the MICROTUBULE scenario,  with SNR = 4, and density = medium. The particles have an elongated shape, to mimic microtubule tip staining.
+
+\screenshotB{TrackMate_MICROTUBULEscenario.pdf}
+
+
+
+
+\subsubsection{Accuracy measurements.}
+%--------------------------------------
+
+For each scenario and condition, the method returns numerous values that characterizes the accuracy of a tracking algorithm. They are detailed on \otherlink{http://bioimageanalysis.org/track/PerformanceMeasures.pdf}{this technical paper}. We plot below only three of them:
+
+\begin{myitemize}
+
+	\item The \textbf{Jaccard similarity between tracks}, that quantifies how well the tracks returned by the algorithm match the ground truth. This value assesses the accuracy of the \wikilink{TrackMate_algorithms}{spot tracker} you pick in TrackMate. It ranges from 0 (terrible) to 1 (found tracks = ground truth).
+
+	\item The \textbf{Jaccard similarity between detections}, that quantifies how well the particle detected by the detection algorithm match the ground truth. It depends strongly on the \wikilink{TrackMate_algorithms}{spot detector} you pick in TrackMate, and ranges from 0 to 1 like the above quantity.
+
+	\item The \textbf{RMSE of detection positions} that quantifies how precise is the location of the detected particles. The smaller the better.
+
+\end{myitemize}
+
+We fully relied on the \wikilink{Icy}{Icy software} to compute these values. TrackMate ships an action that exports tracking results to the XML format imposed by the ISBI challenge, which code can be found \otherlink{https://github.com/fiji/TrackMate/blob/master/src/main/java/fiji/plugin/trackmate/action/ISBIChallengeExporter.java}{here}. We generated these files for all the conditions of a scenario, and used the \otherlink{http://icy.bioimageanalysis.org/plugin/ISBI_Tracking_Challenge_Batch_Scoring}{Icy ISBI challenge scoring plugin} to yield metrics. We then used \wikilink{MATLAB}{MATLAB} to plot them.
+
+
+
+\subsubsection{Parameter used.}
+%------------------------------
+
+Unless otherwise specified below, we always used the LoG detector as a spot detector, with an estimated particle diameter of 2, and used sub-pixel accuracy. For SNR below 4, this detector was completely confused and the detection results are dominated by noise. We did not make anything special to improve its sensitivity below this limit. When the histogram of detection quality returned by the detector was not bimodal, we pick a quality threshold that yielded approximately the expected number of particles in the sequence. The three spot trackers were configured as indicated in the table below.  
+Finally, for SNR<4, we filtered out tracks that had less than 4 detections.
+
+<wiki>
+{| class="wikitable"
+|-
+! Spot tracker
+! Parameter
+! Value
+|-
+| rowspan =3 | [[TrackMate_algorithms#Linear_motion_tracker.|Linear motion tracker]]
+| Initial search radius
+| 10
+|-
+| Search radius
+| 7
+|-
+| Max frame gap
+| 3
+|-
+| rowspan = 3 | [[TrackMate_algorithms#LAP_trackers|LAP Brownian motion]]
+| Max linking distance
+| 7
+|-
+| Max gap-closing distance
+| 10
+|-
+| Max frame gap
+| 3
+|-
+| Nearest neighbor
+| Max search distance
+| 10
+|}
+</wiki>
+<latex>
+%\begin{table*}
+%	\centering
+\begin{center}
+	\begin{tabular}{|l|l|r|}
+		\hline
+		\textbf{Spot tracker}   & \textbf{Parameter}       & \textbf{Value} \\
+		\hline
+		\hline
+		\multirow{3}{*}{\textit{Linear motion tracker}} & Initial search radius  & 10 \\
+		\cline{2-3}
+								& Search radius            & 7 \\
+		\cline{2-3}
+
+								& Max frame gap            & 3 \\
+		\hline
+		\hline
+		\multirow{3}{*}{\textit{LAP Brownian motion}}   & Max linking distance     & 7 \\
+		\cline{2-3}
+								& Max gap-closing distance & 10 \\
+		\cline{2-3}
+
+								& Max frame gap            & 3  \\
+		\hline
+		\hline
+		\textit{Nearest neighbor}  & Max search distance      & 10    \\                            
+		\hline
+	\end{tabular}
+\end{center}
+%	\caption{Parameters used for the ISBI challenge.}
+%	\label{table-parameters}
+%\end{table*}
+</latex>
+
+
+\subsubsection{Results.}
+%-----------------------
+
+The results for each scenario is presented and commented below. Since we used the same detector for all scenarios, all the measures have a common shape for their dependence on SNR.
+
+Basically, accuracy is the same for $\text{SNR} \geq 3$. Below SNR = 2 included, the detector is unable to reliably finds all the particles. For a SNR of 2, it still finds a subset of correct particles, amongst the brightest. At a SNR of 1, detection results are dominated by spurious detections, and the particle linking algorithm performance does not matter anymore. All are equally bad, since they track the wrong particles. 
+
+
+\paragraph{Microtubule scenario.}
+%--------------------------------
+
+This scenario probes how well the TrackMate algorithms fare against a roughly constant velocity motion model. Unsurprisingly, the linear motion tracker performs the best and resists well against high density of particles. 
+
+The LAP tracker does not perform well, even in the ideal case, as it expects the average particle position to be constant at least on short timescales, when it does not. Therefore, it performance approaches the worst-case scenario given by the nearest-neighbor search algorithm. 
+
+The RMSE on particle position is the worst here over the 4 scenarios. This is the obvious consequence of the particle shape, which is asymmetric and elongated, when the LoG detector expects bright blobs. Still, this does not affect tracking results.
+
+\screenshotA{MICROTUBULE_LAP_Brownian_motion_Linear_motion_tracker_Nearest_neighbor.pdf}
+
+
+
+
+
+
+\paragraph{Receptor scenario.}
+%-----------------------------
+
+TrackMate does not have a particle linking algorithm that specifically address this scenario. The motion model switches from Brownian motion to linear motion, and we have algorithm that deal with one or the other. It is no surprise therefore to find that they all perform similarly. 
+
+Fortunately, accuracy values are rather good and do not break down too much against particle number. We also see that the linear motion tracker behaves slightly better than the rest in all conditions.
+
+\screenshotA{RECEPTOR_LAP_Brownian_motion_Linear_motion_tracker_Nearest_neighbor.pdf}
+
+
+
+
+
+\paragraph{Vesicle scenario.}
+%----------------------------
+
+The motion model of this scenario is the pure Brownian motion. Unsurprisingly the LAP tracker behaves the best as it models precisely this situation. The linear motion tracker is confused by the constant direction changed generated by the random motion, and is superseded even by the nearest neighbor search. 
+
+\screenshotA{VESICLE_LAP_Brownian_motion_Linear_motion_tracker_Nearest_neighbor.pdf}
+
+
+
+
+\paragraph{Virus scenario.}
+%--------------------------
+
+As for the receptor scenario, TrackMate does not have a specific tracker for this scenario. The main difference with the receptor scenario is that the linear motion part of the trajectories are all following the same direction. Again, TrackMate cannot exploit this bit of information, but it is enough to change what is the better performing algorithm (compared to the receptor scenario).
+Also, this scenario was the only one to ship 3D data over time. TrackMate dealt with it without special precaution, thanks to \wikilink{ImgLib2}{ImgLib2} dimensional genericity.
+
+\screenshotA{VIRUS_LAP_Brownian_motion_Linear_motion_tracker_Nearest_neighbor.pdf}
+
+
+
+\subsection{Comments.}
+%------------------------
+
+These results serve as a base to help end-users picking the right algorithm for their problems, and maybe encourage developers to implement their own. As said before, a deeper interpretation of these metrics in the general case is found in the original paper<wiki><ref name="ISBIpaper"/></wiki><latex>~\cite{isbi}</latex>. Here are a few things specific to the current version of TrackMate.
+
+
+The parameters and strategy used for this accuracy assessment are pretty basic and unelaborated. This way, results give the 'raw' accuracy, before a user exploits the deeper specificity of their problem. The two sections below quickly list what we could have done and could not have done even if we wanted to improve results.
+
+
+
+\paragraph{What was in the challenge that TrackMate did not exploit.}
+%--------------------------------------------------------------------
+
+We saw that at low SNR, the detection step dominates and its inability to robustly detect faint particles is the cause for low scores. Here we did not try to improve the detection results via pre-processing. One could have denoised the image, or averaged succeeding frames to improve the SNR. Other strategies rely on a denoising pre-processing step to improve detection accuracy<wiki> (as in the \wikilink{Low Light Tracking Tool}{Low Light Tracking Tool} for instance)</wiki><latex>~\cite{llt}</latex>.
+
+
+\paragraph{What is in TrackMate that we could not exploit for the challenge.}
+%----------------------------------------------------------------------------
+
+The LAP trackers were the first trackers to be shipped with TrackMate. They are a stripped down version of. They are based solely on square distance costs (Brownian motion), but they can be modulated by a penalty factor based on numerical features. For instance, the cost to link two particles can be penalized if their mean intensity is too different. 
+
+The challenge data does offer that possibility: all particles have roughly the same shape and intensity (modulo some minor variations in SNR). An exception is the MICROTUBULE scenario, where particles have an elongated shape. Therefore, we could have computed an orientation for them, and penalize two particles with different orientation (assuming - correctly - that orientation remains roughly the same between two frames).
+
+
+
+<wiki>== References ==
+
+<references/></wiki>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%----------------------------------------------------------------------------------------
+%                                TRACKMATE PERFORMANCE.
+%----------------------------------------------------------------------------------------
+
+\section{Spot detectors performance.}
+%------------------------------------
+
+We report here performance metrics in the shape of execution time for the spot detectors natively shipped with TrackMate. They serve as a basis for end users to pick an adequate spot detector when concerned by detection time. We focus on comparing the LoG detector and DoG detector.
+
+
+\subsection{The test environment.}
+%---------------------------------
+
+The computer used for these tests is the following:
+
+\begin{verbatim}
+  Mac-Pro
+  mi-2010
+  Processor  2 x 2.66 GHz 6-Core Intel Xeon
+  Memory  24 GB 1333 MHz DDR3 ECC
+  Software  Mac OS X Lion 10.7.5 (11G63)
+\end{verbatim}
+
+
+For these tests we used Fiji running on Java 1.6. The detectors instantiated were set to use only 1 thread, not to confuse metrics with concurrent programming issues. Unless indicated, the median filter and the sub-pixel localization were not used. 
+
+
+
+
+\subsection{Processing time for a 2D image as a function of its size.}
+%-------------------------------------------------------------------------
+
+For a \texttt{uint16} image, varying its size, containing 200 gaussian spots of radius 3 (everything is in pixel units).
+
+<wiki>
+{|  class="wikitable" cellspacing="10"
+! align="left"|N (pixels)	
+!Image size
+!DoG detector time (ms)
+!LoG detector time (ms)
+|-
+|256	
+|16x16
+|3.0
+|4.8
+|-
+|1024	
+|32x32
+|2.95
+|4.3
+|-
+|4096
+|64x64	
+|3.95
+|4.35
+|-
+|16384
+|128x128	
+|7.9
+|5.85
+|-
+|65536	
+|256x256
+|23.35
+|17.7
+|-
+|262144	
+|512x512
+|88.2
+|61.15
+|-
+|1048576
+|1024x1024	
+|357.3
+|251.65
+|-
+|2359296	
+|1536x1536
+|789.85
+|605.4
+|-
+|4194304	
+|2048x2048
+|1463.4
+|1201.1
+|}
+</wiki>
+<latex>
+\begin{center}
+	\begin{tabular}{|r|r|r|r|}
+	\hline
+	\textbf{N (pixels)} & \textbf{Image size} & \textbf{DoG detector time (ms)} & \textbf{LoG detector time (ms)} \\
+	\hline
+	\hline
+	256        & 16 \texttimes 16      & 3.0        	& 4.8                    \\
+	\hline
+	1024       & 32 \texttimes 32      & 2.95           & 4.3                    \\
+	\hline
+	4096       & 64 \texttimes 64      & 3.95         	& 4.35                   \\
+	\hline
+	16384      & 128 \texttimes 128    & 7.9            & 5.85                   \\
+	\hline
+	65536      & 256 \texttimes 256    & 23.35        	& 17.7                   \\
+	\hline
+	262144     & 512 \texttimes 512    & 88.2           & 61.15                  \\
+	\hline
+	1048576    & 1024 \texttimes 1024  & 357.3          & 251.65                 \\
+	\hline
+	2359296    & 1536 \texttimes 1536  & 789.85        	& 605.4                  \\
+	\hline
+	4194304    & 2048 \texttimes 2048  & 1463.4       	& 1201.1    \\            
+	\hline
+	\end{tabular}
+\end{center}
+</latex>
+
+For the DoG detector, unsurprisingly, we find that the execution time is proportional to the number of pixels, following approximately $t \text{(ms)} = 3.4 \, 10^{-4} \times N_\text{pixels}$. This is expected as all calculations are done in direct space.
+
+The LoG detector operates in Fourier space, and because of the Fourier transform implementation we use, the images are padded with 0s to reach a size equal to a power of 2. This does not show here as all but one tests are made with such a size. Still, the execution time slightly deviates from the linear case, and shows a quadratic shape. The best linear fit yields a low in $t \text{(ms)} = 2.8 \, 10^{-4} \times N_\text{pixels}$, showing that the LoG detector is slightly quicker than the DoG detector.
+
+\screenshotA{TrackMate_DoGandLoGTimeVsPixels.pdf}
+
+
+
+\subsection{Processing time for a 3D image as a function of its size.}
+%-------------------------------------------------------------------------
+
+<wiki>
+{|  class="wikitable" cellspacing="10"
+! align="left"|N (pixels)
+!Image size
+!DoG detector time (ms)
+!LoG detector time (ms)
+|-
+|4096
+|16x16x16
+|8.7
+|24.7
+|-
+|32768
+|32x32x32
+|23.5
+|38.5
+|-
+|262144
+|64x64x64
+|129.3
+|159.2
+|
+|-
+|2097152
+|128x128x128
+|875.1
+|936.3
+|-
+|16777216
+|256x256x256
+|7054.0
+|7462.4
+|-
+|134217728
+|512x512x512
+|61477.2
+|58860.6
+|}
+</wiki>
+<latex>
+\begin{center}
+	\centering
+	\begin{tabular}{|r|r|r|r|}
+		\hline
+		\textbf{N (pixels)} & \textbf{Image size} & \textbf{DoG detector time (ms)} & \textbf{LoG detector time (ms)} \\ 
+		\hline
+		\hline
+		4096  	& 16 \texttimes 16 \texttimes 16 	& 8.7	& 24.7 \\ 
+		\hline
+		32768 	& 32 \texttimes 32 \texttimes 32 	& 23.5 	& 38.5 \\ 
+		\hline
+		262144	& 64 \texttimes 64 \texttimes 64	& 129.3 & 159.2	\\ 
+		\hline
+		2097152	& 128 \texttimes 128 \texttimes 128	& 875.1	& 936.3 	\\ 
+		\hline
+		16777216	& 256 \texttimes 256 \texttimes 256	& 7054.0	& 7462.4	\\ 
+		\hline
+		134217728	& 512 \texttimes 512 \texttimes 512	& 61477.2	& 58860.6	\\ 
+		\hline
+	\end{tabular}
+\end{center}
+</latex>
+
+And again, the processing time is found to be linear with the number of pixels. The linear fit is slightly steeper, however: $t \text{(ms)} = 4.6 \, 10^{-4} \times N_\text{pixels}$, which we attribute to the 3D kernel overhead.
+
+Interestingly, the LoG detector seems to become the slowest at intermediate size, which we attribute to overhead in 3D iteration with the ImageJ data model, where Z-slices are stored as individual arrays, accessed in a list.
+
+\screenshotA{TrackMate_DoGandLoGTimeVsPixels3D.pdf}
+
+
+
+
+\subsection{Processing time for a 2D image as a function of the spot radius.}
+%-------------------------------------------------------------------------------
+
+We used a 1024x1024 \texttt{uint16} image, with 200 gaussian spots, the size of which we varied. The detector was tuned to this radius. 
+
+\screenshotA{TrackMate_DoGandLoGTimeVsRadius2D.pdf}
+
+We find that for the DoG detector, the processing time to increase linearly with the specified radius, following approximately $t \text{(ms)} = 20.5 \times \text{radius} + 260$. As the difference-of-gaussians is calculated in the direct space, a marked increase is expected as there is more pixels to iterate over. Without optimization, we should however have found the time to be increasing with the square of the radius, and find the same dependence that for the image size. Thanks to the clever implementation of gaussian filtering<wiki><ref>https://github.com/imagej/imglib/blob/master/algorithms/core/src/main/java/net/imglib2/algorithm/gauss3/Gauss3.java</ref></wiki><latex>\footnote{\otherlink{https://github.com/imagej/imglib/blob/master/algorithms/core/src/main/java/net/imglib2/algorithm/gauss3/Gauss3.java}{Gauss3 code}}</latex>, this is avoided.
+
+The LoG detector shows a near-constant processing time, which makes it desirable for spots larger than 2 pixels in radius. This is due to the way we compute the convolution which is explained below. 
+
+
+
+\subsection{Processing time for a 3D image as a function of the spot radius.}
+%-------------------------------------------------------------------------------
+
+This time we used a 256x256x256 3D image, but with otherwise the same parameters. 
+
+\screenshotA{TrackMate_DoGandLoGTimeVsRadius3D.pdf}
+
+The processing time increases, but this time deviates slightly from linearity in the DoG case. We retrieve the 3D kernel overhead we had for the 3D images.
+
+The LoG performance clearly highlights the 0-padding used because of the Fourier transform: Indeed, the processing time increase in a step-wise manner. We use the Fourier transform to compute the convolution by the LoG kernel. But for the implementation we use, the kernel image (and the source image as well) are padded by 0 until their size reaches a power of 2 (128, 256, 512, \etc). Whenever the required kernel size is smaller than this power of 2, its size is increased to this value. Because ultimately the processing time depends on the number of pixels, we see a constant processing time until the kernel size imposes a larger power of 2.
+
+
+
+\subsection{Choosing between DoG and LoG based on performance.}
+%------------------------------------------------------------------
+
+This stepwise evolution makes it slightly harder to choose between LoG and DoG detectors based on performance. As a crude rule of thumb we will remember that
+
+\begin{myitemize}
+	\item The LoG detector outperforms the DoG detector in 2D for radiuses larger than 2 pixels.
+	\item The LoG detector outperforms the DoG detector in 3D for radiuses larger than 4 pixels.
+\end{myitemize}
+
+<wiki>
+<references/>
+</wiki>
+
+
+
+
+
+
+
+
+
+
+
+%----------------------------------------------------------------------------------------
+%                                GLOBAL BIBLIORAPHY.
+%----------------------------------------------------------------------------------------
+
+
+
+<latex>
+\ifdefined\wtexpart
+\else
+\newpage
+\begin{thebibliography}{99}
+
+	\bibitem{lindeberg} Lindeberg, T. \textit{Feature detection with automatic scale selection.}
+International Journal of Computer Vision 30 (2) (1998) pp 77--116. 
+	
+	\bibitem{lowe} Lowe, D.G. \textit{Distinctive image features from scale-invariant keypoints}, 
+	International Journal of Computer Vision, 60, 2 (2004), pp. 91-110.
+	
+	\bibitem{otsu} Otsu, N., \textit{A threshold selection method from gray-level histograms}, in IEEE 
+	Transactions on Systems, Man, and Cybernetics, vol. 9, no. 1, pp. 62-66, Jan. 1979.
+
+	\bibitem{jaqaman}  \otherlink{
+http://www.nature.com/nmeth/journal/v5/n8/full/nmeth.1237.html}{Jaqaman, K. et al.}, \textit{Robust single-particle trac\-king in live-cell time-lapse se\-quences}, Nat Me\-thods. 2008 Aug;5(8):695-702.
+
+	\bibitem{crocker} \otherlink{http://physics.nyu.edu/grierlab/methods3c/methods3c.pdf}{Crocker and 
+Grier.} \textit{Methods of Digital Video Microscopy for Colloidal Studies}, J Colloid Interf Sci (1996) vol. 179 (1) pp. 298-310.
+	  
+	\bibitem{bentley} Bentley, J. L.  \textit{Multidimensional binary search trees used for associative searching}, Communications of the ACM, vol. 18, no 9, 1975, p. 509-517.
+	
+	\bibitem{sage} \otherlink{http://bigwww.epfl.ch/publications/sage0501.pdf}{Sage, D. \etal}, \textit{Automatic tracking of Individual fluorescence Particles: Application to the study of chromosome dynamics}, IEEE Transactions on Image Processing, vol. 14, no. 9, pp. 1372-1383, September 2005.
+	
+	\bibitem{munkres} Munkres, J. \textit{Algorithms for the assignment and transportation problems}, 
+	Journal of the Society for Industrial and Applied Mathematics, 5(1):32–38, March 1957.
+
+	\bibitem{isbi} \otherlink{http://www.nature.com/nmeth/journal/v11/n3/full/nmeth.2808.html}{Chenouard \etal}, \textit{Objective comparison of particle tracking methods}, Nature Methods, 2014.
+	
+	\bibitem{llt} Krull, A., \etal, \textit{A divide and conquer strategy for the maximum likelihood localization of low intensity objects}, Opt. Express 22, 210-228 (2014)
+	
+	
+\end{thebibliography}
+
+
+\end{document}
+\fi
+</latex>
+% vim::set expandtab tabstop=4 softtabstop=2 shiftwidth=2 ft=tex:
