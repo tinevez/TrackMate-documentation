@@ -3619,7 +3619,7 @@ from fiji.plugin.trackmate import Logger
 from fiji.plugin.trackmate.detection import LogDetectorFactory
 from fiji.plugin.trackmate.tracking.sparselap import SparseLAPTrackerFactory
 from fiji.plugin.trackmate.tracking import LAPUtils
-from ij import IJ
+from ij import IJ, WindowManager
 import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer as HyperStackDisplayer
 import fiji.plugin.trackmate.features.FeatureFilter as FeatureFilter
 import sys
@@ -3722,6 +3722,27 @@ displayer.refresh()
 # Echo results with the logger we set at start:
 model.getLogger().log(str(model))
 \end{lstlisting}
+The results should look like this:
+
+\screenshotA{TrackMate_script_1_results.png}
+
+\noindent And the ImageJ log window should display information resembling this:
+
+\begin{verbatim}
+Starting detection process using 4 threads.
+Detection processes 4 frames simultaneously and allocates 1 thread per frame.
+Found 22883 spots.
+Starting initial filtering process.
+Computing spot features.
+Computation done in 11 ms.
+Starting spot filtering process.
+Starting tracking process.
+Computing track features:
+  - Track duration in 2 ms.
+Computation done in 17 ms.
+...
+\end{verbatim}
+
 
 
 
@@ -3729,7 +3750,6 @@ model.getLogger().log(str(model))
 %----------------------------------------------------------------
 
 Scripting is a good way to interrogate and play non-interactively with tracking results. The example below shows how to load a XML TrackMate file and rebuild a full working model from it. 
-
 That way you could for instance redo a full tracking process by only changing one parameter with respect to the saved one. You might also want to check results without relying on the GUI, \etc.
 
 For the example below to work for you, you will have to edit line 20 and put the actual path to your TrackMate file.
@@ -4047,7 +4067,7 @@ The reason for this is that TrackMate caches each modification made to its model
 \begin{myitemize}
 	\item First, three edges will be removed: the ones that were connected to the spot you just removed.
 	\item Then the spot will actually be removed from the model.
-	\item But then you need to recompute the tracks, because now, you have 3 tracks instead of 1.
+	\item But then you need to recompute the tracks, because now, you have three tracks instead of one.
 	\item But also: all the numerical features of the tracks are now invalid, and you need to recompute them. 
 	\item And what happens to the track name? What track, amongst the 3 new ones, will receive the old name?
 \end{myitemize}
@@ -4186,6 +4206,9 @@ imp = view.getImp()
 imp.getCalibration().fps = 30
 Animator().run('start')
 \end{lstlisting}
+And here is the resulting image:
+
+\screenshotA{TrackMate_script_4_results.png}
 
 
 
