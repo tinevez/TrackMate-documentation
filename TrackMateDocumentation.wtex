@@ -2601,7 +2601,7 @@ visualization of tracks in MATLAB.
 \subsection{Installation of TrackMate functions for MATLAB.}
 %-----------------------------------------------------------
 
-The Fiji applications ships up to date MATLAB functions that - amongst
+The Fiji application ships up to date MATLAB functions that - amongst
 other things - deal with TrackMate import. They are contained in the
 \texttt{scripts} folder of the \texttt{Fiji.app} installation:
 
@@ -2612,7 +2612,6 @@ other things - deal with TrackMate import. They are contained in the
 We are interested in the five \texttt{trackmate*.m} and \texttt{importTrackMateTracks.m}
 functions. To make them available in your MATLAB sessions, you need to
 add the \texttt{scripts} folder to your MATLAB path.
-
 To do so, open the MATLAB path editor, and add the \texttt{scripts} folder to
 it. The way to do it is best explained on the
 \otherlink{http://mathworks.com/help/matlab/matlab_env/add-remove-or-reorder-folders-on-the-search-path.html}{MATLAB documentation website}.
@@ -2654,18 +2653,14 @@ with a simple nomenclature, that resembles this:
        ... 
 \end{verbatim}
 
-Tracks are organized as \texttt{<particle>} element, and in each
+\noindent Tracks are organized as \texttt{<particle>} element, and in each
 % \texttt{<particle>} a spot takes the form of a \texttt{<detection>}
 element, with T, X, Y and Z listed with their physical value.
 
 This simple file format emerged from the
 \otherlink{http://bioimageanalysis.org/track/}{ISBI Grand Challenge} on
-single-particle tracking>. It is here to allow end-users to write simple
-import filters for other languages.
-
-Running this action on data wither split and merge events will \textbf{silently fail}
-and generate a XML file that can be opened and imported, but with
-missing links.
+single-particle tracking. It is here to allow end-users to write simple
+import filters for other languages. But it is limited to linear tracks. Running the \textbf{Export tracks to XML file} action on data wither split and merge events will \textbf{silently fail} and generate a XML file that will generate errors later.
 
 Importing such a file in MATLAB is done via the \texttt{importTrackMateTracks}
 function:
@@ -2707,7 +2702,7 @@ ans =
     4.0000   80.7978   76.6681         0
 \end{verbatim}
 
-By default, time is reported in frame number, so it is an integer. Also,
+\noindent By default, time is reported in frame number, so it is an integer. Also,
 spots have always a Z coordinate, even if the tracking was made in 2D.
 The function \texttt{importTrackMateTracks} has two switches to change this
 behavior. For instance:
@@ -2725,8 +2720,7 @@ ans =
     0.2400   80.7978   76.6681
 \end{verbatim}
 
-%%
-The data file we used for this section has a physical frame interval, so
+\noindent The data file we used for this section has a physical frame interval, so
 now T is in seconds. And since we clipped the Z coordinate, the tracks
 are made of $N \times 3$ matrices now. 
 
@@ -2789,7 +2783,6 @@ this:
          <TrackMate version="3.3.0">
          ...    
 \end{verbatim}
-
 They are made of several XML elements, the most important one being the
 \texttt{Model}:
 
@@ -2820,7 +2813,7 @@ The function basic syntax is the following:
 >> [ spot_table, spot_ID_map ] = trackmateSpots( file_path );
 \end{lstlisting}
  
-We will speak about the second output argument \texttt{spot\_ID\_map} later. We
+\noindent We will speak about the second output argument \texttt{spot\_ID\_map} later. We
 retrieve it now, for the functions that load a TrackMate file in MATLAB
 can take quite some time to run, so you want to run them only once.
 
@@ -2900,7 +2893,6 @@ ans =
      3
      3
 \end{verbatim}
-
 Values can then be used to slice through the table:
 
 \begin{lstlisting}[language=matlab]
@@ -2951,7 +2943,7 @@ You can redisplay the spot cloud in MATLAB:
 
 \screenshotA{MATLAB_CelegansSpotCloud.pdf}
  
-Notice that there is no time information on this plot, nor track
+\noindent Notice that there is no time information on this plot, nor track
 information. We just imported the spots so far, and there is not yet data
 on how spots are linked. 
 
@@ -2975,7 +2967,6 @@ to the one for spots:
 \begin{lstlisting}[language=matlab]
 >> edge_map = trackmateEdges( file_path );
 \end{lstlisting}
-
 However here the data is not directly returned as a table but as a map of
 table, one for each track:
 
@@ -3096,7 +3087,6 @@ in TrackMate:
 >> end
 \end{lstlisting}
 
-%%
 We now have the IDs of the spots that are in specified tracks. The
 problem is that these IDs are spot IDs, and we have a spot table in which
 the table row does not match the spot ID.
@@ -3108,15 +3098,18 @@ the spot table. It is used as follow:
 >> % Retrieve the spot with ID:
 >> spot_ID = 3087;
 >> r = spot_ID_map( spot_ID )
->> spot_table( r, feature_subset )
 \end{lstlisting}
 
 \begin{verbatim}
 r =
 
     12
+\end{verbatim}
+\begin{lstlisting}[language=matlab]
+>> spot_table( r, feature_subset )
+\end{lstlisting}
 
-
+\begin{verbatim}
 ans = 
 
      ID     name    ESTIMATED_DIAMETER    MEAN_INTENSITY
@@ -3129,7 +3122,6 @@ ans =
 	
 	    30.266        28.282        19        
 \end{verbatim}
-
 We can use it to retrieve the position of the spots in each track:
 
 \begin{lstlisting}[language=matlab]
@@ -3261,10 +3253,9 @@ ans =
         0.19847                 3                
          6.8934                 3            
 \end{verbatim}
-
 These tables have the same shape that the tables imported by
 \texttt{trackmateSpots} and \texttt{trackmateEdges}, except for the edge table, whose
-first column \texttt{EndNodes} is a N x 2 array that stores the source and
+first column \texttt{EndNodes} is a $N \times 2$ array that stores the source and
 target indices of nodes in the spot table. Careful: these indices are
 \textbf{row numbers} in the spot table.
 
@@ -3303,7 +3294,7 @@ target =
         POSITION_X        POSITION_Y        POSITION_Z
         __________        __________        __________
 
-        27.488                29.737                23                
+        27.488            29.737            23                
 \end{verbatim}
 
 
